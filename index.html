@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shazam IPTV</title>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #080808;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    padding: 20px;
+    text-align: center;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+.player {
+    width: 100%;
+    background: #000;
+}
+
+video {
+    width: 100%;
+    display: block;
+    background: #000;
+}
+
+.info {
+    padding: 18px;
+}
+
+.nome {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.status {
+    margin-top: 8px;
+    color: #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    ⚡️ SHAZAM IPTV
+</div>
+
+<div class="player">
+    <video id="video" controls autoplay playsinline></video>
+</div>
+
+<div class="info">
+    <div class="nome">
+        📺 BBC News
+    </div>
+
+    <div class="status" id="status">
+        🔄 Carregando transmissão...
+    </div>
+</div>
+
+<script>
+
+const URL_BBC =
+"https://vs-hls-push-ww-live.akamaized.net/x=4/i=urn:bbc:pips:service:bbc_news_channel_hd/t=3840/v=pv14/b=5070016/main.m3u8";
+
+const video = document.getElementById("video");
+const status = document.getElementById("status");
+
+if (Hls.isSupported()) {
+
+    const hls = new Hls();
+
+    hls.loadSource(URL_BBC);
+
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, function () {
+
+        status.textContent = "🟢 BBC News — AO VIVO";
+
+        video.play().catch(() => {});
+
+    });
+
+    hls.on(Hls.Events.ERROR, function (event, data) {
+
+        console.log("HLS:", data);
+
+        if (data.fatal) {
+            status.textContent =
+                "❌ Não foi possível carregar a transmissão.";
+        }
+
+    });
+
+} else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+
+    video.src = URL_BBC;
+
+    video.addEventListener("loadedmetadata", function () {
+
+        status.textContent = "🟢 BBC News — AO VIVO";
+
+        video.play().catch(() => {});
+
+    });
+
+} else {
+
+    status.textContent =
+        "❌ O navegador não suporta HLS.";
+
+}
+
+</script>
+
+</body>
+</html>
