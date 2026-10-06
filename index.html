@@ -3,127 +3,2920 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shazam IPTV</title>
+
+<title>⚡️Shazam IPTV⚡️</title>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <style>
-* {
-    box-sizing: border-box;
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-body {
-    margin: 0;
-    background: #080808;
-    color: #fff;
-    font-family: Arial, sans-serif;
+html,
+body{
+    min-height:100%;
 }
 
-.header {
-    padding: 20px;
-    text-align: center;
-    font-size: 23px;
-    font-weight: bold;
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    color:#fff;
+
+    background:
+        radial-gradient(
+            circle at 10% 15%,
+            rgba(20,65,180,.38),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 88% 12%,
+            rgba(145,65,220,.30),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 80% 78%,
+            rgba(220,35,100,.22),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 15% 88%,
+            rgba(190,20,45,.18),
+            transparent 34%
+        ),
+        linear-gradient(
+            135deg,
+            #030817 0%,
+            #09051a 35%,
+            #120719 65%,
+            #080306 100%
+        );
+
+    background-attachment:fixed;
 }
 
-.player {
-    width: 100%;
-    background: #000;
+/* ========================================
+   BOTÃO DO MENU
+======================================== */
+
+.menu-btn{
+
+    position:fixed;
+
+    top:16px;
+    left:16px;
+
+    width:44px;
+    height:44px;
+
+    border:1px solid rgba(255,255,255,.14);
+
+    border-radius:12px;
+
+    background:rgba(5,8,25,.88);
+
+    color:#fff;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+    z-index:1001;
+
+    backdrop-filter:blur(12px);
+
+    transition:.2s;
 }
 
-video {
-    width: 100%;
-    display: block;
-    background: #000;
+.menu-btn:hover{
+    background:#102d75;
 }
 
-.info {
-    padding: 18px;
+/* ========================================
+   OVERLAY
+======================================== */
+
+.menu-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.58);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.25s;
+
+    z-index:1000;
 }
 
-.nome {
-    font-size: 20px;
-    font-weight: bold;
+.menu-overlay.ativo{
+
+    opacity:1;
+
+    visibility:visible;
 }
 
-.status {
-    margin-top: 8px;
-    color: #aaa;
+/* ========================================
+   MENU LATERAL
+======================================== */
+
+.menu-lateral{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:285px;
+    max-width:85%;
+
+    height:100vh;
+
+    background:
+        linear-gradient(
+            160deg,
+            rgba(5,15,45,.98),
+            rgba(30,8,55,.98),
+            rgba(45,5,25,.98)
+        );
+
+    border-right:1px solid rgba(255,255,255,.12);
+
+    transform:translateX(-105%);
+
+    transition:.3s ease;
+
+    z-index:1002;
+
+    padding:25px 18px;
+
+    box-shadow:
+        10px 0 40px rgba(0,0,0,.55);
 }
+
+.menu-lateral.aberto{
+    transform:translateX(0);
+}
+
+.menu-logo{
+
+    text-align:center;
+
+    padding:
+        12px
+        0
+        28px;
+}
+
+.menu-logo h2{
+
+    font-size:25px;
+
+    letter-spacing:2px;
+}
+
+.menu-logo span{
+
+    background:
+        linear-gradient(
+            90deg,
+            #557cff,
+            #a77cff,
+            #ff5b9d,
+            #ff304d
+        );
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+}
+
+.menu-logo small{
+
+    color:#999;
+
+    letter-spacing:3px;
+}
+
+.menu-item{
+
+    width:100%;
+
+    border:0;
+
+    background:
+        rgba(255,255,255,.06);
+
+    color:#fff;
+
+    padding:15px;
+
+    margin-bottom:10px;
+
+    border-radius:12px;
+
+    text-align:left;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.menu-item:hover{
+
+    background:
+        rgba(55,85,180,.45);
+
+    transform:
+        translateX(3px);
+}
+
+.menu-item.fechar{
+
+    margin-top:20px;
+
+    background:
+        rgba(180,30,55,.22);
+}
+
+/* ========================================
+   CONTAINER
+======================================== */
+
+.container{
+
+    width:100%;
+
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:
+        0
+        20px
+        20px;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+header{
+
+    min-height:60px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-end;
+
+    padding:
+        8px
+        8px
+        8px
+        55px;
+}
+
+.logo{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    white-space:nowrap;
+}
+
+.logo span{
+
+    background:
+        linear-gradient(
+            90deg,
+            #557cff,
+            #a77cff,
+            #ff5b9d,
+            #ff304d
+        );
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+}
+
+/* ========================================
+   HERO
+======================================== */
+
+.hero{
+
+    text-align:center;
+
+    padding:
+        20px
+        10px
+        18px;
+}
+
+.hero h1{
+
+    font-size:
+        clamp(
+            32px,
+            7vw,
+            58px
+        );
+
+    font-weight:900;
+
+    margin-bottom:8px;
+}
+
+.hero h1 span{
+
+    background:
+        linear-gradient(
+            90deg,
+            #4e7cff,
+            #b17cff,
+            #ff609c,
+            #ff3d4f
+        );
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+}
+
+.hero p{
+
+    color:#c7c7d5;
+
+    font-size:15px;
+
+    margin-bottom:20px;
+}
+
+/* ========================================
+   BOTÃO VER CANAIS
+======================================== */
+
+.btn-canais{
+
+    border:0;
+
+    border-radius:13px;
+
+    padding:
+        15px
+        28px;
+
+    background:#102d75;
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 8px 25px
+        rgba(16,45,117,.4);
+
+    transition:.2s;
+}
+
+.btn-canais:hover{
+
+    background:#173d99;
+
+    transform:
+        translateY(-2px);
+}
+
+/* ========================================
+   SEÇÕES
+======================================== */
+
+.secao{
+
+    margin-top:28px;
+}
+
+.titulo-secao{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-bottom:18px;
+}
+
+.titulo-secao h2{
+
+    font-size:23px;
+}
+
+/* ========================================
+   CARROSSEL AO VIVO
+======================================== */
+
+.live-carousel{
+
+    display:flex;
+
+    gap:14px;
+
+    overflow-x:auto;
+
+    overflow-y:hidden;
+
+    padding:
+        5px
+        3px
+        20px;
+
+    scroll-snap-type:
+        x mandatory;
+
+    scrollbar-width:none;
+
+    -webkit-overflow-scrolling:touch;
+}
+
+.live-carousel::-webkit-scrollbar{
+    display:none;
+}
+
+.live-carousel .card{
+
+    flex:
+        0 0 195px;
+
+    scroll-snap-align:start;
+}
+
+/* ========================================
+   GRID NORMAL
+======================================== */
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(
+                180px,
+                1fr
+            )
+        );
+
+    gap:14px;
+}
+
+/* ========================================
+   CARD
+======================================== */
+
+.card{
+
+    position:relative;
+
+    background:
+        rgba(
+            12,
+            15,
+            35,
+            .72
+        );
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            .09
+        );
+
+    border-radius:15px;
+
+    padding:15px;
+
+    overflow:hidden;
+
+    backdrop-filter:
+        blur(10px);
+
+    transition:.2s;
+}
+
+.card:hover{
+
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(
+            90,
+            120,
+            255,
+            .45
+        );
+}
+
+.card-logo{
+
+    height:80px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:34px;
+
+    margin-bottom:10px;
+}
+
+.card-logo img{
+
+    max-width:100%;
+
+    max-height:65px;
+
+    object-fit:contain;
+}
+
+.card h3{
+
+    font-size:15px;
+
+    margin-bottom:10px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+}
+
+/* ========================================
+   STATUS
+======================================== */
+
+.canal-status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    font-size:11px;
+
+    color:#aaa;
+
+    margin-bottom:9px;
+}
+
+.status-dot{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    display:inline-block;
+
+    flex-shrink:0;
+}
+
+.status-online{
+
+    background:#20e060;
+
+    box-shadow:
+        0 0 9px
+        rgba(
+            32,
+            224,
+            96,
+            .8
+        );
+}
+
+.status-offline{
+
+    background:#ff304d;
+
+    box-shadow:
+        0 0 9px
+        rgba(
+            255,
+            48,
+            77,
+            .6
+        );
+}
+
+/* ========================================
+   BOTÕES DOS CARDS
+======================================== */
+
+.card-bottom{
+
+    display:flex;
+
+    gap:7px;
+}
+
+.assistir{
+
+    flex:1;
+
+    border:0;
+
+    border-radius:9px;
+
+    padding:
+        10px
+        7px;
+
+    background:#102d75;
+
+    color:#fff;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.assistir:hover{
+
+    background:#173f9f;
+}
+
+.favorito{
+
+    width:40px;
+
+    border:0;
+
+    border-radius:9px;
+
+    background:#171b35;
+
+    color:#fff;
+
+    font-size:18px;
+
+    cursor:pointer;
+}
+
+.favorito.ativo{
+
+    color:#ffd84d;
+}
+
+/* ========================================
+   CATEGORIAS
+======================================== */
+
+#categoriasPagina{
+    display:none;
+}
+
+.voltar{
+
+    border:0;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .08
+        );
+
+    color:#fff;
+
+    border-radius:10px;
+
+    padding:
+        11px
+        15px;
+
+    cursor:pointer;
+
+    margin-bottom:20px;
+}
+
+.lista-categorias{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.categoria{
+
+    width:100%;
+
+    padding:19px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            .08
+        );
+
+    border-radius:13px;
+
+    background:
+        rgba(
+            12,
+            15,
+            35,
+            .75
+        );
+
+    color:#fff;
+
+    text-align:left;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.categoria:hover{
+
+    background:
+        rgba(
+            35,
+            58,
+            130,
+            .7
+        );
+
+    transform:
+        translateX(4px);
+}
+
+.categoria span{
+
+    float:right;
+
+    opacity:.55;
+}
+
+/* ========================================
+   CANAIS DA CATEGORIA
+======================================== */
+
+#canaisPagina{
+    display:none;
+}
+
+.cabecalho-canais{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:20px;
+}
+
+.cabecalho-canais h2{
+    flex:1;
+}
+
+.busca{
+
+    width:100%;
+
+    padding:
+        14px
+        16px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            .1
+        );
+
+    border-radius:12px;
+
+    background:
+        rgba(
+            0,
+            0,
+            0,
+            .3
+        );
+
+    color:#fff;
+
+    outline:none;
+
+    margin-bottom:20px;
+}
+
+.busca::placeholder{
+
+    color:#8d8d9a;
+}
+
+/* ========================================
+   FAVORITOS / MAIS ASSISTIDOS / INFO
+======================================== */
+
+.pagina-extra{
+    display:none;
+}
+
+.empty{
+
+    text-align:center;
+
+    padding:50px 15px;
+
+    color:#aaa;
+}
+
+/* ========================================
+   PLAYER
+======================================== */
+
+#playerPagina{
+    display:none;
+}
+
+.player-box{
+
+    max-width:1000px;
+
+    margin:
+        20px
+        auto;
+}
+
+.video-wrapper{
+
+    position:relative;
+
+    width:100%;
+
+    aspect-ratio:16/9;
+
+    background:#000;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 15px 50px
+        rgba(0,0,0,.6);
+}
+
+video{
+
+    width:100%;
+
+    height:100%;
+
+    display:block;
+
+    background:#000;
+}
+
+.player-info{
+
+    margin-top:15px;
+
+    background:
+        rgba(
+            10,
+            12,
+            28,
+            .8
+        );
+
+    padding:18px;
+
+    border-radius:13px;
+}
+
+.player-info h2{
+
+    margin-bottom:8px;
+}
+
+.status{
+
+    color:#8c8c99;
+
+    font-size:14px;
+
+    margin-top:12px;
+}
+
+/* ========================================
+   PROGRAMA ATUAL
+======================================== */
+
+.programa-atual{
+
+    margin-top:12px;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .045
+        );
+
+    border-left:
+        3px solid
+        #557cff;
+}
+
+.programa-atual small{
+
+    display:block;
+
+    color:#9292a3;
+
+    font-size:11px;
+
+    margin-bottom:4px;
+}
+
+.programa-atual strong{
+
+    display:block;
+
+    color:#fff;
+
+    font-size:14px;
+
+    line-height:1.35;
+}
+
+/* ========================================
+   FOOTER
+======================================== */
+
+.footer{
+
+    text-align:center;
+
+    padding:
+        35px
+        15px
+        25px;
+
+    margin-top:45px;
+
+    color:#8e8e9c;
+
+    font-size:13px;
+}
+
+.footer strong{
+    color:#fff;
+}
+
+.footer a{
+
+    color:#7fa0ff;
+
+    text-decoration:none;
+}
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media(max-width:600px){
+
+    .container{
+
+        padding:
+            0
+            15px
+            15px;
+    }
+
+    header{
+
+        min-height:55px;
+
+        padding:
+            7px
+            3px
+            7px
+            50px;
+    }
+
+    .logo{
+
+        font-size:17px;
+    }
+
+    .hero{
+
+        padding:
+            12px
+            5px
+            15px;
+    }
+
+    .hero h1{
+
+        font-size:38px;
+    }
+
+    .hero p{
+
+        font-size:14px;
+    }
+
+    .live-carousel .card{
+
+        flex:
+            0 0 175px;
+    }
+
+    .card{
+
+        padding:10px;
+    }
+
+    .card-logo{
+
+        height:65px;
+    }
+
+    .card h3{
+
+        font-size:13px;
+    }
+
+    .assistir{
+
+        font-size:12px;
+    }
+
+    .favorito{
+
+        width:36px;
+    }
+
+}
+
+@media(max-width:360px){
+
+    .live-carousel .card{
+
+        flex:
+            0 0 165px;
+    }
+
+    .hero h1{
+
+        font-size:34px;
+    }
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="header">
-    ⚡️ SHAZAM IPTV
-</div>
 
-<div class="player">
-    <video id="video" controls autoplay playsinline></video>
-</div>
+<!-- ========================================
+     BOTÃO MENU
+======================================== -->
 
-<div class="info">
-    <div class="nome">
-        📺 BBC News
+<button
+    class="menu-btn"
+    onclick="abrirMenu()"
+>
+    ☰
+</button>
+
+
+<!-- ========================================
+     OVERLAY
+======================================== -->
+
+<div
+    id="menuOverlay"
+    class="menu-overlay"
+    onclick="fecharMenu()"
+></div>
+
+
+<!-- ========================================
+     MENU LATERAL
+======================================== -->
+
+<aside
+    id="menuLateral"
+    class="menu-lateral"
+>
+
+    <div class="menu-logo">
+
+        <h2>
+            ⚡ <span>SHAZAM</span>
+        </h2>
+
+        <small>
+            IPTV
+        </small>
+
     </div>
 
-    <div class="status" id="status">
-        🔄 Carregando transmissão...
+
+    <button
+        class="menu-item"
+        onclick="mostrarInfo()"
+    >
+        ℹ️ Info
+    </button>
+
+
+    <button
+        class="menu-item"
+        onclick="mostrarFavoritos()"
+    >
+        ⭐ Favoritos
+    </button>
+
+
+    <button
+        class="menu-item"
+        onclick="mostrarMaisAssistidos()"
+    >
+        🔥 Mais assistidos
+    </button>
+
+
+    <button
+        class="menu-item"
+        onclick="mostrarCategorias()"
+    >
+        📂 Categorias
+    </button>
+
+
+    <button
+        class="menu-item fechar"
+        onclick="fecharMenu()"
+    >
+        ✕ Fechar
+    </button>
+
+</aside>
+
+
+<div class="container">
+
+
+<!-- ========================================
+     HEADER
+======================================== -->
+
+<header>
+
+    <div class="logo">
+        ⚡️Shazam IPTV⚡️
     </div>
+
+</header>
+
+
+<!-- ========================================
+     INÍCIO
+======================================== -->
+
+<main id="inicio">
+
+
+    <section class="hero">
+
+        <h1>
+            TV <span>AO VIVO</span>
+        </h1>
+
+        <p>
+            Assista aos seus canais favoritos em direto
+        </p>
+
+        <button
+            class="btn-canais"
+            onclick="mostrarCategorias()"
+        >
+            📺 VER OS CANAIS
+        </button>
+
+    </section>
+
+
+    <!-- ========================================
+         AO VIVO AGORA
+    ======================================== -->
+
+    <section class="secao">
+
+        <div class="titulo-secao">
+
+            <h2>
+                🟢 AO VIVO AGORA
+            </h2>
+
+        </div>
+
+
+        <div
+            id="liveGrid"
+            class="live-carousel"
+        ></div>
+
+    </section>
+
+</main>
+
+
+<!-- ========================================
+     CATEGORIAS
+======================================== -->
+
+<main id="categoriasPagina">
+
+    <button
+        class="voltar"
+        onclick="voltarInicio()"
+    >
+        ← Início
+    </button>
+
+
+    <div class="titulo-secao">
+
+        <h2>
+            📂 Categorias
+        </h2>
+
+    </div>
+
+
+    <div
+        id="listaCategorias"
+        class="lista-categorias"
+    ></div>
+
+</main>
+
+
+<!-- ========================================
+     CANAIS
+======================================== -->
+
+<main id="canaisPagina">
+
+    <button
+        class="voltar"
+        onclick="mostrarCategorias()"
+    >
+        ← Categorias
+    </button>
+
+
+    <div class="cabecalho-canais">
+
+        <h2 id="tituloCategoria">
+            📺 Canais
+        </h2>
+
+    </div>
+
+
+    <input
+        id="busca"
+        class="busca"
+        type="search"
+        placeholder="🔎 Procurar canal..."
+        oninput="filtrarCanais()"
+    >
+
+
+    <div
+        id="canaisGrid"
+        class="grid"
+    ></div>
+
+</main>
+
+
+<!-- ========================================
+     FAVORITOS
+======================================== -->
+
+<main
+    id="favoritosPagina"
+    class="pagina-extra"
+>
+
+    <button
+        class="voltar"
+        onclick="voltarInicio()"
+    >
+        ← Início
+    </button>
+
+
+    <div class="titulo-secao">
+
+        <h2>
+            ⭐ Favoritos
+        </h2>
+
+    </div>
+
+
+    <div
+        id="favoritosGrid"
+        class="grid"
+    ></div>
+
+</main>
+
+
+<!-- ========================================
+     MAIS ASSISTIDOS
+======================================== -->
+
+<main
+    id="maisAssistidosPagina"
+    class="pagina-extra"
+>
+
+    <button
+        class="voltar"
+        onclick="voltarInicio()"
+    >
+        ← Início
+    </button>
+
+
+    <div class="titulo-secao">
+
+        <h2>
+            🔥 Mais assistidos
+        </h2>
+
+    </div>
+
+
+    <div
+        id="maisAssistidosGrid"
+        class="grid"
+    ></div>
+
+</main>
+
+
+<!-- ========================================
+     INFO
+======================================== -->
+
+<main
+    id="infoPagina"
+    class="pagina-extra"
+>
+
+    <button
+        class="voltar"
+        onclick="voltarInicio()"
+    >
+        ← Início
+    </button>
+
+
+    <div class="card">
+
+        <div class="card-logo">
+            ⚡
+        </div>
+
+
+        <h2
+            style="
+                text-align:center;
+                margin-bottom:20px;
+            "
+        >
+            ⚡️Shazam IPTV⚡️
+        </h2>
+
+
+        <p
+            style="
+                text-align:center;
+                color:#bbb;
+                line-height:1.8;
+            "
+        >
+
+            Plataforma IPTV do SHAZAM.
+
+            <br><br>
+
+            <strong>
+                Dono:
+            </strong>
+
+            Isaías Pedro
+
+            <br>
+
+            <strong>
+                WhatsApp:
+            </strong>
+
+            <br>
+
+            <a
+                href="https://wa.me/244950898368"
+                target="_blank"
+                style="
+                    color:#6f9cff;
+                    text-decoration:none;
+                "
+            >
+                +244 950 898 368
+            </a>
+
+        </p>
+
+    </div>
+
+</main>
+
+
+<!-- ========================================
+     PLAYER
+======================================== -->
+
+<main id="playerPagina">
+
+    <button
+        class="voltar"
+        onclick="voltarInicio()"
+    >
+        ← Voltar
+    </button>
+
+
+    <div class="player-box">
+
+
+        <div class="video-wrapper">
+
+            <video
+                id="video"
+                controls
+                playsinline
+                autoplay
+            ></video>
+
+        </div>
+
+
+        <div class="player-info">
+
+
+            <div class="canal-status">
+
+                <span
+                    id="playerDot"
+                    class="status-dot status-online"
+                ></span>
+
+                <span id="playerLiveText">
+                    AO VIVO
+                </span>
+
+            </div>
+
+
+            <h2 id="playerNome">
+                Canal
+            </h2>
+
+
+            <div class="programa-atual">
+
+                <small>
+                    🎬 A APRESENTAR AGORA
+                </small>
+
+
+                <strong id="programaNome">
+                    A obter programação...
+                </strong>
+
+            </div>
+
+
+            <div
+                id="playerStatus"
+                class="status"
+            >
+                Preparando transmissão...
+            </div>
+
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- ========================================
+     FOOTER
+======================================== -->
+
+<footer class="footer">
+
+    <strong>
+        ⚡️Shazam IPTV⚡️
+    </strong>
+
+    <br><br>
+
+    Dono: Isaías Pedro
+
+    <br>
+
+    WhatsApp:
+
+    <a
+        href="https://wa.me/244950898368"
+        target="_blank"
+    >
+        +244 950 898 368
+    </a>
+
+</footer>
+
+
 </div>
 
-<script>
 
-const URL_BBC =
-"https://vs-hls-push-ww-live.akamaized.net/x=4/i=urn:bbc:pips:service:bbc_news_channel_hd/t=3840/v=pv14/b=5070016/main.m3u8";
+<script type="module">
 
-const video = document.getElementById("video");
-const status = document.getElementById("status");
+import {
+    obterCanal,
+    obterCanais,
+    obterCategorias
+} from "./canais.js";
 
-if (Hls.isSupported()) {
 
-    const hls = new Hls();
+/* ========================================
+   DADOS
+======================================== */
 
-    hls.loadSource(URL_BBC);
+const canais =
+    obterCanais() || [];
 
-    hls.attachMedia(video);
+const categorias =
+    obterCategorias() || [];
 
-    hls.on(Hls.Events.MANIFEST_PARSED, function () {
 
-        status.textContent = "🟢 BBC News — AO VIVO";
+let categoriaAtual = null;
 
-        video.play().catch(() => {});
+let hlsAtual = null;
 
+
+/* ========================================
+   FAVORITOS
+======================================== */
+
+function obterFavoritos(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                "shazam_favoritos"
+            ) || "[]"
+        );
+
+    }catch{
+
+        return [];
+
+    }
+
+}
+
+
+function salvarFavoritos(lista){
+
+    localStorage.setItem(
+        "shazam_favoritos",
+        JSON.stringify(lista)
+    );
+
+}
+
+
+/* ========================================
+   HISTÓRICO
+======================================== */
+
+function obterHistorico(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                "shazam_historico"
+            ) || "[]"
+        );
+
+    }catch{
+
+        return [];
+
+    }
+
+}
+
+
+function salvarHistorico(lista){
+
+    localStorage.setItem(
+        "shazam_historico",
+        JSON.stringify(lista)
+    );
+
+}
+
+
+/* ========================================
+   MENU
+======================================== */
+
+window.abrirMenu = function(){
+
+    document
+        .getElementById(
+            "menuLateral"
+        )
+        .classList.add("aberto");
+
+
+    document
+        .getElementById(
+            "menuOverlay"
+        )
+        .classList.add("ativo");
+
+};
+
+
+window.fecharMenu = function(){
+
+    document
+        .getElementById(
+            "menuLateral"
+        )
+        .classList.remove("aberto");
+
+
+    document
+        .getElementById(
+            "menuOverlay"
+        )
+        .classList.remove("ativo");
+
+};
+
+
+/* ========================================
+   ESCONDER PÁGINAS
+======================================== */
+
+function esconderTudo(){
+
+    document
+        .getElementById("inicio")
+        .style.display="none";
+
+
+    document
+        .getElementById("categoriasPagina")
+        .style.display="none";
+
+
+    document
+        .getElementById("canaisPagina")
+        .style.display="none";
+
+
+    document
+        .getElementById("favoritosPagina")
+        .style.display="none";
+
+
+    document
+        .getElementById("maisAssistidosPagina")
+        .style.display="none";
+
+
+    document
+        .getElementById("infoPagina")
+        .style.display="none";
+
+
+    document
+        .getElementById("playerPagina")
+        .style.display="none";
+
+}
+
+
+/* ========================================
+   INÍCIO
+======================================== */
+
+window.voltarInicio = function(){
+
+    esconderTudo();
+
+
+    document
+        .getElementById("inicio")
+        .style.display="block";
+
+
+    if(hlsAtual){
+
+        hlsAtual.destroy();
+
+        hlsAtual=null;
+
+    }
+
+
+    const video =
+        document.getElementById(
+            "video"
+        );
+
+
+    if(video){
+
+        video.pause();
+
+        video.removeAttribute("src");
+
+        video.load();
+
+    }
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
     });
 
-    hls.on(Hls.Events.ERROR, function (event, data) {
+};
 
-        console.log("HLS:", data);
 
-        if (data.fatal) {
-            status.textContent =
-                "❌ Não foi possível carregar a transmissão.";
+/* ========================================
+   CATEGORIAS
+======================================== */
+
+window.mostrarCategorias = function(){
+
+    fecharMenu();
+
+    esconderTudo();
+
+
+    document
+        .getElementById(
+            "categoriasPagina"
+        )
+        .style.display="block";
+
+
+    renderizarCategorias();
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+};
+
+
+function renderizarCategorias(){
+
+    const lista =
+        document.getElementById(
+            "listaCategorias"
+        );
+
+
+    lista.innerHTML="";
+
+
+    categorias.forEach(
+        categoria=>{
+
+            const quantidade =
+                canais.filter(
+                    c =>
+                    c.categoria ===
+                    categoria.id
+                ).length;
+
+
+            const botao =
+                document.createElement(
+                    "button"
+                );
+
+
+            botao.className =
+                "categoria";
+
+
+            botao.innerHTML = `
+
+                📂 ${categoria.nome}
+
+                <span>
+                    ${quantidade} canais ›
+                </span>
+
+            `;
+
+
+            botao.onclick=()=>{
+
+                categoriaAtual =
+                    categoria.id;
+
+
+                mostrarCanaisDaCategoria(
+                    categoria.id,
+                    categoria.nome
+                );
+
+            };
+
+
+            lista.appendChild(
+                botao
+            );
+
         }
+    );
 
+}
+
+
+/* ========================================
+   CANAIS DA CATEGORIA
+======================================== */
+
+function mostrarCanaisDaCategoria(
+    id,
+    nome
+){
+
+    esconderTudo();
+
+
+    document
+        .getElementById(
+            "canaisPagina"
+        )
+        .style.display="block";
+
+
+    document
+        .getElementById(
+            "tituloCategoria"
+        )
+        .textContent=nome;
+
+
+    document
+        .getElementById(
+            "busca"
+        )
+        .value="";
+
+
+    renderizarCanais(id);
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
     });
 
-} else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+}
 
-    video.src = URL_BBC;
 
-    video.addEventListener("loadedmetadata", function () {
+function renderizarCanais(
+    id,
+    termo=""
+){
 
-        status.textContent = "🟢 BBC News — AO VIVO";
+    const grid =
+        document.getElementById(
+            "canaisGrid"
+        );
 
-        video.play().catch(() => {});
 
+    grid.innerHTML="";
+
+
+    const lista =
+        canais.filter(
+            c=>{
+
+                if(
+                    c.categoria !== id
+                )
+                    return false;
+
+
+                if(!termo)
+                    return true;
+
+
+                return c.nome
+                    .toLowerCase()
+                    .includes(
+                        termo.toLowerCase()
+                    );
+
+            }
+        );
+
+
+    if(!lista.length){
+
+        grid.innerHTML=`
+
+            <div class="empty">
+
+                📺 Nenhum canal encontrado.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    lista.forEach(
+        canal=>{
+
+            grid.appendChild(
+                criarCard(canal)
+            );
+
+        }
+    );
+
+}
+
+
+window.filtrarCanais=function(){
+
+    const termo =
+        document.getElementById(
+            "busca"
+        ).value;
+
+
+    renderizarCanais(
+        categoriaAtual,
+        termo
+    );
+
+};
+
+
+/* ========================================
+   AO VIVO
+======================================== */
+
+function renderizarLive(){
+
+    const grid =
+        document.getElementById(
+            "liveGrid"
+        );
+
+
+    grid.innerHTML="";
+
+
+    /*
+       TODOS os canais ativos.
+       Não existe mais .slice(0,12)
+    */
+
+    const ativos =
+        canais.filter(
+            c =>
+            c.ativo &&
+            c.url
+        );
+
+
+    if(!ativos.length){
+
+        grid.innerHTML=`
+
+            <div class="empty">
+
+                📺 Nenhum canal ao vivo disponível.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    ativos.forEach(
+        canal=>{
+
+            grid.appendChild(
+                criarCard(canal)
+            );
+
+        }
+    );
+
+}
+
+
+/* ========================================
+   LOGOS
+======================================== */
+
+const logos={
+
+    "BBC News":
+    "https://upload.wikimedia.org/wikipedia/commons/6/62/BBC_News_2019.svg",
+
+    "CNN Brasil":
+    "https://upload.wikimedia.org/wikipedia/commons/6/6f/CNN_International_logo.svg",
+
+    "Euronews":
+    "https://upload.wikimedia.org/wikipedia/commons/9/90/Euronews_2016_logo.svg",
+
+    "RTP 1":
+    "https://upload.wikimedia.org/wikipedia/commons/2/2d/RTP1_logo.svg",
+
+    "RTP 2":
+    "https://upload.wikimedia.org/wikipedia/commons/5/53/RTP2_logo.svg",
+
+    "SIC":
+    "https://upload.wikimedia.org/wikipedia/commons/1/1f/SIC_logo_2020.svg",
+
+    "TVI":
+    "https://upload.wikimedia.org/wikipedia/commons/8/8c/TVI_logo.svg"
+
+};
+
+
+/* ========================================
+   CRIAR CARD
+======================================== */
+
+function criarCard(canal){
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className="card";
+
+
+    const favoritos =
+        obterFavoritos();
+
+
+    const isFavorito =
+        favoritos.includes(
+            canal.id
+        );
+
+
+    const disponivel =
+        Boolean(
+            canal.ativo &&
+            canal.url
+        );
+
+
+    const logo =
+        logos[canal.nome];
+
+
+    card.innerHTML = `
+
+        <div class="card-logo">
+
+            ${
+                logo
+
+                ?
+
+                `<img
+                    src="${logo}"
+                    alt="${canal.nome}"
+
+                    onerror="
+                        this.style.display='none';
+                        this.parentElement.innerHTML='📺';
+                    "
+                >`
+
+                :
+
+                "📺"
+            }
+
+        </div>
+
+
+        <div class="canal-status">
+
+            <span
+                class="
+                    status-dot
+                    ${
+                        disponivel
+                        ?
+                        "status-online"
+                        :
+                        "status-offline"
+                    }
+                "
+            ></span>
+
+
+            ${
+                disponivel
+                ?
+                "AO VIVO"
+                :
+                "INDISPONÍVEL"
+            }
+
+        </div>
+
+
+        <h3
+            title="${canal.nome}"
+        >
+            ${canal.nome}
+        </h3>
+
+
+        <div class="card-bottom">
+
+            <button
+                class="assistir"
+
+                onclick="
+                    abrirCanal('${canal.id}')
+                "
+
+                ${
+                    !disponivel
+                    ?
+                    "disabled"
+                    :
+                    ""
+                }
+            >
+
+                ${
+                    disponivel
+                    ?
+                    "▶️ ASSISTIR"
+                    :
+                    "🔴 OFFLINE"
+                }
+
+            </button>
+
+
+            <button
+                class="
+                    favorito
+                    ${
+                        isFavorito
+                        ?
+                        "ativo"
+                        :
+                        ""
+                    }
+                "
+
+                onclick="
+                    alternarFavorito(
+                        '${canal.id}',
+                        event
+                    )
+                "
+
+                title="Favorito"
+            >
+
+                ${
+                    isFavorito
+                    ?
+                    "★"
+                    :
+                    "☆"
+                }
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    return card;
+
+}
+
+
+/* ========================================
+   FAVORITO
+======================================== */
+
+window.alternarFavorito =
+function(id,event){
+
+    if(event){
+
+        event.stopPropagation();
+
+    }
+
+
+    let favoritos =
+        obterFavoritos();
+
+
+    if(
+        favoritos.includes(id)
+    ){
+
+        favoritos =
+            favoritos.filter(
+                x=>x!==id
+            );
+
+    }else{
+
+        favoritos.push(id);
+
+    }
+
+
+    salvarFavoritos(
+        favoritos
+    );
+
+
+    if(categoriaAtual){
+
+        renderizarCanais(
+            categoriaAtual
+        );
+
+    }
+
+
+    renderizarLive();
+
+};
+
+
+/* ========================================
+   ABRIR CANAL
+======================================== */
+
+window.abrirCanal =
+function(id){
+
+    const canal =
+        obterCanal(id);
+
+
+    if(
+        !canal ||
+        !canal.url
+    ){
+
+        alert(
+            "❌ Este canal não está disponível."
+        );
+
+        return;
+    }
+
+
+    /*
+       HISTÓRICO
+    */
+
+    let historico =
+        obterHistorico();
+
+
+    historico =
+        historico.filter(
+            x=>x!==id
+        );
+
+
+    historico.unshift(id);
+
+
+    historico =
+        historico.slice(
+            0,
+            30
+        );
+
+
+    salvarHistorico(
+        historico
+    );
+
+
+    /*
+       PLAYER
+    */
+
+    esconderTudo();
+
+
+    document
+        .getElementById(
+            "playerPagina"
+        )
+        .style.display="block";
+
+
+    document
+        .getElementById(
+            "playerNome"
+        )
+        .textContent =
+        canal.nome;
+
+
+    document
+        .getElementById(
+            "programaNome"
+        )
+        .textContent =
+        "A obter programação...";
+
+
+    carregarPlayer(
+        canal
+    );
+
+
+    carregarProgramacao(
+        canal
+    );
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
     });
 
-} else {
+};
+
+
+/* ========================================
+   PLAYER
+======================================== */
+
+function carregarPlayer(
+    canal
+){
+
+    const video =
+        document.getElementById(
+            "video"
+        );
+
+
+    const status =
+        document.getElementById(
+            "playerStatus"
+        );
+
+
+    const dot =
+        document.getElementById(
+            "playerDot"
+        );
+
+
+    const liveText =
+        document.getElementById(
+            "playerLiveText"
+        );
+
+
+    if(hlsAtual){
+
+        hlsAtual.destroy();
+
+        hlsAtual=null;
+
+    }
+
 
     status.textContent =
-        "❌ O navegador não suporta HLS.";
+        "🔄 A carregar transmissão...";
+
+
+    dot.className =
+        "status-dot status-online";
+
+
+    liveText.textContent =
+        "AO VIVO";
+
+
+    /*
+       HLS.JS
+    */
+
+    if(
+        Hls.isSupported()
+    ){
+
+        hlsAtual =
+            new Hls({
+
+                enableWorker:true,
+
+                lowLatencyMode:true
+
+            });
+
+
+        hlsAtual.loadSource(
+            canal.url
+        );
+
+
+        hlsAtual.attachMedia(
+            video
+        );
+
+
+        hlsAtual.on(
+            Hls.Events.MANIFEST_PARSED,
+            ()=>{
+
+                status.textContent =
+                    "🟢 Transmissão ao vivo";
+
+                video
+                    .play()
+                    .catch(
+                        ()=>{}
+                    );
+
+            }
+        );
+
+
+        hlsAtual.on(
+            Hls.Events.ERROR,
+            (
+                event,
+                data
+            )=>{
+
+                if(
+                    data.fatal
+                ){
+
+                    status.textContent =
+                        "🔴 Erro ao carregar esta transmissão.";
+
+                    dot.className =
+                        "status-dot status-offline";
+
+                    liveText.textContent =
+                        "INDISPONÍVEL";
+
+                }
+
+            }
+        );
+
+    }
+
+    /*
+       HLS NATIVO
+    */
+
+    else if(
+        video.canPlayType(
+            "application/vnd.apple.mpegurl"
+        )
+    ){
+
+        video.src =
+            canal.url;
+
+
+        video.addEventListener(
+            "loadedmetadata",
+            ()=>{
+
+                status.textContent =
+                    "🟢 Transmissão ao vivo";
+
+                video
+                    .play()
+                    .catch(
+                        ()=>{}
+                    );
+
+            },
+            {
+                once:true
+            }
+        );
+
+    }
+
+    else{
+
+        status.textContent =
+            "🔴 Este navegador não suporta esta transmissão.";
+
+        dot.className =
+            "status-dot status-offline";
+
+        liveText.textContent =
+            "INDISPONÍVEL";
+
+    }
+
+}
+
+
+/* ========================================
+   EPG / PROGRAMA ATUAL
+======================================== */
+
+async function carregarProgramacao(
+    canal
+){
+
+    const programaNome =
+        document.getElementById(
+            "programaNome"
+        );
+
+
+    if(!programaNome)
+        return;
+
+
+    /*
+       O tvgId existente no mapa.js
+       será utilizado para encontrar
+       o programa correspondente.
+
+       Não mostramos informação inventada.
+    */
+
+    if(!canal.tvgId){
+
+        programaNome.textContent =
+            "Programação não disponível";
+
+        return;
+
+    }
+
+
+    /*
+       Neste momento o canal possui
+       tvgId, mas ainda não temos uma
+       fonte EPG configurada.
+
+       Portanto não inventamos o nome
+       do programa.
+    */
+
+    programaNome.textContent =
+        "Programação não disponível";
+
+}
+
+
+/* ========================================
+   FAVORITOS
+======================================== */
+
+window.mostrarFavoritos =
+function(){
+
+    fecharMenu();
+
+    esconderTudo();
+
+
+    document
+        .getElementById(
+            "favoritosPagina"
+        )
+        .style.display="block";
+
+
+    const grid =
+        document.getElementById(
+            "favoritosGrid"
+        );
+
+
+    grid.innerHTML="";
+
+
+    const favoritos =
+        obterFavoritos();
+
+
+    const lista =
+        canais.filter(
+            c =>
+            favoritos.includes(
+                c.id
+            )
+        );
+
+
+    if(!lista.length){
+
+        grid.innerHTML=`
+
+            <div class="empty">
+
+                ⭐ Ainda não adicionaste
+                nenhum canal aos favoritos.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    lista.forEach(
+        canal=>{
+
+            grid.appendChild(
+                criarCard(canal)
+            );
+
+        }
+    );
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+};
+
+
+/* ========================================
+   MAIS ASSISTIDOS
+======================================== */
+
+window.mostrarMaisAssistidos =
+function(){
+
+    fecharMenu();
+
+    esconderTudo();
+
+
+    document
+        .getElementById(
+            "maisAssistidosPagina"
+        )
+        .style.display="block";
+
+
+    const grid =
+        document.getElementById(
+            "maisAssistidosGrid"
+        );
+
+
+    grid.innerHTML="";
+
+
+    const historico =
+        obterHistorico();
+
+
+    const lista =
+        historico
+            .map(
+                id =>
+                obterCanal(id)
+            )
+            .filter(Boolean);
+
+
+    if(!lista.length){
+
+        grid.innerHTML=`
+
+            <div class="empty">
+
+                🔥 Ainda não há canais assistidos.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    lista.forEach(
+        canal=>{
+
+            grid.appendChild(
+                criarCard(canal)
+            );
+
+        }
+    );
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+};
+
+
+/* ========================================
+   INFO
+======================================== */
+
+window.mostrarInfo =
+function(){
+
+    fecharMenu();
+
+    esconderTudo();
+
+
+    document
+        .getElementById(
+            "infoPagina"
+        )
+        .style.display="block";
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+};
+
+
+/* ========================================
+   INICIALIZAR
+======================================== */
+
+renderizarLive();
+
+
+/* ========================================
+   VERIFICAR CANAL NA URL
+======================================== */
+
+const parametros =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const canalUrl =
+    parametros.get(
+        "canal"
+    );
+
+
+if(canalUrl){
+
+    const canal =
+        obterCanal(
+            canalUrl
+        );
+
+
+    if(canal){
+
+        abrirCanal(
+            canal.id
+        );
+
+    }
 
 }
 
