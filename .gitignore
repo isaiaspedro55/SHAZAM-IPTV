@@ -1,0 +1,7 @@
+node_modules/
+.env
+*.backup
+*.backup-*
+index.html.login-clean
+-H
+-d

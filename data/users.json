@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "id": "0f500a5d-debb-47b2-b27a-392642a2ba25",
+      "username": "SHZ-4CA6A909BF",
+      "passwordHash": "$2b$12$eq9edY3R0Lyxs2MEr3Evo.ENQn5kehZ5ECDUw2si27hKb8.4ypCXi",
+      "status": "ativo",
+      "createdAt": "2026-10-06T23:24:00.164Z",
+      "expiresAt": "2026-10-07T00:24:00.164Z",
+      "lastLogin": null
+    },
+    {
+      "id": "32bcb10e-16b5-4a21-b30a-4a76d56ccad7",
+      "username": "SHZ-EA02673AEF",
+      "passwordHash": "$2b$12$WyjRZDMIuQwrpZJFUEW.me4FwiXJvWM7KsU7fNGAFHtm2BtzS5Isa",
+      "status": "ativo",
+      "createdAt": "2026-10-06T23:25:20.570Z",
+      "expiresAt": "2026-10-07T00:25:20.570Z",
+      "lastLogin": null
+    }
+  ]
+}

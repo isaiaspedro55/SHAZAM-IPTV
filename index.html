@@ -1129,10 +1129,129 @@ video{
     }
 }
 
+
+/* ========================================
+   LOGIN SHAZAM IPTV
+======================================== */
+
+#telaLogin{
+    position:fixed;
+    inset:0;
+    z-index:999999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:
+        radial-gradient(circle at 20% 20%,rgba(40,80,220,.35),transparent 35%),
+        radial-gradient(circle at 80% 20%,rgba(170,50,220,.30),transparent 35%),
+        radial-gradient(circle at 50% 90%,rgba(220,30,90,.20),transparent 40%),
+        #03040b;
+}
+
+.login-box{
+    width:100%;
+    max-width:390px;
+    padding:35px 25px;
+    border-radius:24px;
+    background:rgba(10,12,25,.94);
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 25px 80px rgba(0,0,0,.75);
+    text-align:center;
+    backdrop-filter:blur(20px);
+}
+
+.login-logo{
+    font-size:58px;
+    margin-bottom:5px;
+}
+
+.login-box h1{
+    font-size:29px;
+    margin:0;
+    letter-spacing:1px;
+}
+
+.login-subtitulo{
+    color:#999;
+    margin:8px 0 25px;
+    font-size:14px;
+}
+
+.login-box input{
+    width:100%;
+    height:50px;
+    margin:7px 0;
+    padding:0 15px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.12);
+    background:#070912;
+    color:#fff;
+    outline:none;
+    font-size:15px;
+}
+
+.login-box input:focus{
+    border-color:#7c5cff;
+    box-shadow:0 0 15px rgba(124,92,255,.15);
+}
+
+#btnLogin{
+    width:100%;
+    height:50px;
+    margin-top:13px;
+    border:0;
+    border-radius:12px;
+    background:linear-gradient(135deg,#315dff,#8b4dff,#ed3d8f);
+    color:#fff;
+    font-weight:800;
+    font-size:15px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+#btnLogin:hover{
+    transform:translateY(-2px);
+    filter:brightness(1.1);
+}
+
+#btnLogin:disabled{
+    opacity:.6;
+    cursor:wait;
+    transform:none;
+}
+
+#loginMensagem{
+    min-height:20px;
+    margin-top:15px;
+    font-size:13px;
+    color:#ff667d;
+}
+
+.login-footer{
+    margin-top:22px;
+    color:#666;
+    font-size:11px;
+}
+
+body.login-bloqueado{
+    overflow:hidden;
+}
+
 </style>
+
 </head>
 
-<body>
+<body class="login-bloqueado">
+
+
+<!-- ========================================
+     LOGIN SHAZAM IPTV
+======================================== -->
+
+</div>
+
+
 
 
 <!-- ========================================
@@ -1210,6 +1329,9 @@ video{
     >
         📂 Categorias
     </button>
+
+
+
 
 
     <button
@@ -2919,6 +3041,204 @@ if(canalUrl){
     }
 
 }
+
+
+
+/* ==========================================
+   🔐 AUTENTICAÇÃO SHAZAM IPTV
+========================================== */
+
+const TOKEN_KEY = "shazam_token";
+
+function obterToken(){
+    return localStorage.getItem(TOKEN_KEY);
+}
+
+function mostrarTelaLogin(){
+
+    document.body.classList.add("login-bloqueado");
+
+    const tela = document.getElementById("telaLogin");
+
+    if(tela){
+        tela.style.display = "flex";
+    }
+}
+
+function esconderTelaLogin(){
+
+    document.body.classList.remove("login-bloqueado");
+
+    const tela = document.getElementById("telaLogin");
+
+    if(tela){
+        tela.style.display = "none";
+    }
+}
+
+async function verificarSessao(){
+
+    const token = obterToken();
+
+    if(!token){
+        mostrarTelaLogin();
+        return false;
+    }
+
+    try{
+
+        const resposta = await fetch("/api/me",{
+            method:"GET",
+            headers:{
+                "Authorization":"Bearer " + token
+            }
+        });
+
+        if(!resposta.ok){
+
+            localStorage.removeItem(TOKEN_KEY);
+            mostrarTelaLogin();
+
+            return false;
+        }
+
+        const dados = await resposta.json();
+
+        if(!dados.ok){
+
+            localStorage.removeItem(TOKEN_KEY);
+            mostrarTelaLogin();
+
+            return false;
+        }
+
+        esconderTelaLogin();
+
+        return true;
+
+    }catch(erro){
+
+        console.error(
+            "Erro ao verificar sessão:",
+            erro
+        );
+
+        mostrarTelaLogin();
+
+        return false;
+    }
+}
+
+window.fazerLogin = async function(){
+
+    const usuarioEl =
+        document.getElementById("loginUsuario");
+
+    const senhaEl =
+        document.getElementById("loginSenha");
+
+    const mensagem =
+        document.getElementById("loginMensagem");
+
+    const botao =
+        document.getElementById("loginBotao");
+
+    const usuario =
+        usuarioEl.value.trim();
+
+    const senha =
+        senhaEl.value;
+
+    if(!usuario || !senha){
+
+        mensagem.textContent =
+            "⚠️ Preencha usuário e senha.";
+
+        return;
+    }
+
+    botao.disabled = true;
+    mensagem.textContent = "⏳ A verificar acesso...";
+
+    try{
+
+        const resposta = await fetch(
+            "/api/login",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    username:usuario,
+                    password:senha
+                })
+            }
+        );
+
+        const dados = await resposta.json();
+
+        if(!resposta.ok || !dados.ok){
+
+            mensagem.textContent =
+                dados.message ||
+                "❌ Usuário ou senha inválidos.";
+
+            botao.disabled = false;
+
+            return;
+        }
+
+        localStorage.setItem(
+            TOKEN_KEY,
+            dados.token
+        );
+
+        mensagem.textContent =
+            "✅ Acesso autorizado.";
+
+        esconderTelaLogin();
+
+        botao.disabled = false;
+
+    }catch(erro){
+
+        console.error(erro);
+
+        mensagem.textContent =
+            "❌ Erro ao conectar ao servidor.";
+
+        botao.disabled = false;
+    }
+};
+
+window.fazerLogout = function(){
+
+    localStorage.removeItem(TOKEN_KEY);
+
+    mostrarTelaLogin();
+
+    const senha =
+        document.getElementById("loginSenha");
+
+    if(senha){
+        senha.value = "";
+    }
+};
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        verificarSessao();
+
+        setInterval(
+            verificarSessao,
+            60000
+        );
+
+    }
+);
 
 </script>
 
