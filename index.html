@@ -3050,6 +3050,9 @@ if(canalUrl){
 
 let TOKEN_SESSAO = null;
 
+// 🔐 BLOQUEAR O PAINEL IMEDIATAMENTE AO CARREGAR
+document.body.classList.add("login-bloqueado");
+
 function obterToken(){
     return TOKEN_SESSAO;
 }
