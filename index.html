@@ -1238,10 +1238,6 @@ body.login-bloqueado{
     overflow:hidden;
 }
 
-body.login-bloqueado > *:not(#telaLogin){
-    display:none !important;
-}
-
 body.login-bloqueado #telaLogin{
     display:flex !important;
 }
@@ -1256,6 +1252,50 @@ body.login-bloqueado #telaLogin{
 <!-- ========================================
      LOGIN SHAZAM IPTV
 ======================================== -->
+
+<div id="telaLogin">
+
+    <div class="login-box">
+
+        <div class="login-logo">
+            ⚡️
+        </div>
+
+        <h1>SHAZAM IPTV</h1>
+
+        <div class="login-subtitulo">
+            Acesso exclusivo
+        </div>
+
+        <input
+            type="text"
+            id="loginUsuario"
+            placeholder="Usuário"
+            autocomplete="username"
+        >
+
+        <input
+            type="password"
+            id="loginSenha"
+            placeholder="Senha"
+            autocomplete="current-password"
+            onkeydown="if(event.key==='Enter') fazerLogin()"
+        >
+
+        <button
+            id="loginBotao"
+            onclick="fazerLogin()"
+        >
+            🔐 ENTRAR
+        </button>
+
+        <div id="loginMensagem"></div>
+
+        <div class="login-footer">
+            ⚡️ SHAZAM IPTV
+        </div>
+
+    </div>
 
 </div>
 
