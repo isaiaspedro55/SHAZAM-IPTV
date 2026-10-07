@@ -3048,10 +3048,10 @@ if(canalUrl){
    🔐 AUTENTICAÇÃO SHAZAM IPTV
 ========================================== */
 
-const TOKEN_KEY = "shazam_token";
+let TOKEN_SESSAO = null;
 
 function obterToken(){
-    return localStorage.getItem(TOKEN_KEY);
+    return TOKEN_SESSAO;
 }
 
 function mostrarTelaLogin(){
@@ -3096,7 +3096,7 @@ async function verificarSessao(){
 
         if(!resposta.ok){
 
-            localStorage.removeItem(TOKEN_KEY);
+            TOKEN_SESSAO = null;
             mostrarTelaLogin();
 
             return false;
@@ -3106,7 +3106,7 @@ async function verificarSessao(){
 
         if(!dados.ok){
 
-            localStorage.removeItem(TOKEN_KEY);
+            TOKEN_SESSAO = null;
             mostrarTelaLogin();
 
             return false;
@@ -3189,10 +3189,7 @@ window.fazerLogin = async function(){
             return;
         }
 
-        localStorage.setItem(
-            TOKEN_KEY,
-            dados.token
-        );
+        TOKEN_SESSAO = dados.token;
 
         mensagem.textContent =
             "✅ Acesso autorizado.";
@@ -3214,7 +3211,7 @@ window.fazerLogin = async function(){
 
 window.fazerLogout = function(){
 
-    localStorage.removeItem(TOKEN_KEY);
+    TOKEN_SESSAO = null;
 
     mostrarTelaLogin();
 
