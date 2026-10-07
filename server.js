@@ -68,6 +68,20 @@ status:'online'
 });
 });
 
+app.get('/api/server-time',(req,res)=>{
+  const agora = new Date();
+
+  res.json({
+    ok: true,
+    server: 'SHAZAM IPTV',
+    isoUTC: agora.toISOString(),
+    timestamp: agora.getTime(),
+    local: agora.toString(),
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    timezoneOffsetMinutes: agora.getTimezoneOffset()
+  });
+});
+
 app.post('/api/login',async(req,res)=>{
 try{
 
