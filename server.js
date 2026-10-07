@@ -82,6 +82,89 @@ app.get('/api/server-time',(req,res)=>{
   });
 });
 
+
+app.get('/api/admin/debug-user',(req,res)=>{
+try{
+
+const adminKey=req.headers['x-admin-key'];
+
+if(!adminKey||adminKey!==process.env.ADMIN_KEY){
+return res.status(403).json({
+ok:false,
+error:'Não autorizado.'
+});
+}
+
+const username=String(req.query.username||'').trim();
+
+if(!username){
+return res.status(400).json({
+ok:false,
+error:'Informe o username.'
+});
+}
+
+const db=carregarUsuarios();
+
+const user=db.users.find(
+u=>u.username.toLowerCase()===username.toLowerCase()
+);
+
+if(!user){
+return res.status(404).json({
+ok:false,
+error:'Usuário não encontrado.'
+});
+}
+
+const agora=new Date();
+const criado=new Date(user.createdAt);
+const expiracao=new Date(user.expiresAt);
+
+const criadoMs=criado.getTime();
+const expiracaoMs=expiracao.getTime();
+const agoraMs=agora.getTime();
+
+const duracaoMs=expiracaoMs-criadoMs;
+const restanteMs=expiracaoMs-agoraMs;
+
+res.json({
+ok:true,
+serverTime:{
+isoUTC:agora.toISOString(),
+timestamp:agoraMs,
+local:agora.toString(),
+timezone:Intl.DateTimeFormat().resolvedOptions().timeZone
+},
+user:{
+username:user.username,
+status:user.status,
+createdAt:user.createdAt,
+expiresAt:user.expiresAt,
+lastLogin:user.lastLogin||null
+},
+calculo:{
+duracaoMs,
+duracaoHoras:duracaoMs/3600000,
+restanteMs,
+restanteHoras:restanteMs/3600000,
+expirado:restanteMs<=0,
+contaValida:contaValida(user)
+}
+});
+
+}catch(e){
+
+console.error('❌ Debug usuário:',e);
+
+res.status(500).json({
+ok:false,
+error:'Erro interno do servidor.'
+});
+
+}
+});
+
 app.post('/api/login',async(req,res)=>{
 try{
 
