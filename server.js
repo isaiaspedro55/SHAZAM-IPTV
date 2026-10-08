@@ -6,8 +6,16 @@ const path=require('path');
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const crypto=require('crypto');
+const { Pool } = require('pg');
 
 dotenv.config();
+
+const pool = process.env.DATABASE_URL
+  ? new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
+    })
+  : null;
 
 const app=express();
 const PORT=process.env.PORT||3000;
@@ -34,6 +42,201 @@ try{return JSON.parse(fs.readFileSync(USERS_FILE,'utf8'));}catch{return {users:[
 
 function salvarUsuarios(data){
 fs.writeFileSync(USERS_FILE,JSON.stringify(data,null,2));
+}
+
+
+function usuarioDoBanco(row){
+
+if(!row)return null;
+
+return{
+id:row.id,
+username:row.username,
+passwordHash:row.password_hash,
+status:row.status,
+createdAt:new Date(row.created_at).toISOString(),
+expiresAt:new Date(row.expires_at).toISOString(),
+lastLogin:row.last_login?new Date(row.last_login).toISOString():null
+};
+
+}
+
+
+async function buscarUsuario(username){
+
+if(!pool){
+
+const db=carregarUsuarios();
+
+return db.users.find(
+u=>u.username.toLowerCase()===String(username).toLowerCase()
+)||null;
+
+}
+
+const resultado=await pool.query(
+`SELECT * FROM users
+ WHERE LOWER(username)=LOWER($1)
+ LIMIT 1`,
+[username]
+);
+
+return usuarioDoBanco(resultado.rows[0]);
+
+}
+
+
+async function buscarUsuarioPorId(id){
+
+if(!pool){
+
+const db=carregarUsuarios();
+
+return db.users.find(u=>u.id===id)||null;
+
+}
+
+const resultado=await pool.query(
+`SELECT * FROM users
+ WHERE id=$1
+ LIMIT 1`,
+[id]
+);
+
+return usuarioDoBanco(resultado.rows[0]);
+
+}
+
+
+async function atualizarUltimoLogin(id,lastLogin){
+
+if(!pool){
+
+const db=carregarUsuarios();
+
+const user=db.users.find(u=>u.id===id);
+
+if(user){
+
+user.lastLogin=lastLogin;
+
+salvarUsuarios(db);
+
+}
+
+return;
+
+}
+
+await pool.query(
+`UPDATE users
+ SET last_login=$1
+ WHERE id=$2`,
+[lastLogin,id]
+);
+
+}
+
+
+async function inserirUsuarioBanco(user){
+
+if(!pool)return;
+
+await pool.query(
+`INSERT INTO users
+(id,username,password_hash,status,created_at,expires_at,last_login)
+VALUES($1,$2,$3,$4,$5,$6,$7)
+ON CONFLICT DO NOTHING`,
+[
+user.id,
+user.username,
+user.passwordHash,
+user.status,
+user.createdAt,
+user.expiresAt,
+user.lastLogin
+]
+);
+
+}
+
+
+async function migrarUsuariosJsonParaBanco(){
+
+if(!pool)return;
+
+const db=carregarUsuarios();
+
+if(!Array.isArray(db.users)||db.users.length===0){
+
+console.log('ℹ️ Nenhum usuário no users.json para migrar.');
+
+return;
+
+}
+
+let migrados=0;
+
+for(const user of db.users){
+
+try{
+
+const resultado=await pool.query(
+`INSERT INTO users
+(id,username,password_hash,status,created_at,expires_at,last_login)
+VALUES($1,$2,$3,$4,$5,$6,$7)
+ON CONFLICT DO NOTHING`,
+[
+user.id,
+user.username,
+user.passwordHash,
+user.status,
+user.createdAt,
+user.expiresAt,
+user.lastLogin||null
+]
+);
+
+if(resultado.rowCount>0)migrados++;
+
+}catch(e){
+
+console.error(
+`❌ Erro ao migrar ${user.username}:`,
+e.message
+);
+
+}
+
+}
+
+console.log(
+`📦 Migração users.json → PostgreSQL concluída. Novos: ${migrados}.`
+);
+
+}
+
+
+async function inicializarBanco(){
+
+if(!pool){
+console.log('ℹ️ DATABASE_URL não configurada. Usando users.json localmente.');
+return;
+}
+
+await pool.query(`
+CREATE TABLE IF NOT EXISTS users (
+  id TEXT PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'ativo',
+  created_at TIMESTAMPTZ NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
+  last_login TIMESTAMPTZ
+)
+`);
+
+console.log('✅ PostgreSQL conectado e tabela users pronta.');
 }
 
 function contaValida(user){
@@ -83,7 +286,8 @@ app.get('/api/server-time',(req,res)=>{
 });
 
 
-app.get('/api/admin/debug-user',(req,res)=>{
+app.get('/api/admin/debug-user',async(req,res)=>{
+
 try{
 
 const adminKey=req.headers['x-admin-key'];
@@ -95,7 +299,9 @@ error:'Não autorizado.'
 });
 }
 
-const username=String(req.query.username||'').trim();
+const username=String(
+req.query.username||''
+).trim();
 
 if(!username){
 return res.status(400).json({
@@ -104,11 +310,7 @@ error:'Informe o username.'
 });
 }
 
-const db=carregarUsuarios();
-
-const user=db.users.find(
-u=>u.username.toLowerCase()===username.toLowerCase()
-);
+const user=await buscarUsuario(username);
 
 if(!user){
 return res.status(404).json({
@@ -129,13 +331,16 @@ const duracaoMs=expiracaoMs-criadoMs;
 const restanteMs=expiracaoMs-agoraMs;
 
 res.json({
+
 ok:true,
+
 serverTime:{
 isoUTC:agora.toISOString(),
 timestamp:agoraMs,
 local:agora.toString(),
 timezone:Intl.DateTimeFormat().resolvedOptions().timeZone
 },
+
 user:{
 username:user.username,
 status:user.status,
@@ -143,6 +348,7 @@ createdAt:user.createdAt,
 expiresAt:user.expiresAt,
 lastLogin:user.lastLogin||null
 },
+
 calculo:{
 duracaoMs,
 duracaoHoras:duracaoMs/3600000,
@@ -151,6 +357,7 @@ restanteHoras:restanteMs/3600000,
 expirado:restanteMs<=0,
 contaValida:contaValida(user)
 }
+
 });
 
 }catch(e){
@@ -163,7 +370,64 @@ error:'Erro interno do servidor.'
 });
 
 }
+
 });
+
+
+async function autenticar(req,res,next){
+
+const auth=req.headers.authorization||'';
+
+if(!auth.startsWith('Bearer ')){
+return res.status(401).json({
+ok:false,
+error:'Não autenticado.'
+});
+}
+
+const token=auth.slice(7);
+
+try{
+
+const payload=jwt.verify(
+token,
+JWT_SECRET
+);
+
+const user=await buscarUsuarioPorId(
+payload.id
+);
+
+if(!user){
+return res.status(401).json({
+ok:false,
+error:'Usuário não encontrado.'
+});
+}
+
+if(!contaValida(user)){
+return res.status(403).json({
+ok:false,
+error:'Acesso expirado ou revogado.'
+});
+}
+
+req.user=user;
+
+next();
+
+}catch(e){
+
+console.error('❌ Autenticação:',e.message);
+
+return res.status(401).json({
+ok:false,
+error:'Sessão inválida ou expirada.'
+});
+
+}
+
+}
 
 app.post('/api/login',async(req,res)=>{
 try{
@@ -178,11 +442,7 @@ error:'Usuário e senha são obrigatórios.'
 });
 }
 
-const db=carregarUsuarios();
-
-const user=db.users.find(
-u=>u.username.toLowerCase()===username.toLowerCase()
-);
+const user=await buscarUsuario(username);
 
 if(!user){
 return res.status(401).json({
@@ -191,7 +451,10 @@ error:'Usuário ou senha inválidos.'
 });
 }
 
-const senhaCorreta=await bcrypt.compare(password,user.passwordHash);
+const senhaCorreta=await bcrypt.compare(
+password,
+user.passwordHash
+);
 
 if(!senhaCorreta){
 return res.status(401).json({
@@ -207,8 +470,12 @@ error:'Acesso expirado ou revogado.'
 });
 }
 
-user.lastLogin=new Date().toISOString();
-salvarUsuarios(db);
+const lastLogin=new Date().toISOString();
+
+await atualizarUltimoLogin(
+user.id,
+lastLogin
+);
 
 const token=jwt.sign(
 {
@@ -240,47 +507,8 @@ error:'Erro interno do servidor.'
 });
 
 }
+
 });
-
-function autenticar(req,res,next){
-
-const auth=req.headers.authorization||'';
-
-if(!auth.startsWith('Bearer ')){
-return res.status(401).json({
-ok:false,
-error:'Não autenticado.'
-});
-}
-
-const token=auth.slice(7);
-
-try{
-
-const payload=jwt.verify(token,JWT_SECRET);
-const db=carregarUsuarios();
-
-const user=db.users.find(u=>u.id===payload.id);
-
-if(!contaValida(user)){
-return res.status(403).json({
-ok:false,
-error:'Acesso expirado ou revogado.'
-});
-}
-
-req.user=user;
-next();
-
-}catch{
-
-return res.status(401).json({
-ok:false,
-error:'Sessão inválida ou expirada.'
-});
-
-}
-}
 
 app.get('/api/me',autenticar,(req,res)=>{
 res.json({
@@ -332,24 +560,45 @@ error:'Duração inválida. Use, por exemplo: 1h, 12h, 1d, 3d ou 30d.'
 });
 }
 
-const db=carregarUsuarios();
-
 let username;
 
 do{
+
 username='SHZ-'+gerarCodigo(8);
-}while(db.users.some(u=>u.username===username));
 
-let password;
+if(pool){
 
-do{
-password=gerarCodigo(8);
-}while(db.users.some(u=>u.passwordHash===password));
+const existente=await pool.query(
+`SELECT 1 FROM users WHERE username=$1 LIMIT 1`,
+[username]
+);
+
+if(existente.rowCount===0)break;
+
+}else{
+
+const db=carregarUsuarios();
+
+if(!db.users.some(
+u=>u.username===username
+))break;
+
+}
+
+}while(true);
+
+
+const password=gerarCodigo(8);
 
 const agora=new Date();
-const expiracao=new Date(agora.getTime()+duracaoMs);
+const expiracao=new Date(
+agora.getTime()+duracaoMs
+);
 
-const passwordHash=await bcrypt.hash(password,12);
+const passwordHash=await bcrypt.hash(
+password,
+12
+);
 
 const user={
 id:crypto.randomUUID(),
@@ -361,8 +610,29 @@ expiresAt:expiracao.toISOString(),
 lastLogin:null
 };
 
+
+if(pool){
+
+await inserirUsuarioBanco(user);
+
+console.log(
+`✅ Usuário ${username} criado no PostgreSQL.`
+);
+
+}else{
+
+const db=carregarUsuarios();
+
 db.users.push(user);
+
 salvarUsuarios(db);
+
+console.log(
+`✅ Usuário ${username} criado no users.json.`
+);
+
+}
+
 
 res.json({
 ok:true,
@@ -385,11 +655,20 @@ error:'Erro ao criar usuário.'
 });
 
 }
+
 });
+
 
 app.use((req,res)=>{
 res.sendFile(path.join(__dirname,'index.html'));
 });
+
+async function iniciarServidor(){
+
+try{
+
+await inicializarBanco();
+await migrarUsuariosJsonParaBanco();
 
 app.listen(PORT,'0.0.0.0',()=>{
 console.log('');
@@ -398,3 +677,14 @@ console.log(`🌐 Servidor ativo na porta ${PORT}`);
 console.log(`📺 http://localhost:${PORT}`);
 console.log('');
 });
+
+}catch(e){
+
+console.error('❌ Erro ao iniciar PostgreSQL:',e);
+process.exit(1);
+
+}
+
+}
+
+iniciarServidor();
