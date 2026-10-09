@@ -1242,6 +1242,956 @@ body.login-bloqueado #telaLogin{
     display:flex !important;
 }
 
+
+
+/* ========================================
+   SHAZAM PREMIUM VISUAL V1
+   Mantém a paleta original azul/lilás/vermelho
+======================================== */
+
+:root {
+    --shazam-blue: #557cff;
+    --shazam-purple: #a77cff;
+    --shazam-pink: #ff5b9d;
+    --shazam-red: #ff304d;
+    --shazam-panel: rgba(12, 15, 35, .82);
+    --shazam-border: rgba(255, 255, 255, .10);
+    --shazam-muted: #a7adc4;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    color: #f7f8ff;
+    line-height: 1.5;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--shazam-blue);
+    outline-offset: 3px;
+}
+
+/* Conteúdo com largura e espaçamento consistentes */
+
+.container {
+    width: min(100% - 32px, 1200px);
+    margin-inline: auto;
+}
+
+/* Menu lateral mais refinado */
+
+.menu-lateral {
+    border-right: 1px solid rgba(130, 155, 255, .20);
+    box-shadow: 20px 0 65px rgba(0, 0, 0, .48);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+}
+
+.menu-logo {
+    border-bottom: 1px solid var(--shazam-border);
+    margin-bottom: 16px;
+}
+
+.menu-logo h2 {
+    letter-spacing: 1.5px;
+    font-weight: 900;
+}
+
+.menu-btn {
+    display: grid;
+    place-items: center;
+    border-color: rgba(120, 145, 255, .28);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .25);
+}
+
+.menu-btn:active {
+    transform: scale(.95);
+}
+
+.menu-overlay {
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+/* Cabeçalho e marca */
+
+header {
+    gap: 14px;
+}
+
+.logo {
+    font-weight: 900;
+    letter-spacing: .7px;
+    text-shadow: 0 0 28px rgba(85, 124, 255, .16);
+}
+
+.logo span {
+    filter: drop-shadow(0 0 12px rgba(167, 124, 255, .12));
+}
+
+/* Destaque da página inicial */
+
+.hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(30px, 6vw, 76px) 20px;
+    margin: 18px 0 30px;
+    border: 1px solid rgba(150, 150, 255, .15);
+    border-radius: 26px;
+    background:
+        radial-gradient(ellipse at 15% 20%, rgba(55, 100, 255, .23), transparent 48%),
+        radial-gradient(ellipse at 85% 75%, rgba(225, 45, 135, .15), transparent 45%),
+        linear-gradient(135deg, rgba(13, 19, 48, .96), rgba(16, 8, 32, .94));
+    box-shadow: 0 24px 70px rgba(0, 0, 0, .22);
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 240px;
+    height: 240px;
+    right: -100px;
+    top: -120px;
+    border-radius: 50%;
+    border: 1px solid rgba(167, 124, 255, .18);
+    box-shadow:
+        0 0 0 28px rgba(167, 124, 255, .025),
+        0 0 0 58px rgba(85, 124, 255, .025);
+    pointer-events: none;
+}
+
+.hero h1 {
+    line-height: 1.08;
+    letter-spacing: -1.6px;
+    text-wrap: balance;
+}
+
+.hero p {
+    max-width: 620px;
+    margin: 14px auto 24px;
+    line-height: 1.75;
+    color: #c5c9dc;
+}
+
+.btn-canais {
+    min-height: 48px;
+    border: 1px solid rgba(255, 255, 255, .15);
+    background: linear-gradient(110deg, #315dff, #7854ed 65%, #a34fe0);
+    box-shadow: 0 10px 30px rgba(70, 80, 240, .25);
+}
+
+.btn-canais:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 14px 35px rgba(90, 80, 255, .32);
+}
+
+/* Títulos e secções */
+
+h2,
+h3 {
+    text-wrap: balance;
+}
+
+section h2,
+main h2 {
+    letter-spacing: -.35px;
+}
+
+#categoriasPagina,
+#canaisPagina,
+#playerPagina {
+    animation: shazamEntrada .28s ease both;
+}
+
+@keyframes shazamEntrada {
+    from {
+        opacity: 0;
+        transform: translateY(7px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Cartões de canais */
+
+.card {
+    position: relative;
+    border: 1px solid var(--shazam-border);
+    border-radius: 17px;
+    background:
+        linear-gradient(155deg, rgba(24, 29, 58, .94), rgba(10, 12, 29, .96));
+    box-shadow: 0 9px 28px rgba(0, 0, 0, .16);
+    transition:
+        transform .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(104, 133, 255, .48);
+    box-shadow: 0 16px 35px rgba(0, 0, 0, .28);
+}
+
+.card-logo {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card h3 {
+    line-height: 1.4;
+    font-weight: 750;
+}
+
+.assistir {
+    border-radius: 10px;
+    background: linear-gradient(110deg, #315dff, #7854ed);
+    transition: filter .2s ease, transform .2s ease;
+}
+
+.assistir:hover {
+    filter: brightness(1.14);
+}
+
+.favorito {
+    border: 1px solid rgba(255, 255, 255, .08);
+    transition: background .2s ease, transform .2s ease;
+}
+
+.favorito:active {
+    transform: scale(.92);
+}
+
+/* Categorias: painéis limpos e elegantes */
+
+.categoria {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(135, 151, 255, .13);
+    border-radius: 16px;
+    background:
+        linear-gradient(110deg, rgba(24, 31, 67, .86), rgba(15, 13, 35, .88));
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .12);
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.categoria:hover {
+    transform: translateY(-2px);
+    border-color: rgba(112, 139, 255, .5);
+    background:
+        linear-gradient(110deg, rgba(36, 52, 111, .86), rgba(35, 17, 65, .90));
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .22);
+}
+
+.voltar {
+    border: 1px solid var(--shazam-border);
+    transition: background .2s ease, transform .2s ease;
+}
+
+.voltar:hover {
+    background: rgba(85, 124, 255, .17);
+}
+
+/* Player de vídeo */
+
+.player-box {
+    width: min(100%, 1000px);
+}
+
+.video-wrapper {
+    border: 1px solid rgba(135, 151, 255, .24);
+    border-radius: 20px;
+    background: #000;
+    box-shadow:
+        0 22px 65px rgba(0, 0, 0, .42),
+        0 0 35px rgba(65, 90, 230, .08);
+}
+
+video {
+    object-fit: contain;
+}
+
+.player-info {
+    border: 1px solid var(--shazam-border);
+    border-radius: 17px;
+    background:
+        linear-gradient(145deg, rgba(18, 22, 48, .94), rgba(10, 10, 25, .94));
+    box-shadow: 0 12px 34px rgba(0, 0, 0, .16);
+}
+
+.player-info h2 {
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.status {
+    color: #a9b0c9;
+}
+
+/* EPG: programa atual e seguinte */
+
+.programa-atual {
+    border: 1px solid rgba(110, 139, 255, .12);
+    border-left: 3px solid var(--shazam-blue);
+    border-radius: 13px;
+    background:
+        linear-gradient(110deg, rgba(43, 64, 132, .18), rgba(255, 255, 255, .025));
+}
+
+.programa-atual small {
+    color: #9fa9d1;
+    font-weight: 800;
+    letter-spacing: .9px;
+}
+
+.programa-atual strong {
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+#programaNome {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    line-height: 1.75;
+}
+
+/* Login premium, mantendo os mesmos campos e botões */
+
+#telaLogin {
+    padding: 24px;
+    background:
+        radial-gradient(ellipse at 15% 15%, rgba(40, 80, 220, .25), transparent 38%),
+        radial-gradient(ellipse at 85% 20%, rgba(170, 50, 220, .22), transparent 38%),
+        radial-gradient(ellipse at 50% 100%, rgba(220, 30, 90, .15), transparent 42%),
+        #03040b;
+}
+
+.login-box {
+    position: relative;
+    overflow: hidden;
+    max-width: 410px;
+    padding: clamp(28px, 6vw, 42px) clamp(22px, 5vw, 34px);
+    border: 1px solid rgba(142, 154, 255, .22);
+    border-radius: 25px;
+    background:
+        linear-gradient(150deg, rgba(18, 21, 43, .97), rgba(7, 8, 20, .98));
+    box-shadow:
+        0 28px 90px rgba(0, 0, 0, .62),
+        0 0 50px rgba(80, 83, 220, .10);
+}
+
+.login-box::before {
+    content: "";
+    display: block;
+    height: 3px;
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+    border-radius: 0 0 8px 8px;
+    background: linear-gradient(90deg, #557cff, #a77cff, #ff5b9d, #ff304d);
+}
+
+.login-logo {
+    filter: drop-shadow(0 0 22px rgba(103, 119, 255, .24));
+}
+
+.login-box h1 {
+    font-weight: 900;
+    letter-spacing: -.5px;
+}
+
+.login-subtitulo {
+    color: #aab0c8;
+    line-height: 1.7;
+}
+
+.login-box input {
+    border-color: rgba(150, 160, 210, .17);
+    background: rgba(3, 5, 15, .76);
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.login-box input:focus {
+    border-color: var(--shazam-blue);
+    box-shadow: 0 0 0 3px rgba(85, 124, 255, .12);
+}
+
+#btnLogin {
+    background: linear-gradient(110deg, #315dff, #8050ed 62%, #d944a2);
+    box-shadow: 0 10px 28px rgba(78, 86, 255, .22);
+}
+
+#btnLogin:hover {
+    box-shadow: 0 14px 34px rgba(104, 80, 255, .3);
+}
+
+.login-footer {
+    color: #858ba4;
+}
+
+/* Scrollbars discretas */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(110, 130, 210, .48) rgba(5, 7, 18, .7);
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: rgba(5, 7, 18, .7);
+}
+
+*::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    background: rgba(110, 130, 210, .48);
+}
+
+/* Ajustes finais para telemóveis */
+
+@media (max-width: 600px) {
+    .container {
+        width: calc(100% - 24px);
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .hero {
+        margin-top: 12px;
+        margin-bottom: 22px;
+        padding: 35px 17px;
+        border-radius: 20px;
+    }
+
+    .hero h1 {
+        letter-spacing: -1px;
+        line-height: 1.12;
+    }
+
+    .hero p {
+        max-width: 440px;
+        line-height: 1.7;
+    }
+
+    .live-carousel {
+        gap: 12px;
+        padding-bottom: 8px;
+    }
+
+    .live-carousel .card {
+        flex-basis: min(68vw, 230px);
+    }
+
+    .card {
+        border-radius: 14px;
+    }
+
+    .categoria {
+        padding: 16px;
+    }
+
+    .player-box {
+        margin-top: 12px;
+    }
+
+    .video-wrapper {
+        border-radius: 13px;
+    }
+
+    .player-info {
+        padding: 15px;
+        border-radius: 14px;
+    }
+
+    .programa-atual {
+        padding: 13px;
+    }
+
+    .login-box {
+        border-radius: 21px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
+
+
+
+/* SHAZAM COMPACTO HORIZONTAL V1 */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+
+  body {
+    font-size: 13px;
+  }
+
+  .container {
+    width: calc(100% - 24px) !important;
+    max-width: 1440px !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  header,
+  .header,
+  .topbar {
+    min-height: 48px !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+
+  header img,
+  .logo img {
+    max-height: 32px !important;
+    width: auto;
+  }
+
+  .hero {
+    min-height: 150px !important;
+    padding: 16px 22px !important;
+    margin-bottom: 14px !important;
+    border-radius: 16px !important;
+  }
+
+  .hero h1 {
+    font-size: clamp(20px, 3vw, 30px) !important;
+    line-height: 1.15 !important;
+    margin: 4px 0 8px !important;
+  }
+
+  .hero p {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    margin: 5px 0 !important;
+  }
+
+  .hero button,
+  .hero .btn {
+    padding: 8px 13px !important;
+    font-size: 12px !important;
+  }
+
+  .lista-categorias {
+    gap: 8px !important;
+    margin: 10px 0 !important;
+  }
+
+  .categoria {
+    padding: 7px 11px !important;
+    font-size: 11px !important;
+    border-radius: 9px !important;
+  }
+
+  .card {
+    border-radius: 11px !important;
+  }
+
+  .card-logo {
+    height: 70px !important;
+    min-height: 70px !important;
+    padding: 7px !important;
+  }
+
+  .card h3,
+  .card .nome,
+  .card-title {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+    margin: 5px 0 !important;
+  }
+
+  .card p {
+    font-size: 10px !important;
+    margin: 3px 0 !important;
+  }
+
+  .card .assistir,
+  .card .favorito,
+  .card button {
+    padding: 6px 8px !important;
+    font-size: 10px !important;
+  }
+
+  .player-box {
+    padding: 10px !important;
+    margin: 8px 0 !important;
+    border-radius: 13px !important;
+  }
+
+  .video-wrapper {
+    max-height: 58vh !important;
+    border-radius: 10px !important;
+  }
+
+  .video-wrapper video,
+  .video-wrapper iframe {
+    max-height: 58vh !important;
+  }
+
+  .player-info {
+    padding: 8px 10px !important;
+    gap: 8px !important;
+  }
+
+  .player-info h2,
+  .player-info h3 {
+    font-size: 14px !important;
+    margin: 4px 0 !important;
+  }
+
+  .programa-atual {
+    padding: 8px 11px !important;
+    margin: 7px 0 !important;
+    gap: 6px !important;
+  }
+
+  #programaNome {
+    font-size: 11px !important;
+    line-height: 1.45 !important;
+  }
+
+  #telaLogin {
+    padding: 10px !important;
+    align-items: center !important;
+    overflow-y: auto !important;
+  }
+
+  .login-box {
+    width: min(390px, 90vw) !important;
+    max-width: 390px !important;
+    padding: 17px 20px !important;
+    margin: 8px auto !important;
+    border-radius: 16px !important;
+  }
+
+  .login-box h1,
+  .login-box h2 {
+    font-size: 20px !important;
+    margin: 5px 0 12px !important;
+  }
+
+  .login-box input,
+  .login-box button {
+    min-height: 36px !important;
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+  }
+
+  #menuLateral,
+  .sidebar {
+    width: min(240px, 72vw) !important;
+  }
+
+  #menuLateral a,
+  #menuLateral button,
+  .sidebar a,
+  .sidebar button {
+    padding: 8px 11px !important;
+    font-size: 12px !important;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  h3 {
+    font-size: 14px;
+  }
+
+  button,
+  input,
+  select {
+    font-size: 12px;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-height: 430px) {
+  .hero {
+    min-height: 115px !important;
+    padding: 10px 16px !important;
+  }
+
+  .hero h1 {
+    font-size: 21px !important;
+  }
+
+  .video-wrapper,
+  .video-wrapper video,
+  .video-wrapper iframe {
+    max-height: 52vh !important;
+  }
+
+  .card-logo {
+    height: 55px !important;
+    min-height: 55px !important;
+  }
+
+  .login-box {
+    padding: 10px 16px !important;
+  }
+}
+
+
+
+/* SHAZAM PLAYER HORIZONTAL V2 */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+
+  #playerPagina {
+    width: 100%;
+    padding: 8px 12px 18px;
+    box-sizing: border-box;
+  }
+
+  #playerPagina > .voltar {
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .player-box {
+    width: 100% !important;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .video-wrapper {
+    width: 100%;
+    height: clamp(190px, 54vh, 380px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    border: 0;
+    border-radius: 14px;
+    background:
+      radial-gradient(ellipse at 15% 20%, rgba(49, 93, 255, .22), transparent 45%),
+      radial-gradient(ellipse at 85% 25%, rgba(128, 80, 237, .20), transparent 45%),
+      linear-gradient(135deg, #080b20, #15102b 55%, #260d25);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .25);
+  }
+
+  .video-wrapper video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    background: transparent;
+  }
+
+  .player-info {
+    margin-top: 8px;
+    padding: 10px 13px;
+    border-radius: 13px;
+  }
+
+  .player-info h2 {
+    font-size: 15px;
+    margin: 5px 0 8px;
+  }
+
+  .canal-status {
+    font-size: 11px;
+  }
+
+  .programa-atual {
+    padding: 8px 10px;
+    margin-top: 7px;
+  }
+
+  .programa-atual small {
+    font-size: 10px;
+    letter-spacing: .5px;
+  }
+
+  #programaNome {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  #playerStatus {
+    font-size: 11px;
+    margin-top: 6px;
+  }
+
+  /* No ecrã inteiro, o vídeo ocupa toda a área disponível */
+  .video-wrapper video:fullscreen {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: contain;
+    background: #000;
+  }
+
+  .video-wrapper video:-webkit-full-screen {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: contain;
+    background: #000;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-height: 430px) {
+  #playerPagina {
+    padding: 5px 10px 12px;
+  }
+
+  .video-wrapper {
+    height: 56vh;
+  }
+
+  .player-info {
+    padding: 7px 10px;
+  }
+}
+
+
+
+/* SHAZAM LOGIN RETANGULAR V2 */
+
+/* Botão ENTRAR: azul-escuro premium */
+#btnLogin {
+    background: linear-gradient(135deg, #123b83 0%, #0b2860 55%, #071b43 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(100, 160, 255, .38) !important;
+    border-radius: 10px !important;
+    box-shadow:
+        0 5px 18px rgba(7, 35, 90, .38),
+        inset 0 1px 0 rgba(255, 255, 255, .10) !important;
+    font-weight: 700 !important;
+    letter-spacing: .7px;
+    transition: background .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+#btnLogin:hover {
+    background: linear-gradient(135deg, #194b9b, #103675 65%, #0a2552) !important;
+    box-shadow: 0 7px 22px rgba(24, 76, 160, .34) !important;
+    transform: translateY(-1px);
+}
+
+#btnLogin:active {
+    transform: scale(.985);
+}
+
+/* Formato retangular em telas horizontais */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+
+    #telaLogin {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow-y: auto;
+        padding: 12px 20px !important;
+    }
+
+    .login-box {
+        width: min(680px, 88vw) !important;
+        max-width: 680px !important;
+        max-height: calc(100dvh - 24px);
+        overflow-y: auto;
+        box-sizing: border-box;
+        padding: 20px 28px !important;
+        margin: auto !important;
+        border-radius: 18px !important;
+        display: block;
+    }
+
+    .login-box h1,
+    .login-box h2 {
+        font-size: 22px !important;
+        line-height: 1.25;
+        margin: 4px 0 12px !important;
+    }
+
+    .login-box input {
+        width: 100%;
+        min-height: 38px;
+        box-sizing: border-box;
+        margin-bottom: 9px;
+        padding: 9px 12px !important;
+        font-size: 13px !important;
+    }
+
+    #btnLogin {
+        width: 100%;
+        min-height: 40px;
+        padding: 10px 14px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* Telemóveis muito baixos na horizontal */
+@media screen and (orientation: landscape) and (max-height: 430px) {
+
+    #telaLogin {
+        padding: 7px 14px !important;
+    }
+
+    .login-box {
+        width: min(620px, 90vw) !important;
+        max-height: calc(100dvh - 14px);
+        padding: 12px 22px !important;
+    }
+
+    .login-box h1,
+    .login-box h2 {
+        font-size: 19px !important;
+        margin: 2px 0 8px !important;
+    }
+
+    .login-box input {
+        min-height: 32px;
+        margin-bottom: 6px;
+        padding: 6px 10px !important;
+    }
+
+    #btnLogin {
+        min-height: 34px;
+        padding: 7px 12px !important;
+    }
+}
+
 </style>
 
 </head>
@@ -1286,7 +2236,7 @@ body.login-bloqueado #telaLogin{
             id="loginBotao"
             onclick="fazerLogin()"
         >
-            🔐 ENTRAR
+            ENTRAR
         </button>
 
         <div id="loginMensagem"></div>
@@ -2822,50 +3772,80 @@ function carregarPlayer(
    EPG / PROGRAMA ATUAL
 ======================================== */
 
-async function carregarProgramacao(
-    canal
-){
+async function carregarProgramacao(canal) {
+    const programaNome = document.getElementById("programaNome");
 
-    const programaNome =
-        document.getElementById(
-            "programaNome"
-        );
+    if (!programaNome) return;
 
-
-    if(!programaNome)
+    if (!canal || !canal.tvgId) {
+        programaNome.textContent = "Programação não disponível";
         return;
-
-
-    /*
-       O tvgId existente no mapa.js
-       será utilizado para encontrar
-       o programa correspondente.
-
-       Não mostramos informação inventada.
-    */
-
-    if(!canal.tvgId){
-
-        programaNome.textContent =
-            "Programação não disponível";
-
-        return;
-
     }
 
+    programaNome.textContent = "A carregar programação...";
 
-    /*
-       Neste momento o canal possui
-       tvgId, mas ainda não temos uma
-       fonte EPG configurada.
+    try {
+        const resposta = await fetch(
+            "/api/epg/" + encodeURIComponent(canal.tvgId),
+            { cache: "no-store" }
+        );
 
-       Portanto não inventamos o nome
-       do programa.
-    */
+        if (!resposta.ok) {
+            throw new Error("Erro HTTP " + resposta.status);
+        }
 
-    programaNome.textContent =
-        "Programação não disponível";
+        const dados = await resposta.json();
 
+        if (!dados.ok) {
+            throw new Error("A API EPG não conseguiu obter a programação");
+        }
+
+        function formatarHora(data) {
+            if (!data) return "--:--";
+
+            return new Intl.DateTimeFormat("pt-PT", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            }).format(new Date(data));
+        }
+
+        const atual = dados.current;
+        const seguinte = dados.next;
+
+        if (!atual && !seguinte) {
+            programaNome.textContent =
+                "Programação não disponível neste horário";
+            return;
+        }
+
+        let texto = "";
+
+        if (atual) {
+            texto += "📺 AGORA: " + atual.title;
+            texto += "\n🕒 " + formatarHora(atual.start) +
+                     " – " + formatarHora(atual.stop);
+
+            if (atual.description) {
+                texto += "\n" + atual.description;
+            }
+        } else {
+            texto += "📺 Não há programa atual disponível";
+        }
+
+        if (seguinte) {
+            texto += "\n\n⏭️ A SEGUIR: " + seguinte.title;
+            texto += "\n🕒 " + formatarHora(seguinte.start) +
+                     " – " + formatarHora(seguinte.stop);
+        }
+
+        programaNome.textContent = texto;
+
+    } catch (erro) {
+        console.error("Erro ao carregar EPG:", erro);
+        programaNome.textContent =
+            "Não foi possível carregar a programação";
+    }
 }
 
 

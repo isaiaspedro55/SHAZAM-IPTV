@@ -659,9 +659,7 @@ error:'Erro ao criar usuário.'
 });
 
 
-app.use((req,res)=>{
-res.sendFile(path.join(__dirname,'index.html'));
-});
+
 
 async function iniciarServidor(){
 
@@ -669,6 +667,147 @@ try{
 
 await inicializarBanco();
 await migrarUsuariosJsonParaBanco();
+
+
+/* ========================================
+   API EPG SHAZAM IPTV
+======================================== */
+
+const zlib = require('zlib');
+const { XMLParser } = require('fast-xml-parser');
+
+const EPG_FILE = path.join(__dirname, 'epg', 'epg-m3upt.xml.gz');
+
+const epgParser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: '@_',
+    isArray: (name) => ['channel', 'programme', 'title', 'sub-title', 'desc'].includes(name)
+});
+
+let epgCache = null;
+let epgMtime = 0;
+
+function carregarEPG() {
+    if (!fs.existsSync(EPG_FILE)) {
+        throw new Error('Ficheiro EPG não encontrado');
+    }
+
+    const stat = fs.statSync(EPG_FILE);
+
+    if (epgCache && stat.mtimeMs === epgMtime) {
+        return epgCache;
+    }
+
+    const xml = zlib.gunzipSync(fs.readFileSync(EPG_FILE)).toString('utf8');
+    const parsed = epgParser.parse(xml);
+    const tv = parsed.tv || {};
+    const programas = Array.isArray(tv.programme)
+        ? tv.programme
+        : tv.programme ? [tv.programme] : [];
+
+    const porCanal = new Map();
+
+    for (const p of programas) {
+        const canal = p['@_channel'];
+        if (!canal) continue;
+
+        if (!porCanal.has(canal)) porCanal.set(canal, []);
+
+        const titleValue = p.title;
+        const title = Array.isArray(titleValue)
+            ? titleValue[0]
+            : titleValue;
+
+        porCanal.get(canal).push({
+            title: typeof title === 'object'
+                ? (title['#text'] || 'Título não disponível')
+                : (title || 'Título não disponível'),
+            start: p['@_start'],
+            stop: p['@_stop'],
+            description: Array.isArray(p.desc)
+                ? (p.desc[0]?.['#text'] || p.desc[0] || '')
+                : (p.desc?.['#text'] || p.desc || ''),
+            subtitle: Array.isArray(p['sub-title'])
+                ? (p['sub-title'][0]?.['#text'] || p['sub-title'][0] || '')
+                : (p['sub-title']?.['#text'] || p['sub-title'] || '')
+        });
+    }
+
+    for (const lista of porCanal.values()) {
+        lista.sort((a, b) => a.start.localeCompare(b.start));
+    }
+
+    epgCache = porCanal;
+    epgMtime = stat.mtimeMs;
+
+    console.log(`📺 EPG carregado: ${programas.length} programas, ${porCanal.size} canais`);
+
+    return epgCache;
+}
+
+function dataXMLTV(valor) {
+    if (!valor) return NaN;
+
+    const m = valor.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?\s*([+-]\d{4})?/);
+    if (!m) return NaN;
+
+    const [, ano, mes, dia, hora, minuto, segundo = '00', zona = '+0000'] = m;
+    const sinal = zona[0] === '-' ? -1 : 1;
+    const offset = (Number(zona.slice(1, 3)) * 60 + Number(zona.slice(3, 5))) * sinal;
+
+    return Date.UTC(+ano, +mes - 1, +dia, +hora, +minuto, +segundo) - offset * 60000;
+}
+
+app.get('/api/epg/:tvgId', (req, res) => {
+    try {
+        const tvgId = req.params.tvgId;
+
+        if (!/^[\w.-]{1,120}$/.test(tvgId)) {
+            return res.status(400).json({ ok: false, error: 'Identificador inválido' });
+        }
+
+        const epg = carregarEPG();
+        const lista = epg.get(tvgId) || [];
+        const agora = Date.now();
+
+        const atual = lista.find(p =>
+            dataXMLTV(p.start) <= agora && agora < dataXMLTV(p.stop)
+        );
+
+        const proximo = lista.find(p => dataXMLTV(p.start) > agora);
+
+        function formatar(p) {
+            if (!p) return null;
+
+            return {
+                title: p.title,
+                start: new Date(dataXMLTV(p.start)).toISOString(),
+                stop: new Date(dataXMLTV(p.stop)).toISOString(),
+                description: p.description,
+                subtitle: p.subtitle
+            };
+        }
+
+        res.set('Cache-Control', 'public, max-age=60');
+        return res.json({
+            ok: true,
+            channel: tvgId,
+            current: formatar(atual),
+            next: formatar(proximo)
+        });
+    } catch (err) {
+        console.error('Erro na API EPG:', err.message);
+        return res.status(503).json({
+            ok: false,
+            error: 'Programação temporariamente indisponível'
+        });
+    }
+});
+
+
+app.use((req,res)=>{
+res.sendFile(path.join(__dirname,'index.html'));
+});
 
 app.listen(PORT,'0.0.0.0',()=>{
 console.log('');
