@@ -676,7 +676,90 @@ await migrarUsuariosJsonParaBanco();
 const zlib = require('zlib');
 const { XMLParser } = require('fast-xml-parser');
 
-const EPG_FILE = path.join(__dirname, 'epg', 'epg-m3upt.xml.gz');
+/* EPG_AUTO_DOWNLOAD_V1 */
+const EPG_URL = process.env.EPG_URL ||
+  'https://raw.githubusercontent.com/LITUATUI/M3UPT/main/EPG/epg-m3upt.xml.gz';
+
+const EPG_LOCAL = path.join(__dirname, 'epg', 'epg-m3upt.xml.gz');
+const EPG_FILE = fs.existsSync(EPG_LOCAL)
+  ? EPG_LOCAL
+  : path.join(require('os').tmpdir(), 'shazam-iptv-epg.xml.gz');
+
+const EPG_INTERVALO = 6 * 60 * 60 * 1000;
+let epgDownloadEmCurso = null;
+
+async function atualizarFicheiroEPG() {
+  if (epgDownloadEmCurso) return epgDownloadEmCurso;
+
+  epgDownloadEmCurso = (async () => {
+    const temporario = EPG_FILE + '.download';
+
+    try {
+      console.log('📥 A descarregar EPG...');
+
+      const resposta = await fetch(EPG_URL, {
+        signal: AbortSignal.timeout(90000)
+      });
+
+      if (!resposta.ok) {
+        throw new Error('HTTP ' + resposta.status);
+      }
+
+      const buffer = Buffer.from(await resposta.arrayBuffer());
+
+      if (
+        buffer.length < 1000 ||
+        buffer[0] !== 0x1f ||
+        buffer[1] !== 0x8b
+      ) {
+        throw new Error('Ficheiro gzip inválido');
+      }
+
+      const xml = zlib.gunzipSync(buffer).toString('utf8');
+
+      if (!/<tv(?:\s|>)/i.test(xml) ||
+          !/<programme(?:\s|>)/i.test(xml)) {
+        throw new Error('XMLTV inválido');
+      }
+
+      const teste = epgParser.parse(xml);
+
+      if (!teste.tv || !teste.tv.programme) {
+        throw new Error('O ficheiro não contém programas');
+      }
+
+      fs.mkdirSync(path.dirname(EPG_FILE), { recursive: true });
+      fs.writeFileSync(temporario, buffer);
+      fs.renameSync(temporario, EPG_FILE);
+
+      epgCache = null;
+      epgMtime = 0;
+
+      console.log('✅ EPG atualizado:', (buffer.length / 1048576).toFixed(2), 'MB');
+      return true;
+    } catch (erro) {
+      try {
+        if (fs.existsSync(temporario)) fs.unlinkSync(temporario);
+      } catch {}
+
+      console.error('⚠️ Atualização EPG falhou:', erro.message);
+
+      if (fs.existsSync(EPG_FILE)) {
+        console.log('📺 Será mantido o EPG anterior.');
+        return false;
+      }
+
+      throw erro;
+    }
+  })();
+
+  try {
+    return await epgDownloadEmCurso;
+  } finally {
+    epgDownloadEmCurso = null;
+  }
+}
+
 
 const epgParser = new XMLParser({
     ignoreAttributes: false,
@@ -758,12 +841,16 @@ function dataXMLTV(valor) {
     return Date.UTC(+ano, +mes - 1, +dia, +hora, +minuto, +segundo) - offset * 60000;
 }
 
-app.get('/api/epg/:tvgId', (req, res) => {
+app.get('/api/epg/:tvgId', async (req, res) => {
     try {
         const tvgId = req.params.tvgId;
 
         if (!/^[\w.-]{1,120}$/.test(tvgId)) {
             return res.status(400).json({ ok: false, error: 'Identificador inválido' });
+        }
+
+        if (!fs.existsSync(EPG_FILE)) {
+            await atualizarFicheiroEPG();
         }
 
         const epg = carregarEPG();
@@ -809,6 +896,15 @@ app.use((req,res)=>{
 res.sendFile(path.join(__dirname,'index.html'));
 });
 
+/* EPG_AUTO_REFRESH_V2 */
+setInterval(async () => {
+    try {
+        await atualizarFicheiroEPG();
+    } catch (erro) {
+        console.error('⚠️ Atualização periódica do EPG falhou:', erro.message);
+    }
+}, EPG_INTERVALO).unref();
+
 app.listen(PORT,'0.0.0.0',()=>{
 console.log('');
 console.log('⚡ SHAZAM IPTV');
@@ -825,5 +921,6 @@ process.exit(1);
 }
 
 }
+
 
 iniciarServidor();
