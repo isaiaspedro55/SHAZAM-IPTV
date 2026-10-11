@@ -122,7 +122,11 @@ export default {
         "bloomberg-tv-brasil",
         "1hd-music",
         "california-music-channel",
-        "kuriakos-music"
+        "kuriakos-music",
+        "kk-tv-angola",
+        "a2-cnn",
+        "abc-news",
+        "record-news"
       ]
     },
     {
@@ -146,7 +150,13 @@ export default {
         "dubai-sports-3",
         "dubai-racing",
         "dubai-racing-2",
-        "dubai-racing-3"
+        "dubai-racing-3",
+        "africa-24-sport",
+        "aci-sport-tv",
+        "pluto-tv-sport",
+        "sport-tv-2",
+        "sport-tv",
+        "espn-4"
       ]
     },
     {
@@ -158,7 +168,15 @@ export default {
         "rakuten-tv-top-movies",
         "rakuten-viki",
         "shemaroo-bollywood",
-        "dubai-one"
+        "dubai-one",
+        "axn-black-portugal",
+        "axn-brasil",
+        "tele-cine",
+        "4ever-movies",
+        "axn-crime",
+        "canal-plus-action",
+        "xtrema-terror",
+        "xtrema-action"
       ]
     },
     {
@@ -183,7 +201,22 @@ export default {
         "tv-mana-2",
         "tv-mana-brasil",
         "tv-mana-mocambique",
-        "cancao-nova"
+        "cancao-nova",
+        "lego-channel",
+        "kaptan-fantastika",
+        "disney-channel-latina",
+        "clan-tv",
+        "baby-shark-tv",
+        "3abn-kids",
+        "nickelodeon-brasil",
+        "cartoon-network-latina",
+        "baby-first",
+        "nickonline",
+        "bob-esponja-tv",
+        "box-kids",
+        "gospel-cartoon",
+        "naruto-tv",
+        "dum-dum"
       ]
     },
     {
@@ -226,7 +259,10 @@ export default {
         "das-erste",
         "akaku-53",
         "akaku-54",
-        "akaku-55"
+        "akaku-55",
+        "tnt-novelas-brasil",
+        "dorama-1",
+        "dorama-2"
       ]
     },
     {
@@ -243,7 +279,8 @@ export default {
         "on-fm-portugal",
         "radio-sines",
         "radio-tv-sal-one",
-        "kuriakos-tv"
+        "kuriakos-tv",
+        "bem-mais"
       ]
     }
   ],
@@ -629,7 +666,7 @@ export default {
     {
       "tvgId": "TVZimbo.ao",
       "nome": "TV Zimbo",
-      "url": "https://sgn-cdn-video.vods2africa.com/Tv-Zimbo/index.fmp4.m3u8",
+      "url": "https://list.iptvcat.com/my_list/s/7bacc886dc39ce12cbe174cff321da82.m3u8",
       "id": "tv-zimbo",
       "categoria": "portugal-africa-brasil",
       "ativo": true,
@@ -656,7 +693,7 @@ export default {
     {
       "tvgId": "MuzangalaTV.ao",
       "nome": "Muzangala TV",
-      "url": "https://5cf4a2c2512a2.streamlock.net/tvmuzangala/tvmuzangala/playlist.m3u8",
+      "url": "https://list.iptvcat.com/my_list/s/fead0afdf1f384692b3043e43b0eed3a.m3u8",
       "id": "muzangala-tv",
       "categoria": "portugal-africa-brasil",
       "ativo": true,
@@ -1975,6 +2012,339 @@ export default {
       "categoria": "infantil",
       "ativo": true,
       "tipo": "hls"
+    },
+    {
+      "tvgId": "KKTVAngola.ao",
+      "nome": "KK TV Angola",
+      "url": "https://list.iptvcat.com/my_list/s/dbde7f62a5af602402e13d8f3544a14c.m3u8",
+      "id": "kk-tv-angola",
+      "categoria": "portugal-africa-brasil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "A2CNN.ao",
+      "nome": "A2 CNN",
+      "url": "https://list.iptvcat.com/my_list/s/d8ac25dabddd11cc762a52cbad56f947.m3u8",
+      "id": "a2-cnn",
+      "categoria": "portugal-africa-brasil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "ABCNews.us",
+      "nome": "ABC News",
+      "url": "https://list.iptvcat.com/my_list/s/9c227b1f9d7211ec92ac2759ac6f7391.m3u8",
+      "id": "abc-news",
+      "categoria": "portugal-africa-brasil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "RecordNews.br",
+      "nome": "Record News",
+      "url": "http://45.162.64.114/RECORD_NEWS/index.m3u8",
+      "id": "record-news",
+      "categoria": "portugal-africa-brasil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "Africa24Sport",
+      "nome": "Africa 24 Sport",
+      "url": "https://list.iptvcat.com/my_list/s/9cd1ac872b52a8e4ca119a6c5ea80f85.m3u8",
+      "id": "africa-24-sport",
+      "categoria": "desporto",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "ACISportTV",
+      "nome": "ACI Sport TV",
+      "url": "https://list.iptvcat.com/my_list/s/d4547e5e97e73c001fe4c4c00aab56c4.m3u8",
+      "id": "aci-sport-tv",
+      "categoria": "desporto",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "PlutoTVSport",
+      "nome": "Pluto TV Sport",
+      "url": "https://list.iptvcat.com/my_list/s/9c3a6f8d7ab1286fc494fd0154520252.m3u8",
+      "id": "pluto-tv-sport",
+      "categoria": "desporto",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "SportTV2.pt",
+      "nome": "Sport TV 2",
+      "url": "http://195.178.110.110/sportv2/index.m3u8",
+      "id": "sport-tv-2",
+      "categoria": "desporto",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "SportTV.pt",
+      "nome": "Sport TV",
+      "url": "http://195.178.110.110/sportv/index.m3u8",
+      "id": "sport-tv",
+      "categoria": "desporto",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "ESPN4.br",
+      "nome": "ESPN 4",
+      "url": "http://181.78.197.59:8000/play/a07n/index.m3u8",
+      "id": "espn-4",
+      "categoria": "desporto",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "AXNBlack.pt",
+      "nome": "AXN Black Portugal",
+      "url": "http://50.7.120.34:8080/AXN_BLACK/index.m3u8",
+      "id": "axn-black-portugal",
+      "categoria": "filmes-series",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "AXNBrasil.br",
+      "nome": "AXN Brasil",
+      "url": "http://170.83.16.50/AXN/index.m3u8",
+      "id": "axn-brasil",
+      "categoria": "filmes-series",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "TeleCine.br",
+      "nome": "Tele Cine",
+      "url": "http://46.151.196.223:14326/",
+      "id": "tele-cine",
+      "categoria": "filmes-series",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "4everMovies",
+      "nome": "4ever Movies",
+      "url": "http://stream.mcquack.net/258/index.m3u8",
+      "id": "4ever-movies",
+      "categoria": "filmes-series",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "AXNCrime",
+      "nome": "AXN Crime",
+      "url": "http://88.212.15.19/live/viasat_film/index.m3u8",
+      "id": "axn-crime",
+      "categoria": "filmes-series",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "CanalPlusAction",
+      "nome": "Canal+ Action",
+      "url": "https://lb.iptvnetwork.net/ls28/10020/playlist.m3u8",
+      "id": "canal-plus-action",
+      "categoria": "filmes-series",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "XtremATerror",
+      "nome": "XtremA Terror",
+      "url": "https://stmv6.voxtvhd.com.br/cineterror/cineterror/playlist.m3u8",
+      "id": "xtrema-terror",
+      "categoria": "filmes-series",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "XtremAAction",
+      "nome": "XtremA Action",
+      "url": "https://stmv6.voxtvhd.com.br/cineaccion/cineaccion/playlist.m3u8",
+      "id": "xtrema-action",
+      "categoria": "filmes-series",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "LEGOChannel",
+      "nome": "LEGO Channel",
+      "url": "https://dltiqboxjw21d.cloudfront.net/index.m3u8",
+      "id": "lego-channel",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "KaptanFantastika",
+      "nome": "Kaptan Fantastika",
+      "url": "http://stream.mcquack.net/144/index.m3u8",
+      "id": "kaptan-fantastika",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "DisneyChannelLatina",
+      "nome": "Disney Channel América Latina",
+      "url": "http://45.166.93.156:9999/play/a0f3/index.m3u8",
+      "id": "disney-channel-latina",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "ClanTV.es",
+      "nome": "Clan TV",
+      "url": "https://lge-lgla2.otteravision.com/lge/lgcla/lgcla.m3u8",
+      "id": "clan-tv",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "BabySharkTV",
+      "nome": "Baby Shark TV",
+      "url": "https://newidco-babysharktv-1-us.roku.wurl.tv/playlist.m3u8",
+      "id": "baby-shark-tv",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "3ABNKids",
+      "nome": "3ABN Kids",
+      "url": "https://3abn.bozztv.com/3abn2/Kids_live/smil:Kids_live.smil/playlist.m3u8",
+      "id": "3abn-kids",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "NickelodeonBrasil.br",
+      "nome": "Nickelodeon Brasil",
+      "url": "https://list.iptvcat.com/my_list/s/6f6856f5a20cc243bc997d96ee903b6a.m3u8",
+      "id": "nickelodeon-brasil",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "CartoonNetworkLatina",
+      "nome": "Cartoon Network Latina",
+      "url": "http://45.166.93.156:9999/play/a0f3/index.m3u8",
+      "id": "cartoon-network-latina",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "BabyFirst",
+      "nome": "Baby First",
+      "url": "https://cdn.fast.jwp.services/v1/channel/1_jB6940Ei_TvhvIHDL/manifest.m3u8",
+      "id": "baby-first",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "NickOnline",
+      "nome": "NickOnline",
+      "url": "https://x1colegal.com/hls/stream.m3u8",
+      "id": "nickonline",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "BobEsponjaTV",
+      "nome": "Bob Esponja TV",
+      "url": "https://jmp2.uk/plu-62545c0b002f4b0007688b61.m3u8",
+      "id": "bob-esponja-tv",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "BoxKids",
+      "nome": "Box Kids",
+      "url": "http://170.83.49.66:8083/BOXKIDSHD/index.m3u8",
+      "id": "box-kids",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "GospelCartoon",
+      "nome": "Gospel Cartoon",
+      "url": "https://stmv1.srvif.com/gospelcartoon/gospelcartoon/playlist.m3u8",
+      "id": "gospel-cartoon",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "NarutoTV",
+      "nome": "Naruto TV",
+      "url": "https://jmp2.uk/plu-5f6df5a173d7340007c559f7.m3u8",
+      "id": "naruto-tv",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "DumDum",
+      "nome": "DumDum",
+      "url": "http://45.162.64.114/ZOOMOO_KIDS/index.m3u8",
+      "id": "dum-dum",
+      "categoria": "infantil",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "TNTNovelas.br",
+      "nome": "TNT Novelas Brasil",
+      "url": "http://45.162.64.114/TNT_NOVELAS/index.m3u8",
+      "id": "tnt-novelas-brasil",
+      "categoria": "entretenimento",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "Dorama1",
+      "nome": "Dorama 1",
+      "url": "https://fs.uplink.kz/dorama/mono.m3u8?token=onlinetv",
+      "id": "dorama-1",
+      "categoria": "entretenimento",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "Dorama2",
+      "nome": "Dorama 2",
+      "url": "http://stream.mcquack.net/412/index.m3u8",
+      "id": "dorama-2",
+      "categoria": "entretenimento",
+      "ativo": true,
+      "tipo": "hls"
+    },
+    {
+      "tvgId": "BemMais.ao",
+      "nome": "Bem Mais",
+      "url": "https://video09.logicahost.com.br/bemmaistv01/bemmaistv01/playlist.m3u8",
+      "id": "bem-mais",
+      "categoria": "outros",
+      "ativo": true,
+      "tipo": "hls"
     }
   ]
-}
+};
