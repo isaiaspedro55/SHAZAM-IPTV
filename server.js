@@ -1,3 +1,5 @@
+const http=require('http');
+const { Server }=require('socket.io');
 const express=require('express');
 const cors=require('cors');
 const dotenv=require('dotenv');
@@ -18,8 +20,14 @@ const pool = process.env.DATABASE_URL
   : null;
 
 const app=express();
+const httpServer=http.createServer(app);
+const io=new Server(httpServer,{
+  cors:{origin:true},
+  maxHttpBufferSize:1e6
+});
 const PORT=process.env.PORT||3000;
 const JWT_SECRET=process.env.JWT_SECRET;
+const ADMIN_USERNAME=String(process.env.ADMIN_USERNAME||'').trim();
 
 if(!JWT_SECRET||JWT_SECRET.length<32){
 console.error('❌ JWT_SECRET precisa ter pelo menos 32 caracteres.');
@@ -35,6 +43,331 @@ if(!fs.existsSync(USERS_FILE))fs.writeFileSync(USERS_FILE,JSON.stringify({users:
 app.use(cors());
 app.use(express.json({limit:'10kb'}));
 app.use(express.static(__dirname));
+
+io.use(async (socket, next) => {
+  try {
+    const token = String(socket.handshake.auth?.token || '').trim();
+
+    if (!token) {
+      return next(new Error('Autenticação necessária.'));
+    }
+
+    const payload = jwt.verify(token, JWT_SECRET);
+    const user = await buscarUsuarioPorId(payload.id);
+
+    if (!user || !contaValida(user)) {
+      return next(new Error('Conta inválida ou expirada.'));
+    }
+
+    socket.user = {
+      id: user.id,
+      username: user.username
+    };
+
+    next();
+  } catch (err) {
+    next(new Error('Token inválido ou sessão expirada.'));
+  }
+});
+
+
+io.on('connection', (socket) => {
+  const ehProprietario =
+    Boolean(ADMIN_USERNAME) &&
+    socket.user.username === ADMIN_USERNAME;
+
+
+  // Os sockets autenticados recebem anúncios globais.
+  socket.join('global:announcements');
+
+  socket.on('chat:global:listar', async (ack) => {
+    try {
+      if (!pool) {
+        throw new Error('PostgreSQL não está disponível.');
+      }
+
+      const resultado = await pool.query(
+        `SELECT a.id, a.message, a.created_at,
+                u.username AS sender
+         FROM global_announcements a
+         JOIN users u ON u.id = a.sender_user_id
+         ORDER BY a.created_at DESC
+         LIMIT 100`
+      );
+
+      if (typeof ack === 'function') {
+        ack({ ok: true, announcements: resultado.rows.reverse() });
+      }
+    } catch (err) {
+      if (typeof ack === 'function') {
+        ack({ ok: false, error: err.message });
+      }
+    }
+  });
+
+  socket.on('chat:global:enviar', async (dados, ack) => {
+    try {
+      if (!ehProprietario) {
+        throw new Error('Apenas o proprietário pode enviar anúncios globais.');
+      }
+
+      if (!pool) {
+        throw new Error('PostgreSQL não está disponível.');
+      }
+
+      const mensagem = String(dados?.message || '').trim();
+
+      if (!mensagem || mensagem.length > 2000) {
+        throw new Error('A mensagem deve ter entre 1 e 2000 caracteres.');
+      }
+
+      const inserida = await pool.query(
+        `INSERT INTO global_announcements
+           (sender_user_id, message)
+         VALUES ($1, $2)
+         RETURNING id, message, created_at`,
+        [socket.user.id, mensagem]
+      );
+
+      const anuncio = {
+        ...inserida.rows[0],
+        sender: socket.user.username
+      };
+
+      io.to('global:announcements').emit(
+        'chat:global:nova',
+        anuncio
+      );
+
+      if (typeof ack === 'function') {
+        ack({ ok: true, announcement: anuncio });
+      }
+    } catch (err) {
+      if (typeof ack === 'function') {
+        ack({ ok: false, error: err.message });
+      }
+    }
+  });
+
+  socket.on('chat:abrir', async (ack) => {
+    try {
+      if (!pool) {
+        throw new Error('O chat requer a base de dados PostgreSQL.');
+      }
+
+      if (ehProprietario) {
+        throw new Error('O proprietário deve selecionar uma conversa.');
+      }
+
+      let resultado = await pool.query(
+        `SELECT id, status
+         FROM support_conversations
+         WHERE user_id = $1 AND status = 'open'
+         ORDER BY updated_at DESC
+         LIMIT 1`,
+        [socket.user.id]
+      );
+
+      let conversa = resultado.rows[0];
+
+      if (!conversa) {
+        resultado = await pool.query(
+          `INSERT INTO support_conversations (user_id)
+           VALUES ($1)
+           RETURNING id, status`,
+          [socket.user.id]
+        );
+        conversa = resultado.rows[0];
+      }
+
+      const sala = `support:${conversa.id}`;
+      await socket.join(sala);
+
+      const mensagens = await pool.query(
+        `SELECT m.id, m.message, m.created_at,
+                u.username AS sender
+         FROM support_messages m
+         JOIN users u ON u.id = m.sender_user_id
+         WHERE m.conversation_id = $1
+         ORDER BY m.created_at ASC
+         LIMIT 200`,
+        [conversa.id]
+      );
+
+      if (typeof ack === 'function') {
+        ack({
+          ok: true,
+          conversationId: conversa.id,
+          status: conversa.status,
+          messages: mensagens.rows
+        });
+      }
+    } catch (err) {
+      if (typeof ack === 'function') {
+        ack({ ok: false, error: err.message });
+      }
+    }
+  });
+
+  socket.on('chat:admin:listar', async (ack) => {
+    try {
+      if (!ehProprietario) {
+        throw new Error('Acesso reservado ao proprietário.');
+      }
+      if (!pool) {
+        throw new Error('PostgreSQL não está disponível.');
+      }
+
+      const resultado = await pool.query(
+        `SELECT c.id, c.status, c.created_at, c.updated_at,
+                u.username AS cliente,
+                (SELECT COUNT(*) FROM support_messages m
+                 WHERE m.conversation_id = c.id) AS total_mensagens
+         FROM support_conversations c
+         JOIN users u ON u.id = c.user_id
+         ORDER BY
+           CASE WHEN c.status = 'open' THEN 0 ELSE 1 END,
+           c.updated_at DESC
+         LIMIT 200`
+      );
+
+      if (typeof ack === 'function') {
+        ack({ ok: true, conversations: resultado.rows });
+      }
+    } catch (err) {
+      if (typeof ack === 'function') {
+        ack({ ok: false, error: err.message });
+      }
+    }
+  });
+
+  socket.on('chat:entrar', async (dados, ack) => {
+    try {
+      if (!pool) {
+        throw new Error('PostgreSQL não está disponível.');
+      }
+
+      const id = String(dados?.conversationId || '');
+      if (!/^\d+$/.test(id)) {
+        throw new Error('Identificador de conversa inválido.');
+      }
+
+      const resultado = await pool.query(
+        `SELECT id, user_id, status
+         FROM support_conversations
+         WHERE id = $1`,
+        [id]
+      );
+
+      const conversa = resultado.rows[0];
+
+      if (!conversa) {
+        throw new Error('Conversa não encontrada.');
+      }
+
+      if (!ehProprietario && conversa.user_id !== socket.user.id) {
+        throw new Error('Não tens permissão para aceder a esta conversa.');
+      }
+
+      await socket.join(`support:${conversa.id}`);
+
+      const mensagens = await pool.query(
+        `SELECT m.id, m.message, m.created_at,
+                u.username AS sender
+         FROM support_messages m
+         JOIN users u ON u.id = m.sender_user_id
+         WHERE m.conversation_id = $1
+         ORDER BY m.created_at ASC
+         LIMIT 200`,
+        [conversa.id]
+      );
+
+      if (typeof ack === 'function') {
+        ack({
+          ok: true,
+          conversationId: conversa.id,
+          status: conversa.status,
+          messages: mensagens.rows
+        });
+      }
+    } catch (err) {
+      if (typeof ack === 'function') {
+        ack({ ok: false, error: err.message });
+      }
+    }
+  });
+
+  socket.on('chat:enviar', async (dados, ack) => {
+    try {
+      if (!pool) {
+        throw new Error('PostgreSQL não está disponível.');
+      }
+
+      const id = String(dados?.conversationId || '');
+      const mensagem = String(dados?.message || '').trim();
+
+      if (!/^\d+$/.test(id)) {
+        throw new Error('Identificador de conversa inválido.');
+      }
+      if (!mensagem || mensagem.length > 2000) {
+        throw new Error('A mensagem deve ter entre 1 e 2000 caracteres.');
+      }
+
+      const resultado = await pool.query(
+        `SELECT id, user_id, status
+         FROM support_conversations
+         WHERE id = $1`,
+        [id]
+      );
+
+      const conversa = resultado.rows[0];
+
+      if (!conversa) {
+        throw new Error('Conversa não encontrada.');
+      }
+      if (!ehProprietario && conversa.user_id !== socket.user.id) {
+        throw new Error('Não tens permissão para enviar mensagens nesta conversa.');
+      }
+      if (conversa.status !== 'open') {
+        throw new Error('Esta conversa está fechada.');
+      }
+
+      const inserida = await pool.query(
+        `INSERT INTO support_messages
+           (conversation_id, sender_user_id, message)
+         VALUES ($1, $2, $3)
+         RETURNING id, message, created_at`,
+        [conversa.id, socket.user.id, mensagem]
+      );
+
+      await pool.query(
+        `UPDATE support_conversations
+         SET updated_at = NOW()
+         WHERE id = $1`,
+        [conversa.id]
+      );
+
+      const mensagemGuardada = {
+        ...inserida.rows[0],
+        conversationId: conversa.id,
+        sender: socket.user.username
+      };
+
+      io.to(`support:${conversa.id}`).emit(
+        'chat:nova-mensagem',
+        mensagemGuardada
+      );
+
+      if (typeof ack === 'function') {
+        ack({ ok: true, message: mensagemGuardada });
+      }
+    } catch (err) {
+      if (typeof ack === 'function') {
+        ack({ ok: false, error: err.message });
+      }
+    }
+  });
+});
 
 function carregarUsuarios(){
 try{return JSON.parse(fs.readFileSync(USERS_FILE,'utf8'));}catch{return {users:[]};}
@@ -236,7 +569,52 @@ CREATE TABLE IF NOT EXISTS users (
 )
 `);
 
-console.log('✅ PostgreSQL conectado e tabela users pronta.');
+await pool.query(`
+CREATE TABLE IF NOT EXISTS support_conversations (
+  id BIGSERIAL PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  status TEXT NOT NULL DEFAULT 'open'
+    CHECK (status IN ('open', 'closed')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+)
+`);
+
+await pool.query(`
+CREATE TABLE IF NOT EXISTS support_messages (
+  id BIGSERIAL PRIMARY KEY,
+  conversation_id BIGINT NOT NULL
+    REFERENCES support_conversations(id) ON DELETE CASCADE,
+  sender_user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  message TEXT NOT NULL
+    CHECK (char_length(message) BETWEEN 1 AND 2000),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  read_at TIMESTAMPTZ
+)
+`);
+
+
+await pool.query(`
+CREATE TABLE IF NOT EXISTS global_announcements (
+  id BIGSERIAL PRIMARY KEY,
+  sender_user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  message TEXT NOT NULL
+    CHECK (char_length(message) BETWEEN 1 AND 2000),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+)
+`);
+
+await pool.query(`
+CREATE INDEX IF NOT EXISTS idx_support_conversations_user
+ON support_conversations(user_id, updated_at DESC)
+`);
+
+await pool.query(`
+CREATE INDEX IF NOT EXISTS idx_support_messages_conversation
+ON support_messages(conversation_id, created_at ASC)
+`);
+
+console.log('✅ PostgreSQL conectado; utilizadores e tabelas do chat prontos.');
 }
 
 function contaValida(user){
@@ -373,6 +751,16 @@ error:'Erro interno do servidor.'
 
 });
 
+
+function apenasProprietario(req,res,next){
+if(!ADMIN_USERNAME || req.user?.username !== ADMIN_USERNAME){
+return res.status(403).json({
+ok:false,
+error:'Acesso reservado ao proprietário.'
+});
+}
+next();
+}
 
 async function autenticar(req,res,next){
 
@@ -905,7 +1293,7 @@ setInterval(async () => {
     }
 }, EPG_INTERVALO).unref();
 
-app.listen(PORT,'0.0.0.0',()=>{
+httpServer.listen(PORT,'0.0.0.0',()=>{
 console.log('');
 console.log('⚡ SHAZAM IPTV');
 console.log(`🌐 Servidor ativo na porta ${PORT}`);

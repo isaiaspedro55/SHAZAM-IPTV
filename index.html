@@ -2192,6 +2192,232 @@ video {
     }
 }
 
+
+
+/* SHAZAM PREMIUM VISUAL V2 */
+
+/* Cabeçalho mais elegante */
+header {
+    position: relative;
+    min-height: 68px;
+    justify-content: flex-end;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(140, 160, 255, .13);
+    background: linear-gradient(
+        100deg,
+        rgba(8, 13, 34, .62),
+        rgba(24, 10, 39, .48)
+    );
+    border-radius: 0 0 18px 18px;
+}
+
+.logo {
+    font-size: clamp(17px, 3vw, 22px);
+    letter-spacing: 1.2px;
+    text-align: center;
+    background: linear-gradient(
+        100deg,
+        #ffffff 5%,
+        #91aaff 35%,
+        #c6a0ff 65%,
+        #ff78b5 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 14px rgba(95, 120, 255, .18));
+}
+
+/* Secções com melhor hierarquia visual */
+.secao {
+    margin-top: 34px;
+}
+
+.titulo-secao {
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.titulo-secao h2 {
+    font-size: clamp(18px, 3.5vw, 24px);
+    font-weight: 850;
+    letter-spacing: -.4px;
+}
+
+/* Cartões com acabamento premium */
+.card {
+    isolation: isolate;
+    border-color: rgba(135, 155, 255, .16);
+    background:
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(105, 82, 220, .13),
+            transparent 45%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(23, 29, 59, .96),
+            rgba(8, 11, 27, .98)
+        );
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, .20),
+        inset 0 1px 0 rgba(255, 255, 255, .035);
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 14%;
+    right: 14%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(132, 153, 255, .45),
+        transparent
+    );
+    pointer-events: none;
+}
+
+.card:hover {
+    border-color: rgba(119, 145, 255, .58);
+    box-shadow:
+        0 16px 36px rgba(0, 0, 0, .30),
+        0 0 22px rgba(85, 124, 255, .08);
+}
+
+.card-logo {
+    background: rgba(255, 255, 255, .025);
+    border: 1px solid rgba(255, 255, 255, .045);
+}
+
+.card-logo img {
+    transition: transform .25s ease;
+}
+
+.card:hover .card-logo img {
+    transform: scale(1.045);
+}
+
+.canal-status {
+    letter-spacing: .2px;
+}
+
+.assistir {
+    min-height: 40px;
+    background: linear-gradient(110deg, #315dff, #7654ed 70%, #a34fe0);
+    box-shadow: 0 5px 15px rgba(65, 78, 220, .15);
+}
+
+.assistir:active,
+.btn-canais:active {
+    transform: scale(.97);
+}
+
+.favorito {
+    background: rgba(255, 255, 255, .055);
+}
+
+.favorito:hover {
+    background: rgba(255, 216, 77, .12);
+}
+
+/* Categorias */
+.categoria {
+    border-color: rgba(135, 155, 255, .18);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, .17),
+        inset 0 1px 0 rgba(255, 255, 255, .035);
+}
+
+/* Botão principal */
+.btn-canais {
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    background: linear-gradient(105deg, #315dff, #7654ed 65%, #b14fdf);
+    box-shadow:
+        0 10px 28px rgba(70, 80, 240, .24),
+        inset 0 1px 0 rgba(255, 255, 255, .18);
+    transition: transform .2s ease, filter .2s ease, box-shadow .2s ease;
+}
+
+.btn-canais:hover {
+    filter: brightness(1.12);
+    box-shadow: 0 14px 34px rgba(90, 80, 255, .30);
+}
+
+/* Rodapé discreto */
+.footer {
+    border-top: 1px solid rgba(135, 155, 255, .12);
+    line-height: 1.9;
+}
+
+/* Telemóveis */
+@media (max-width: 600px) {
+    header {
+        min-height: 60px;
+        padding-left: 48px;
+        padding-right: 8px;
+        border-radius: 0 0 14px 14px;
+    }
+
+    .logo {
+        font-size: 17px;
+        letter-spacing: .6px;
+    }
+
+    .secao {
+        margin-top: 27px;
+    }
+
+    .titulo-secao {
+        margin-bottom: 14px;
+    }
+
+    .titulo-secao h2 {
+        font-size: 18px;
+    }
+
+    .grid {
+        grid-template-columns: repeat(
+            auto-fill,
+            minmax(145px, 1fr)
+        );
+        gap: 11px;
+    }
+
+    .card {
+        padding: 11px;
+    }
+
+    .card-logo {
+        border-radius: 10px;
+    }
+
+    .assistir {
+        padding: 10px 5px;
+    }
+
+    .btn-canais {
+        width: min(100%, 300px);
+    }
+}
+
+/* Evitar efeitos de movimento para quem os desativa */
+@media (prefers-reduced-motion: reduce) {
+    .card,
+    .card-logo img,
+    .assistir,
+    .btn-canais {
+        transition: none !important;
+    }
+}
+
+
 </style>
 
 </head>
@@ -2418,7 +2644,7 @@ video {
 
     <button
         class="voltar"
-        onclick="voltarInicio()"
+        onclick="voltarPagina()"
     >
         ← Início
     </button>
@@ -2449,7 +2675,7 @@ video {
 
     <button
         class="voltar"
-        onclick="mostrarCategorias()"
+        onclick="voltarPagina()"
     >
         ← Categorias
     </button>
@@ -2635,7 +2861,7 @@ video {
 
     <button
         class="voltar"
-        onclick="voltarInicio()"
+        onclick="voltarPagina()"
     >
         ← Voltar
     </button>
@@ -2912,11 +3138,130 @@ function esconderTudo(){
 }
 
 
+
+/* ========================================
+   HISTÓRICO DE NAVEGAÇÃO SHAZAM
+======================================== */
+const SHZ_NAV_KEY = "shazam_nav_stack";
+const SHZ_PAGE_KEY = "shazam_pagina_atual";
+let SHZ_RESTAURANDO = false;
+let SHZ_PAGINA_ATUAL = shzLerPagina();
+
+function shzLerPilha() {
+    try {
+        const v = JSON.parse(localStorage.getItem(SHZ_NAV_KEY) || "[]");
+        return Array.isArray(v) ? v : [];
+    } catch (e) { return []; }
+}
+
+function shzLerPagina() {
+    try {
+        const v = JSON.parse(localStorage.getItem(SHZ_PAGE_KEY) || "null");
+        return v && v.pagina ? v : { pagina: "inicio" };
+    } catch (e) { return { pagina: "inicio" }; }
+}
+
+function shzRegistarPagina(estado) {
+    if (!estado || !estado.pagina) return;
+
+    if (!SHZ_RESTAURANDO &&
+        JSON.stringify(estado) !== JSON.stringify(SHZ_PAGINA_ATUAL)) {
+        const pilha = shzLerPilha();
+        pilha.push(SHZ_PAGINA_ATUAL);
+        localStorage.setItem(SHZ_NAV_KEY, JSON.stringify(pilha.slice(-30)));
+    }
+
+    SHZ_PAGINA_ATUAL = estado;
+    localStorage.setItem(SHZ_PAGE_KEY, JSON.stringify(estado));
+}
+
+function shzPararPlayer() {
+    if (typeof hlsAtual !== "undefined" && hlsAtual) {
+        hlsAtual.destroy();
+        hlsAtual = null;
+    }
+
+    const video = document.getElementById("video");
+    if (video) {
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+    }
+}
+
+window.voltarPagina = function() {
+    const pilha = shzLerPilha();
+    const anterior = pilha.pop();
+    localStorage.setItem(SHZ_NAV_KEY, JSON.stringify(pilha));
+
+    if (!anterior || !anterior.pagina) {
+        if (SHZ_PAGINA_ATUAL.pagina === "player" &&
+            SHZ_PAGINA_ATUAL.categoriaId) {
+            shzPararPlayer();
+            shzMostrarPagina({
+                pagina: "canais",
+                categoriaId: SHZ_PAGINA_ATUAL.categoriaId,
+                categoriaNome: SHZ_PAGINA_ATUAL.categoriaNome || "Canais"
+            });
+        } else {
+            voltarInicio();
+        }
+        return;
+    }
+
+    if (SHZ_PAGINA_ATUAL.pagina === "player" &&
+        anterior.pagina !== "player") {
+        shzPararPlayer();
+    }
+
+    shzMostrarPagina(anterior);
+};
+
+function shzMostrarPagina(estado) {
+    if (!estado || !estado.pagina) return;
+
+    SHZ_RESTAURANDO = true;
+    try {
+        if (estado.pagina === "inicio") {
+            voltarInicio();
+        } else if (estado.pagina === "categorias") {
+            mostrarCategorias();
+        } else if (estado.pagina === "canais") {
+            categoriaAtual = estado.categoriaId;
+            mostrarCanaisDaCategoria(
+                estado.categoriaId,
+                estado.categoriaNome || "Canais"
+            );
+        } else if (estado.pagina === "player") {
+            categoriaAtual = estado.categoriaId || categoriaAtual;
+            window.abrirCanal(estado.canalId);
+        } else {
+            voltarInicio();
+            return;
+        }
+
+        SHZ_PAGINA_ATUAL = estado;
+        localStorage.setItem(SHZ_PAGE_KEY, JSON.stringify(estado));
+    } finally {
+        SHZ_RESTAURANDO = false;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const pagina = shzLerPagina();
+    if (pagina.pagina && pagina.pagina !== "inicio") {
+        shzMostrarPagina(pagina);
+    }
+});
+
+
 /* ========================================
    INÍCIO
 ======================================== */
 
 window.voltarInicio = function(){
+    if (!SHZ_RESTAURANDO) localStorage.setItem(SHZ_NAV_KEY, "[]");
+    shzRegistarPagina({ pagina: "inicio" });
 
     esconderTudo();
 
@@ -2965,6 +3310,7 @@ window.voltarInicio = function(){
 ======================================== */
 
 window.mostrarCategorias = function(){
+    shzRegistarPagina({ pagina: "categorias" });
 
     fecharMenu();
 
@@ -3064,6 +3410,7 @@ function mostrarCanaisDaCategoria(
     id,
     nome
 ){
+    shzRegistarPagina({ pagina: "canais", categoriaId: id, categoriaNome: nome });
 
     esconderTudo();
 
@@ -3514,6 +3861,14 @@ function(id){
         return;
     }
 
+
+
+    shzRegistarPagina({
+        pagina: "player",
+        canalId: id,
+        categoriaId: categoriaAtual,
+        categoriaNome: document.getElementById("tituloCategoria")?.textContent || "Canais"
+    });
 
     /*
        HISTÓRICO
@@ -4076,199 +4431,539 @@ if(canalUrl){
    🔐 AUTENTICAÇÃO SHAZAM IPTV
 ========================================== */
 
-let TOKEN_SESSAO = null;
+const SHZ_TOKEN_KEY = "shazam_token";
+let TOKEN_SESSAO = localStorage.getItem(SHZ_TOKEN_KEY) || null;
 
-// 🔐 BLOQUEAR O PAINEL IMEDIATAMENTE AO CARREGAR
-document.body.classList.add("login-bloqueado");
+if (TOKEN_SESSAO) {
+    document.body.classList.remove("login-bloqueado");
+} else {
+    document.body.classList.add("login-bloqueado");
+}
 
-function obterToken(){
+function obterToken() {
     return TOKEN_SESSAO;
 }
 
-function mostrarTelaLogin(){
+function guardarToken(token) {
+    TOKEN_SESSAO = token || null;
 
+    if (TOKEN_SESSAO) {
+        localStorage.setItem(SHZ_TOKEN_KEY, TOKEN_SESSAO);
+    } else {
+        localStorage.removeItem(SHZ_TOKEN_KEY);
+    }
+}
+
+function mostrarTelaLogin() {
     document.body.classList.add("login-bloqueado");
-
     const tela = document.getElementById("telaLogin");
-
-    if(tela){
-        tela.style.display = "flex";
-    }
+    if (tela) tela.style.display = "flex";
 }
 
-function esconderTelaLogin(){
-
+function esconderTelaLogin() {
     document.body.classList.remove("login-bloqueado");
-
     const tela = document.getElementById("telaLogin");
-
-    if(tela){
-        tela.style.display = "none";
-    }
+    if (tela) tela.style.display = "none";
 }
 
-async function verificarSessao(){
-
+async function verificarSessao() {
     const token = obterToken();
 
-    if(!token){
+    if (!token) {
         mostrarTelaLogin();
         return false;
     }
 
-    try{
+    if (!navigator.onLine) return false;
 
-        const resposta = await fetch("/api/me",{
-            method:"GET",
-            headers:{
-                "Authorization":"Bearer " + token
-            }
+    try {
+        const resposta = await fetch("/api/me", {
+            method: "GET",
+            headers: { "Authorization": "Bearer " + token }
         });
 
-        if(!resposta.ok){
-
-            TOKEN_SESSAO = null;
+        if (resposta.status === 401 || resposta.status === 403) {
+            guardarToken(null);
             mostrarTelaLogin();
+            return false;
+        }
 
+        if (!resposta.ok) {
+            console.warn("Servidor temporariamente indisponível:", resposta.status);
             return false;
         }
 
         const dados = await resposta.json();
 
-        if(!dados.ok){
-
-            TOKEN_SESSAO = null;
+        if (!dados.ok) {
+            guardarToken(null);
             mostrarTelaLogin();
-
             return false;
         }
 
         esconderTelaLogin();
-
         return true;
 
-    }catch(erro){
-
-        console.error(
-            "Erro ao verificar sessão:",
-            erro
-        );
-
-        mostrarTelaLogin();
-
+    } catch (erro) {
+        console.warn("Falha de rede. A sessão será verificada novamente.", erro);
         return false;
     }
 }
 
-window.fazerLogin = async function(){
+window.fazerLogin = async function() {
+    const usuarioEl = document.getElementById("loginUsuario");
+    const senhaEl = document.getElementById("loginSenha");
+    const mensagem = document.getElementById("loginMensagem");
+    const botao = document.getElementById("loginBotao");
 
-    const usuarioEl =
-        document.getElementById("loginUsuario");
+    const usuario = usuarioEl.value.trim();
+    const senha = senhaEl.value;
 
-    const senhaEl =
-        document.getElementById("loginSenha");
-
-    const mensagem =
-        document.getElementById("loginMensagem");
-
-    const botao =
-        document.getElementById("loginBotao");
-
-    const usuario =
-        usuarioEl.value.trim();
-
-    const senha =
-        senhaEl.value;
-
-    if(!usuario || !senha){
-
-        mensagem.textContent =
-            "⚠️ Preencha usuário e senha.";
-
+    if (!usuario || !senha) {
+        mensagem.textContent = "⚠️ Preencha usuário e senha.";
         return;
     }
 
     botao.disabled = true;
     mensagem.textContent = "⏳ A verificar acesso...";
 
-    try{
-
-        const resposta = await fetch(
-            "/api/login",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify({
-                    username:usuario,
-                    password:senha
-                })
-            }
-        );
+    try {
+        const resposta = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username: usuario,
+                password: senha
+            })
+        });
 
         const dados = await resposta.json();
 
-        if(!resposta.ok || !dados.ok){
-
+        if (!resposta.ok || !dados.ok || !dados.token) {
             mensagem.textContent =
-                dados.message ||
-                "❌ Usuário ou senha inválidos.";
-
-            botao.disabled = false;
-
+                dados.message || "❌ Usuário ou senha inválidos.";
             return;
         }
 
-        TOKEN_SESSAO = dados.token;
-
-        mensagem.textContent =
-            "✅ Acesso autorizado.";
-
+        guardarToken(dados.token);
+        mensagem.textContent = "✅ Acesso autorizado.";
         esconderTelaLogin();
 
-        botao.disabled = false;
-
-    }catch(erro){
-
-        console.error(erro);
-
-        mensagem.textContent =
-            "❌ Erro ao conectar ao servidor.";
-
+    } catch (erro) {
+        console.error("Erro no login:", erro);
+        mensagem.textContent = "❌ Sem ligação ao servidor. Tente novamente.";
+    } finally {
         botao.disabled = false;
     }
 };
 
-window.fazerLogout = function(){
-
-    TOKEN_SESSAO = null;
-
+window.fazerLogout = function() {
+    guardarToken(null);
     mostrarTelaLogin();
 
-    const senha =
-        document.getElementById("loginSenha");
-
-    if(senha){
-        senha.value = "";
-    }
+    const senha = document.getElementById("loginSenha");
+    if (senha) senha.value = "";
 };
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
+document.addEventListener("DOMContentLoaded", function() {
+    verificarSessao();
 
-        verificarSessao();
+    setInterval(function() {
+        if (navigator.onLine) verificarSessao();
+    }, 60000);
+});
 
-        setInterval(
-            verificarSessao,
-            60000
-        );
-
-    }
-);
+window.addEventListener("online", function() {
+    verificarSessao();
+});
 
 </script>
+
+
+<!-- SHAZAM SUPPORT CHAT -->
+<style>
+#shzChatBtn{position:fixed;right:18px;bottom:20px;z-index:9990;border:0;border-radius:30px;padding:14px 20px;background:linear-gradient(135deg,#1769ff,#873bff);color:#fff;font-weight:800;font-size:14px;box-shadow:0 8px 28px #0006;cursor:pointer}
+#shzChatPanel{position:fixed;right:16px;bottom:82px;z-index:9991;width:min(390px,calc(100vw - 24px));height:min(570px,calc(100dvh - 110px));background:#101525;color:#f5f7ff;border:1px solid #344164;border-radius:18px;box-shadow:0 18px 55px #0009;display:none;overflow:hidden;font-family:Arial,sans-serif}
+#shzChatPanel.shz-open{display:flex;flex-direction:column}
+#shzChatHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px;background:linear-gradient(120deg,#1259db,#7135d9)}
+#shzChatHead strong{font-size:15px}
+#shzChatHead small{display:block;margin-top:4px;opacity:.85}
+#shzChatClose{background:#ffffff20;border:0;color:white;font-size:23px;border-radius:8px;width:36px;height:36px;cursor:pointer}
+#shzChatStatus{padding:8px 12px;background:#171e31;color:#aebfe9;font-size:12px}
+#shzChatLayout{display:flex;flex:1;min-height:0}
+#shzChatInbox{display:none;width:36%;min-width:110px;overflow:auto;border-right:1px solid #303b58}
+#shzChatPanel.shz-admin #shzChatInbox{display:block}
+#shzChatInbox button{display:block;width:100%;padding:11px 8px;text-align:left;color:#fff;background:transparent;border:0;border-bottom:1px solid #303b58;cursor:pointer;overflow-wrap:anywhere;font-size:12px}
+#shzChatInbox button.shz-selected{background:#26365c}
+#shzChatMain{display:flex;flex:1;min-width:0;flex-direction:column}
+#shzChatMessages{flex:1;min-height:0;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:9px}
+.shz-msg{max-width:88%;align-self:flex-start;background:#202b43;border:1px solid #334362;border-radius:12px 12px 12px 3px;padding:9px 11px;overflow-wrap:anywhere;white-space:pre-wrap;font-size:13px;line-height:1.45}
+.shz-msg.shz-mine{align-self:flex-end;background:#243c78;border-color:#385cb2;border-radius:12px 12px 3px 12px}
+.shz-msg small{display:block;margin-top:5px;color:#b7c5e8;font-size:10px}
+#shzChatEmpty{margin:auto;text-align:center;color:#a9b5d2;font-size:13px;padding:15px}
+#shzChatForm{display:flex;gap:7px;padding:10px;border-top:1px solid #303b58}
+#shzChatInput{flex:1;min-width:0;resize:none;max-height:90px;border:1px solid #3c4b6c;border-radius:10px;background:#0b1020;color:#fff;padding:10px;font:13px Arial;outline:none}
+#shzChatSend{border:0;border-radius:10px;padding:0 14px;background:#2869ef;color:white;font-weight:bold;cursor:pointer}
+#shzChatSend:disabled{opacity:.45}
+#shzChatTools{display:none;gap:6px;flex-wrap:wrap;padding:8px 10px;border-top:1px solid #303b58}
+#shzChatPanel.shz-admin #shzChatTools{display:flex}
+#shzChatRefresh,#shzChatGlobal,#shzChatSupport{border:1px solid #3b4d73;border-radius:8px;background:#1b2640;color:#dce6ff;padding:7px 9px;cursor:pointer;font-size:12px}
+#shzChatGlobal{background:#263b70;border-color:#5478d6}
+#shzChatPanel.shz-global #shzChatInbox{display:none}
+#shzChatPanel.shz-global #shzChatMain{flex:1}
+@media(max-width:420px){#shzChatBtn{right:12px;bottom:14px;padding:12px 15px}#shzChatPanel{right:8px;bottom:70px;width:calc(100vw - 16px);height:min(600px,calc(100dvh - 85px))}}
+.hero {
+    text-align: center !important;
+}
+.hero p {
+    width: 100%;
+    text-align: center !important;
+    margin-left: auto;
+    margin-right: auto;
+}
+.hero .btn-canais {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+</style>
+
+<button id="shzChatBtn" type="button">💬 Chat</button>
+
+<section id="shzChatPanel" aria-label="Apoio ao cliente SHAZAM IPTV">
+  <header id="shzChatHead">
+    <div><strong>💬 SHAZAM IPTV</strong><small id="shzChatSubtitle">Apoio ao Cliente</small></div>
+    <button id="shzChatClose" type="button" aria-label="Fechar chat">×</button>
+  </header>
+  <div id="shzChatStatus">Pronto para ligar ao apoio.</div>
+  <div id="shzChatLayout">
+    <aside id="shzChatInbox" aria-label="Lista de conversas"></aside>
+    <div id="shzChatMain">
+      <div id="shzChatMessages"><div id="shzChatEmpty">Abre o chat para começar.</div></div>
+      <form id="shzChatForm">
+        <textarea id="shzChatInput" rows="1" maxlength="2000" placeholder="Escreve a tua mensagem..." aria-label="Mensagem"></textarea>
+        <button id="shzChatSend" type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+  <div id="shzChatTools">
+    <button id="shzChatRefresh" type="button">↻ Actualizar conversas</button>
+    <button id="shzChatGlobal" type="button">📢 Mensagem Global</button>
+    <button id="shzChatSupport" type="button">💬 Apoio ao Cliente</button>
+  </div>
+</section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+(function(){
+  'use strict';
+  const btn=document.getElementById('shzChatBtn');
+  const panel=document.getElementById('shzChatPanel');
+  const closeBtn=document.getElementById('shzChatClose');
+  const statusEl=document.getElementById('shzChatStatus');
+  const subtitle=document.getElementById('shzChatSubtitle');
+  const inbox=document.getElementById('shzChatInbox');
+  const messages=document.getElementById('shzChatMessages');
+  const empty=document.getElementById('shzChatEmpty');
+  const form=document.getElementById('shzChatForm');
+  const input=document.getElementById('shzChatInput');
+  const sendBtn=document.getElementById('shzChatSend');
+  const refreshBtn=document.getElementById('shzChatRefresh');
+  const globalBtn=document.getElementById('shzChatGlobal');
+  const supportBtn=document.getElementById('shzChatSupport');
+
+  let socket=null, tokenAtual=null, ehAdmin=false, conversaAtual=null;
+  let painelAberto=false, listaTimer=null, modoGlobal=false;
+  const idsMensagens=new Set();
+
+  function obterTokenSeguro(){
+    try {
+      if(typeof obterToken==='function') return obterToken();
+    } catch(e) {}
+    return null;
+  }
+  function definirEstado(texto){statusEl.textContent=texto;}
+  function limparMensagens(){
+    messages.replaceChildren();
+    idsMensagens.clear();
+    empty.hidden=false;
+    empty.textContent='Selecciona uma conversa para começar.';
+    messages.appendChild(empty);
+  }
+  function formatarHora(valor){
+    try{return new Date(valor).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}
+    catch(e){return '';}
+  }
+  function mostrarMensagens(lista){
+    limparMensagens();
+    if(!Array.isArray(lista)||!lista.length){
+      empty.textContent='Ainda não existem mensagens. Escreve a primeira!';
+      return;
+    }
+    empty.hidden=true;
+    lista.forEach(adicionarMensagem);
+    messages.scrollTop=messages.scrollHeight;
+  }
+  function adicionarMensagem(m){
+    if(!m) return;
+    const id=m.id==null?null:String(m.id);
+    if(id && idsMensagens.has(id)) return;
+    if(id) idsMensagens.add(id);
+    empty.hidden=true;
+    const item=document.createElement('div');
+    const nome=String(m.sender||m.sender_username||'');
+    const minha=ehAdmin ? nome===String(window.__shzChatUser||'') : false;
+    item.className='shz-msg'+(minha?' shz-mine':'');
+    const texto=document.createElement('div');
+    texto.textContent=String(m.message||'');
+    item.appendChild(texto);
+    const hora=document.createElement('small');
+    hora.textContent=(nome?nome+' · ':'')+formatarHora(m.created_at||Date.now());
+    item.appendChild(hora);
+    messages.appendChild(item);
+    messages.scrollTop=messages.scrollHeight;
+  }
+  function adicionarAnuncio(m){
+    if(!m) return;
+    adicionarMensagem({
+      ...m,
+      id:'global-'+String(m.id),
+      message:'📢 MENSAGEM GLOBAL\\n'+String(m.message||'')
+    });
+  }
+  function falhar(texto){
+    definirEstado(texto||'Não foi possível concluir a operação.');
+  }
+  function emitir(evento,dados){
+    return new Promise(resolve=>{
+      if(!socket||!socket.connected){resolve({ok:false,error:'Sem ligação ao servidor.'});return;}
+      const temporizador=setTimeout(()=>resolve({ok:false,error:'O servidor demorou demasiado tempo a responder.'}),10000);
+      const ack=resultado=>{clearTimeout(temporizador);resolve(resultado||{ok:false,error:'Resposta inválida do servidor.'});};
+      if(typeof dados==='undefined') socket.emit(evento,ack);
+      else socket.emit(evento,dados,ack);
+    });
+  }
+  function pararLigacao(){
+    if(listaTimer){clearInterval(listaTimer);listaTimer=null;}
+    if(socket){socket.disconnect();socket=null;}
+    tokenAtual=null;
+    ehAdmin=false;
+    conversaAtual=null;
+    modoGlobal=false;
+    panel.classList.remove('shz-admin','shz-global');
+    inbox.replaceChildren();
+    limparMensagens();
+  }
+  function criarLigacao(token){
+    if(typeof window.io!=='function'){
+      falhar('O módulo de chat não carregou. Confirma a instalação do Socket.IO.');
+      return;
+    }
+    pararLigacao();
+    tokenAtual=token;
+    definirEstado('A ligar ao servidor...');
+    socket=window.io({auth:{token:token},transports:['websocket','polling']});
+    socket.on('connect',async()=>{
+      definirEstado('Ligado · a verificar permissões...');
+      const admin=await emitir('chat:admin:listar');
+      if(!socket||!socket.connected) return;
+      if(admin&&admin.ok){
+        ehAdmin=true;
+        modoGlobal=false;
+        panel.classList.remove('shz-global');
+        panel.classList.add('shz-admin');
+        subtitle.textContent='Painel do proprietário · Apoio';
+        definirEstado('Painel do proprietário ligado.');
+        desenharLista(admin.conversations||[]);
+        if(listaTimer) clearInterval(listaTimer);
+        listaTimer=setInterval(()=>{if(painelAberto&&ehAdmin) carregarLista();},10000);
+      }else{
+        ehAdmin=false;
+        panel.classList.remove('shz-admin');
+        subtitle.textContent='Apoio ao Cliente';
+        const r=await emitir('chat:abrir');
+        if(!r||!r.ok){falhar(r&&r.error||'Não foi possível abrir a conversa.');return;}
+        conversaAtual=String(r.conversationId);
+        mostrarMensagens(r.messages||[]);
+        const avisos=await emitir('chat:global:listar');
+        if(avisos&&avisos.ok&&Array.isArray(avisos.announcements)){
+          avisos.announcements.forEach(adicionarAnuncio);
+        }
+        definirEstado('Conversa segura pronta. Envia a tua mensagem.');
+      }
+    });
+    socket.on('connect_error',()=>{
+      definirEstado('Não foi possível autenticar ou ligar ao chat. Verifica a sessão e o servidor.');
+    });
+    socket.on('disconnect',()=>{
+      if(obterTokenSeguro()) definirEstado('Ligação interrompida. A tentar reconectar...');
+    });
+    socket.on('chat:nova-mensagem',m=>{
+      if(!m) return;
+      if(conversaAtual!=null && String(m.conversationId||m.conversation_id||'')===String(conversaAtual)){
+        adicionarMensagem(m);
+      }
+      if(ehAdmin && painelAberto) carregarLista();
+    });
+    socket.on('chat:global:nova',m=>{
+      if(!m) return;
+      if(!ehAdmin || modoGlobal) adicionarAnuncio(m);
+    });
+  }
+  function desenharLista(conversas){
+    inbox.replaceChildren();
+    if(!Array.isArray(conversas)||!conversas.length){
+      const p=document.createElement('div');
+      p.textContent='Sem conversas.';
+      p.style.cssText='padding:10px;font-size:12px;color:#aebfe9';
+      inbox.appendChild(p);
+      return;
+    }
+    conversas.forEach(c=>{
+      const b=document.createElement('button');
+      b.type='button';
+      b.className=String(c.id)===String(conversaAtual)?'shz-selected':'';
+      const nome=String(c.username||c.client_username||('Cliente #'+c.id));
+      const st=String(c.status||'aberta');
+      b.textContent=nome+' · '+st;
+      b.addEventListener('click',()=>entrarConversa(c.id,b));
+      inbox.appendChild(b);
+    });
+  }
+  async function carregarLista(){
+    if(!socket||!socket.connected||!ehAdmin) return;
+    const r=await emitir('chat:admin:listar');
+    if(r&&r.ok) desenharLista(r.conversations||[]);
+  }
+  async function entrarConversa(id,botao){
+    if(!socket||!socket.connected) return;
+    modoGlobal=false;
+    panel.classList.remove('shz-global');
+    input.placeholder='Escreve a tua mensagem...';
+    sendBtn.textContent='Enviar';
+    subtitle.textContent='Painel do proprietário · Apoio';
+    definirEstado('A abrir conversa...');
+    const r=await emitir('chat:entrar',{conversationId:id});
+    if(!r||!r.ok){falhar(r&&r.error||'Não foi possível abrir esta conversa.');return;}
+    conversaAtual=String(r.conversationId||id);
+    inbox.querySelectorAll('button').forEach(b=>b.classList.remove('shz-selected'));
+    if(botao) botao.classList.add('shz-selected');
+    mostrarMensagens(r.messages||[]);
+    definirEstado('A responder ao cliente · conversa #'+conversaAtual);
+  }
+  async function entrarModoGlobal(){
+    if(!socket||!socket.connected||!ehAdmin) return;
+    modoGlobal=true;
+    conversaAtual=null;
+    panel.classList.add('shz-global');
+    inbox.querySelectorAll('button').forEach(b=>b.classList.remove('shz-selected'));
+    subtitle.textContent='📢 Mensagens Globais';
+    input.placeholder='Escreve o anúncio para todos...';
+    sendBtn.textContent='Enviar a todos';
+    definirEstado('A carregar o histórico global...');
+    const r=await emitir('chat:global:listar');
+    if(!r||!r.ok){
+      falhar(r&&r.error||'Não foi possível carregar os anúncios.');
+      return;
+    }
+    const lista=Array.isArray(r.announcements)?r.announcements:[];
+    mostrarMensagens(lista.map(m=>({
+      ...m,
+      id:'global-'+String(m.id),
+      message:'📢 MENSAGEM GLOBAL\\n'+String(m.message||'')
+    })));
+    definirEstado('Modo global: a mensagem será enviada a todos os utilizadores.');
+    input.focus();
+  }
+
+  function entrarModoApoio(){
+    if(!ehAdmin) return;
+    modoGlobal=false;
+    conversaAtual=null;
+    panel.classList.remove('shz-global');
+    input.placeholder='Escreve a tua mensagem...';
+    sendBtn.textContent='Enviar';
+    subtitle.textContent='Painel do proprietário · Apoio';
+    limparMensagens();
+    empty.textContent='Selecciona uma conversa para começar.';
+    definirEstado('Escolhe uma conversa de apoio ao cliente.');
+    carregarLista();
+  }
+
+  btn.addEventListener('click',()=>{
+    painelAberto=true;
+    panel.classList.add('shz-open');
+    const token=obterTokenSeguro();
+    if(!token){definirEstado('Inicia sessão para usar o apoio.');return;}
+    if(!socket||tokenAtual!==token||(!socket.connected&&!socket.active)){
+      criarLigacao(token);
+    }else if(socket.connected&&ehAdmin){
+      carregarLista();
+    }
+    input.focus();
+  });
+  closeBtn.addEventListener('click',()=>{
+    painelAberto=false;
+    panel.classList.remove('shz-open');
+  });
+  refreshBtn.addEventListener('click',carregarLista);
+  globalBtn.addEventListener('click',entrarModoGlobal);
+  supportBtn.addEventListener('click',entrarModoApoio);
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const texto=input.value.trim();
+    if(!texto) return;
+    if(!socket||!socket.connected){falhar('Sem ligação ao servidor.');return;}
+    sendBtn.disabled=true;
+
+    if(modoGlobal){
+      if(!ehAdmin){
+        sendBtn.disabled=false;
+        falhar('Apenas o proprietário pode enviar anúncios globais.');
+        return;
+      }
+      const r=await emitir('chat:global:enviar',{message:texto});
+      sendBtn.disabled=false;
+      if(!r||!r.ok){
+        falhar(r&&r.error||'Não foi possível enviar o anúncio.');
+        return;
+      }
+      input.value='';
+      input.focus();
+      definirEstado('📢 Anúncio enviado a todos os utilizadores.');
+      return;
+    }
+
+    if(!conversaAtual){
+      sendBtn.disabled=false;
+      falhar('Abre primeiro uma conversa.');
+      return;
+    }
+    const r=await emitir('chat:enviar',{conversationId:conversaAtual,message:texto});
+    sendBtn.disabled=false;
+    if(!r||!r.ok){falhar(r&&r.error||'Não foi possível enviar a mensagem.');return;}
+    input.value='';
+    input.focus();
+    definirEstado('Mensagem enviada.');
+    if(ehAdmin) carregarLista();
+  });
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}
+  });
+
+  setInterval(()=>{
+    const token=obterTokenSeguro();
+    btn.hidden = false;
+    if(token){
+      if(tokenAtual&&tokenAtual!==token) pararLigacao();
+    }else{
+      if(socket) pararLigacao();
+    }
+  },1000);
+})();
+</script>
+<!-- /SHAZAM SUPPORT CHAT -->
 
 </body>
 </html>

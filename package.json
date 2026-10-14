@@ -24,6 +24,7 @@
     "express": "^5.2.1",
     "fast-xml-parser": "^5.11.2",
     "jsonwebtoken": "^9.0.3",
-    "pg": "^8.23.1"
+    "pg": "^8.23.1",
+    "socket.io": "^4.8.4"
   }
 }

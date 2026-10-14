@@ -2,7 +2,7 @@ export default {
   "categorias": [
     {
       "id": "noticias-internacional",
-      "nome": "🌍 NOTÍCIAS & INTERNACIONAL",
+      "nome": "● NOTÍCIAS & INTERNACIONAL",
       "canais": [
         "cnn-brasil",
         "euronews-pt",
@@ -73,7 +73,7 @@ export default {
     },
     {
       "id": "portugal-africa-brasil",
-      "nome": "🇵🇹 PORTUGAL • 🇦🇴 ÁFRICA • 🇧🇷 BRASIL",
+      "nome": "● PORTUGAL • ÁFRICA • BRASIL",
       "canais": [
         "rtp-1",
         "rtp-2",
@@ -131,7 +131,7 @@ export default {
     },
     {
       "id": "desporto",
-      "nome": "⚽ DESPORTO",
+      "nome": "● DESPORTO",
       "canais": [
         "canal-11-internacional",
         "fifaplus",
@@ -161,7 +161,7 @@ export default {
     },
     {
       "id": "filmes-series",
-      "nome": "🎬 FILMES & SÉRIES",
+      "nome": "● FILMES & SÉRIES",
       "canais": [
         "mytime-movie-network-br",
         "moviesphere",
@@ -181,14 +181,14 @@ export default {
     },
     {
       "id": "series",
-      "nome": "📺 SÉRIES",
+      "nome": "● SÉRIES",
       "canais": [
         "kuriakos-cine"
       ]
     },
     {
       "id": "infantil",
-      "nome": "🧸 INFANTIL",
+      "nome": "● INFANTIL",
       "canais": [
         "ebs-kids",
         "retro-cartoon",
@@ -221,7 +221,7 @@ export default {
     },
     {
       "id": "musica",
-      "nome": "🎵 MÚSICA",
+      "nome": "● MÚSICA",
       "canais": [
         "trace-urban",
         "trace-toca",
@@ -246,7 +246,7 @@ export default {
     },
     {
       "id": "entretenimento",
-      "nome": "🌎 ENTRETENIMENTO",
+      "nome": "● ENTRETENIMENTO",
       "canais": [
         "travelxp",
         "real-wild",
@@ -267,7 +267,7 @@ export default {
     },
     {
       "id": "outros",
-      "nome": "📺 OUTROS",
+      "nome": "● OUTROS",
       "canais": [
         "lotus-macau",
         "ebs-english",
