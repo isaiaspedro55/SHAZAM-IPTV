@@ -137,6 +137,12 @@ body{
     max-width:85%;
 
     height:100vh;
+    height:100dvh;
+    overflow-y:auto;
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-y:contain;
+    box-sizing:border-box;
 
     background:
         linear-gradient(
@@ -162,6 +168,22 @@ body{
 
 .menu-lateral.aberto{
     transform:translateX(0);
+}
+
+/* Permitir deslizar pelo menu em ecrãs pequenos */
+.menu-lateral {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(130,155,255,.55) transparent;
+    touch-action: pan-y;
+}
+
+.menu-lateral::-webkit-scrollbar {
+    width: 5px;
+}
+
+.menu-lateral::-webkit-scrollbar-thumb {
+    background: rgba(130,155,255,.55);
+    border-radius: 10px;
 }
 
 .menu-logo{
