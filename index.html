@@ -2525,6 +2525,14 @@ header {
 
     <button
         class="menu-item"
+        onclick="menuAtualizar()"
+    >
+        🔄 Atualizar
+    </button>
+
+
+    <button
+        class="menu-item"
         onclick="mostrarInfo()"
     >
         ℹ️ Info
@@ -2556,6 +2564,14 @@ header {
 
 
 
+
+
+    <button
+        class="menu-item"
+        onclick="menuLogout()"
+    >
+        ↩️ Log out
+    </button>
 
 
     <button
@@ -4466,11 +4482,48 @@ function esconderTelaLogin() {
     if (tela) tela.style.display = "none";
 }
 
+let SHZ_EXPIRANDO_SESSAO = false;
+
+function shzExpirarSessao() {
+    if (SHZ_EXPIRANDO_SESSAO) return;
+    SHZ_EXPIRANDO_SESSAO = true;
+
+    // Parar imediatamente o vídeo e o áudio.
+    if (typeof shzPararPlayer === "function") {
+        shzPararPlayer();
+    }
+
+    // Voltar à página inicial antes de mostrar o login.
+    if (typeof window.voltarInicio === "function") {
+        window.voltarInicio();
+    }
+
+    guardarToken(null);
+    mostrarTelaLogin();
+
+    const senha = document.getElementById("loginSenha");
+    if (senha) senha.value = "";
+}
+
+window.menuAtualizar = function() {
+    if (typeof window.fecharMenu === "function") {
+        window.fecharMenu();
+    }
+    window.location.reload();
+};
+
+window.menuLogout = function() {
+    if (typeof window.fecharMenu === "function") {
+        window.fecharMenu();
+    }
+    window.fazerLogout();
+};
+
 async function verificarSessao() {
     const token = obterToken();
 
     if (!token) {
-        mostrarTelaLogin();
+        shzExpirarSessao();
         return false;
     }
 
@@ -4483,8 +4536,7 @@ async function verificarSessao() {
         });
 
         if (resposta.status === 401 || resposta.status === 403) {
-            guardarToken(null);
-            mostrarTelaLogin();
+            shzExpirarSessao();
             return false;
         }
 
@@ -4496,8 +4548,7 @@ async function verificarSessao() {
         const dados = await resposta.json();
 
         if (!dados.ok) {
-            guardarToken(null);
-            mostrarTelaLogin();
+            shzExpirarSessao();
             return false;
         }
 
@@ -4545,6 +4596,7 @@ window.fazerLogin = async function() {
             return;
         }
 
+        SHZ_EXPIRANDO_SESSAO = false;
         guardarToken(dados.token);
         mensagem.textContent = "✅ Acesso autorizado.";
         esconderTelaLogin();
@@ -4558,11 +4610,7 @@ window.fazerLogin = async function() {
 };
 
 window.fazerLogout = function() {
-    guardarToken(null);
-    mostrarTelaLogin();
-
-    const senha = document.getElementById("loginSenha");
-    if (senha) senha.value = "";
+    shzExpirarSessao();
 };
 
 document.addEventListener("DOMContentLoaded", function() {
