@@ -4606,7 +4606,11 @@ window.addEventListener("online", function() {
 #shzChatSend{border:0;border-radius:10px;padding:0 14px;background:#2869ef;color:white;font-weight:bold;cursor:pointer}
 #shzChatSend:disabled{opacity:.45}
 #shzChatTools{display:none;gap:6px;flex-wrap:wrap;padding:8px 10px;border-top:1px solid #303b58}
-#shzChatPanel.shz-admin #shzChatTools{display:flex}
+#shzChatPanel.shz-admin #shzChatTools,
+#shzChatPanel.shz-open #shzChatTools{display:flex}
+#shzChatPanel:not(.shz-admin) #shzChatRefresh,
+#shzChatPanel:not(.shz-admin) #shzChatGlobal{display:none}
+#shzChatPanel:not(.shz-admin) #shzChatSupport{display:inline-block}
 #shzChatRefresh,#shzChatGlobal,#shzChatSupport{border:1px solid #3b4d73;border-radius:8px;background:#1b2640;color:#dce6ff;padding:7px 9px;cursor:pointer;font-size:12px}
 #shzChatGlobal{background:#263b70;border-color:#5478d6}
 #shzChatPanel.shz-global #shzChatInbox{display:none}
@@ -4679,9 +4683,17 @@ window.addEventListener("online", function() {
 
   function obterTokenSeguro(){
     try {
-      if(typeof obterToken==='function') return obterToken();
+      if(typeof obterToken==='function'){
+        const token=obterToken();
+        if(token) return token;
+      }
     } catch(e) {}
-    return null;
+
+    try {
+      return localStorage.getItem('shazam_token') || null;
+    } catch(e) {
+      return null;
+    }
   }
   function definirEstado(texto){statusEl.textContent=texto;}
   function limparMensagens(){
