@@ -1366,6 +1366,149 @@ header {
 
 /* Destaque da página inicial */
 
+
+/* SHAZAM CHAT — melhorias para ecrãs horizontais */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  #shzChatPanel {
+    top: 8px;
+    bottom: 8px;
+    right: 10px;
+    width: min(680px, calc(100vw - 20px));
+    height: auto;
+    max-height: none;
+    border-radius: 14px;
+  }
+
+  #shzChatHead {
+    flex: 0 0 auto;
+    padding: 7px 10px;
+    gap: 6px;
+  }
+
+  #shzChatHead strong {
+    font-size: 13px;
+  }
+
+  #shzChatHead small {
+    margin-top: 2px;
+    font-size: 10px;
+  }
+
+  #shzChatClose {
+    width: 29px;
+    height: 29px;
+    font-size: 19px;
+    flex-shrink: 0;
+  }
+
+  #shzChatStatus {
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+
+  #shzChatLayout {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+
+  #shzChatInbox {
+    width: 29%;
+    min-width: 90px;
+    max-width: 190px;
+  }
+
+  #shzChatInbox button {
+    padding: 7px 6px;
+    font-size: 11px;
+  }
+
+  #shzChatMessages {
+    padding: 7px 9px;
+    gap: 6px;
+    overscroll-behavior: contain;
+  }
+
+  .shz-msg {
+    max-width: 94%;
+    padding: 6px 8px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .shz-msg small {
+    margin-top: 3px;
+    font-size: 9px;
+  }
+
+  #shzChatForm {
+    flex: 0 0 auto;
+    gap: 5px;
+    padding: 6px 8px;
+  }
+
+  #shzChatInput {
+    min-height: 34px;
+    max-height: 58px;
+    padding: 7px 8px;
+    font-size: 12px;
+  }
+
+  #shzChatSend {
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  #shzChatTools {
+    flex: 0 0 auto;
+    gap: 4px;
+    padding: 5px 7px;
+  }
+
+  #shzChatRefresh,
+  #shzChatGlobal,
+  #shzChatSupport {
+    padding: 5px 7px;
+    font-size: 10px;
+    line-height: 1.2;
+    border-radius: 7px;
+  }
+
+  #shzChatBtn {
+    right: 10px;
+    bottom: 10px;
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-height: 430px) {
+  #shzChatHead {
+    padding: 5px 8px;
+  }
+
+  #shzChatStatus {
+    padding: 3px 8px;
+  }
+
+  #shzChatTools {
+    gap: 3px;
+    padding: 4px 6px;
+  }
+
+  #shzChatRefresh,
+  #shzChatGlobal,
+  #shzChatSupport {
+    padding: 4px 6px;
+    font-size: 9px;
+  }
+
+  #shzChatForm {
+    padding: 4px 6px;
+  }
+}
+
 .hero {
     position: relative;
     isolation: isolate;
