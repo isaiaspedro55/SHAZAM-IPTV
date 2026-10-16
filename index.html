@@ -4827,6 +4827,11 @@ window.addEventListener("online", function() {
   cursor:pointer;
 }
 #shzChatPhoto:disabled{opacity:.45}
+.shz-chat-file-input{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);clip-path:inset(50%);
+  white-space:nowrap;border:0;opacity:0;
+}
 .shz-msg img.shz-chat-photo{
   display:block;width:auto;height:auto;
   max-width:min(100%,320px);max-height:320px;
@@ -4977,9 +4982,9 @@ window.addEventListener("online", function() {
     <div id="shzChatMain">
       <div id="shzChatMessages"><div id="shzChatEmpty">Abre o chat para começar.</div></div>
       <form id="shzChatForm">
-        <input id="shzChatPhotoInput" type="file"
+        <input id="shzChatPhotoInput" class="shz-chat-file-input" type="file"
           accept="image/jpeg,image/png,image/webp"
-          hidden aria-label="Escolher fotografia">
+          aria-label="Escolher fotografia">
         <button id="shzChatPhoto" type="button"
           aria-label="Enviar fotografia" title="Escolher fotografia">📷</button>
         <textarea id="shzChatInput" rows="1" maxlength="2000"
@@ -5125,13 +5130,20 @@ window.addEventListener("online", function() {
     messages.appendChild(item);
     messages.scrollTop=messages.scrollHeight;
   }
-  function adicionarAnuncio(m){
-    if(!m) return;
-    adicionarMensagem({
+  function formatarAnuncio(m){
+    const texto=String(m.message||'');
+    const soFotografia=Boolean(m.image_data_base64||m.imageDataBase64)
+      && texto==='📷 Fotografia';
+    return {
       ...m,
       id:'global-'+String(m.id),
-      message:'📢 MENSAGEM GLOBAL\n'+String(m.message||'')
-    });
+      message:soFotografia?'📢 MENSAGEM GLOBAL':'📢 MENSAGEM GLOBAL\n'+texto
+    };
+  }
+
+  function adicionarAnuncio(m){
+    if(!m) return;
+    adicionarMensagem(formatarAnuncio(m));
   }
   function falhar(texto){
     definirEstado(texto||'Não foi possível concluir a operação.');
@@ -5307,11 +5319,7 @@ window.addEventListener("online", function() {
       return;
     }
     const lista=Array.isArray(r.announcements)?r.announcements:[];
-    mostrarMensagens(lista.map(m=>({
-      ...m,
-      id:'global-'+String(m.id),
-      message:'📢 MENSAGEM GLOBAL\n'+String(m.message||'')
-    })));
+    mostrarMensagens(lista.map(formatarAnuncio));
     definirEstado(ehAdmin
       ?'Modo global: a mensagem será enviada a todos os utilizadores.'
       :'A consultar os anúncios globais.');
@@ -5425,10 +5433,6 @@ window.addEventListener("online", function() {
   }
 
   photoBtn.addEventListener('click',()=>{
-    if(modoGlobal){
-      falhar('As fotografias só podem ser enviadas nas conversas privadas.');
-      return;
-    }
     photoInput.click();
   });
 
@@ -5462,11 +5466,6 @@ window.addEventListener("online", function() {
     }
 
     if(modoGlobal){
-      if(imagemSelecionada){
-        falhar('As fotografias só podem ser enviadas nas conversas privadas.');
-        return;
-      }
-
       if(!ehAdmin){
         falhar('Apenas o proprietário pode enviar anúncios globais.');
         return;
@@ -5483,13 +5482,22 @@ window.addEventListener("online", function() {
       let r;
 
       if(modoGlobal){
-        r=await emitir('chat:global:enviar',{message:texto});
+        const dados={message:texto||'📷 Fotografia'};
+
+        if(imagemSelecionada){
+          dados.imageBase64=imagemSelecionada.base64;
+          dados.imageMime=imagemSelecionada.mime;
+        }
+
+        r=await emitir('chat:global:enviar',dados);
         if(!r||!r.ok){
           falhar(r&&r.error||'Não foi possível enviar o anúncio.');
           return;
         }
 
         input.value='';
+        imagemSelecionada=null;
+        photoInput.value='';
         input.focus();
         definirEstado('📢 Anúncio enviado a todos os utilizadores.');
         return;

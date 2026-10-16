@@ -97,6 +97,8 @@ io.on('connection', (socket) => {
 
       const resultado = await pool.query(
         `SELECT a.id, a.message, a.created_at,
+                replace(encode(a.image_data, 'base64'), E'\\n', '') AS image_data_base64,
+                a.image_mime,
                 u.username AS sender
          FROM global_announcements a
          JOIN users u ON u.id = a.sender_user_id
@@ -124,7 +126,41 @@ io.on('connection', (socket) => {
         throw new Error('PostgreSQL não está disponível.');
       }
 
-      const mensagem = String(dados?.message || '').trim();
+      let mensagem = String(dados?.message || '').trim();
+      const imageBase64 = typeof dados?.imageBase64 === 'string'
+        ? dados.imageBase64 : '';
+      const imageMime = String(dados?.imageMime || '');
+      let imageBuffer = null;
+
+      if (imageBase64) {
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(imageMime)) {
+          throw new Error('Formato de fotografia não permitido.');
+        }
+
+        if (
+          imageBase64.length > 820000 ||
+          !/^[A-Za-z0-9+/]+={0,2}$/.test(imageBase64) ||
+          imageBase64.length % 4 !== 0
+        ) {
+          throw new Error('Fotografia inválida ou demasiado grande.');
+        }
+
+        imageBuffer = Buffer.from(imageBase64, 'base64');
+
+        if (
+          imageBuffer.length === 0 ||
+          imageBuffer.length > 600 * 1024 ||
+          imageBuffer.toString('base64') !== imageBase64
+        ) {
+          throw new Error('A fotografia deve ter no máximo 600 KB.');
+        }
+      } else if (imageMime) {
+        throw new Error('Não foi recebida nenhuma fotografia.');
+      }
+
+      if (!mensagem && imageBuffer) {
+        mensagem = '📷 Fotografia';
+      }
 
       if (!mensagem || mensagem.length > 2000) {
         throw new Error('A mensagem deve ter entre 1 e 2000 caracteres.');
@@ -132,10 +168,17 @@ io.on('connection', (socket) => {
 
       const inserida = await pool.query(
         `INSERT INTO global_announcements
-           (sender_user_id, message)
-         VALUES ($1, $2)
-         RETURNING id, message, created_at`,
-        [socket.user.id, mensagem]
+           (sender_user_id, message, image_data, image_mime)
+         VALUES ($1, $2, $3, $4)
+         RETURNING id, message, created_at,
+                   replace(encode(image_data, 'base64'), E'\\n', '') AS image_data_base64,
+                   image_mime`,
+        [
+          socket.user.id,
+          mensagem,
+          imageBuffer,
+          imageBuffer ? imageMime : null
+        ]
       );
 
       const anuncio = {
@@ -686,6 +729,12 @@ CREATE TABLE IF NOT EXISTS global_announcements (
     CHECK (char_length(message) BETWEEN 1 AND 2000),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 )
+`);
+
+await pool.query(`
+ALTER TABLE global_announcements
+  ADD COLUMN IF NOT EXISTS image_data BYTEA,
+  ADD COLUMN IF NOT EXISTS image_mime TEXT
 `);
 
 await pool.query(`
