@@ -78,6 +78,8 @@ io.on('connection', (socket) => {
 
 
   // Disponibiliza ao cliente a identidade autenticada pelo servidor.
+  if (ehProprietario) socket.join('chat:owners');
+
   socket.on('chat:identidade', (ack) => {
     if (typeof ack === 'function') {
       ack({ ok: true, username: socket.user.username });
@@ -226,10 +228,15 @@ io.on('connection', (socket) => {
       }
 
       const resultado = await pool.query(
-        `SELECT c.id, c.status, c.created_at, c.updated_at,
+        `SELECT c.id, c.user_id AS cliente_id,
+                c.status, c.created_at, c.updated_at,
                 u.username AS cliente,
                 (SELECT COUNT(*) FROM support_messages m
-                 WHERE m.conversation_id = c.id) AS total_mensagens
+                 WHERE m.conversation_id = c.id) AS total_mensagens,
+                (SELECT COUNT(*) FROM support_messages m
+                 WHERE m.conversation_id = c.id
+                   AND m.sender_user_id = c.user_id
+                   AND m.read_at IS NULL) AS mensagens_nao_lidas
          FROM support_conversations c
          JOIN users u ON u.id = c.user_id
          ORDER BY
@@ -277,6 +284,18 @@ io.on('connection', (socket) => {
       }
 
       await socket.join(`support:${conversa.id}`);
+
+      // Ao abrir uma conversa, marcar como vistas as mensagens do cliente.
+      if (ehProprietario) {
+        await pool.query(
+          `UPDATE support_messages
+           SET read_at = NOW()
+           WHERE conversation_id = $1
+             AND sender_user_id = $2
+             AND read_at IS NULL`,
+          [conversa.id, conversa.user_id]
+        );
+      }
 
       const mensagens = await pool.query(
         `SELECT m.id, m.message, m.created_at,
@@ -364,6 +383,14 @@ io.on('connection', (socket) => {
         'chat:nova-mensagem',
         mensagemGuardada
       );
+
+      // Notificar o proprietário quando um cliente envia uma mensagem.
+      if (!ehProprietario) {
+        io.to('chat:owners').emit('chat:apoio:nova', {
+          userId: conversa.user_id,
+          conversationId: conversa.id
+        });
+      }
 
       if (typeof ack === 'function') {
         ack({ ok: true, message: mensagemGuardada });

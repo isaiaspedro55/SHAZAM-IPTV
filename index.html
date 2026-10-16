@@ -4796,6 +4796,8 @@ window.addEventListener("online", function() {
 <!-- SHAZAM SUPPORT CHAT -->
 <style>
 #shzChatBtn{position:fixed;right:18px;bottom:20px;z-index:9990;border:0;border-radius:30px;padding:14px 20px;background:linear-gradient(135deg,#1769ff,#873bff);color:#fff;font-weight:800;font-size:14px;box-shadow:0 8px 28px #0006;cursor:pointer}
+.shz-chat-badge{position:absolute;top:-7px;right:-7px;min-width:21px;height:21px;padding:0 5px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#ff304f;color:#fff;border:2px solid #101525;font:bold 12px Arial,sans-serif;box-sizing:border-box}
+.shz-chat-badge[hidden]{display:none!important}
 #shzChatPanel{position:fixed;right:16px;bottom:82px;z-index:9991;width:min(390px,calc(100vw - 24px));height:min(570px,calc(100dvh - 110px));background:#101525;color:#f5f7ff;border:1px solid #344164;border-radius:18px;box-shadow:0 18px 55px #0009;display:none;overflow:hidden;font-family:Arial,sans-serif}
 #shzChatPanel.shz-open{display:flex;flex-direction:column}
 #shzChatHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px;background:linear-gradient(120deg,#1259db,#7135d9)}
@@ -4992,9 +4994,21 @@ window.addEventListener("online", function() {
   const globalBtn=document.getElementById('shzChatGlobal');
   const supportBtn=document.getElementById('shzChatSupport');
 
+  let badge=btn.querySelector('.shz-chat-badge');
+  if(!badge){
+    badge=document.createElement('span');
+    badge.className='shz-chat-badge';
+    badge.hidden=true;
+    badge.setAttribute('aria-live','polite');
+    btn.appendChild(badge);
+  }
+
   let socket=null, tokenAtual=null, ehAdmin=false, conversaAtual=null;
   let painelAberto=false, listaTimer=null, modoGlobal=false;
+  let unreadGlobal=0;
+  const unreadClients=new Set();
   const idsMensagens=new Set();
+  const idsAnunciosNotificados=new Set();
 
   function obterTokenSeguro(){
     try {
@@ -5011,6 +5025,16 @@ window.addEventListener("online", function() {
     }
   }
   function definirEstado(texto){statusEl.textContent=texto;}
+  function actualizarContador(){
+    const total=ehAdmin?unreadClients.size:unreadGlobal;
+    badge.textContent=total>99?'99+':String(total);
+    badge.hidden=painelAberto||total<1;
+  }
+  function limparContador(){
+    unreadGlobal=0;
+    unreadClients.clear();
+    actualizarContador();
+  }
   function limparMensagens(){
     messages.replaceChildren();
     idsMensagens.clear();
@@ -5108,6 +5132,15 @@ window.addEventListener("online", function() {
       if(!socket||!socket.connected) return;
       if(admin&&admin.ok){
         ehAdmin=true;
+        unreadClients.clear();
+        if(!painelAberto){
+          (admin.conversations||[]).forEach(c=>{
+            if(Number(c.mensagens_nao_lidas||0)>0){
+              unreadClients.add(String(c.cliente_id||c.user_id||c.cliente||c.id));
+            }
+          });
+        }
+        actualizarContador();
         modoGlobal=false;
         panel.classList.remove('shz-global');
         panel.classList.add('shz-admin');
@@ -5146,7 +5179,26 @@ window.addEventListener("online", function() {
     });
     socket.on('chat:global:nova',m=>{
       if(!m) return;
-      if(!ehAdmin || modoGlobal) adicionarAnuncio(m);
+      if(!ehAdmin){
+        adicionarAnuncio(m);
+        const id=String(m.id||'');
+        if(!painelAberto&&id&&!idsAnunciosNotificados.has(id)){
+          idsAnunciosNotificados.add(id);
+          unreadGlobal++;
+          actualizarContador();
+        }
+      }else if(modoGlobal){
+        adicionarAnuncio(m);
+      }
+    });
+
+    socket.on('chat:apoio:nova',m=>{
+      if(!ehAdmin||!m) return;
+      if(!painelAberto&&m.userId!=null){
+        unreadClients.add(String(m.userId));
+        actualizarContador();
+      }
+      if(painelAberto) carregarLista();
     });
   }
   function desenharLista(conversas){
@@ -5162,7 +5214,7 @@ window.addEventListener("online", function() {
       const b=document.createElement('button');
       b.type='button';
       b.className=String(c.id)===String(conversaAtual)?'shz-selected':'';
-      const nome=String(c.username||c.client_username||('Cliente #'+c.id));
+      const nome=String(c.username||c.client_username||c.cliente||('Cliente #'+c.id));
       const st=String(c.status||'aberta');
       b.textContent=nome+' · '+st;
       b.addEventListener('click',()=>entrarConversa(c.id,b));
@@ -5231,6 +5283,7 @@ window.addEventListener("online", function() {
 
   btn.addEventListener('click',()=>{
     painelAberto=true;
+    limparContador();
     panel.classList.add('shz-open');
     const token=obterTokenSeguro();
     if(!token){definirEstado('Inicia sessão para usar o apoio.');return;}
@@ -5244,6 +5297,7 @@ window.addEventListener("online", function() {
   closeBtn.addEventListener('click',()=>{
     painelAberto=false;
     panel.classList.remove('shz-open');
+    actualizarContador();
   });
   refreshBtn.addEventListener('click',carregarLista);
   globalBtn.addEventListener('click',entrarModoGlobal);
@@ -5295,6 +5349,8 @@ window.addEventListener("online", function() {
     btn.hidden = false;
     if(token){
       if(tokenAtual&&tokenAtual!==token) pararLigacao();
+      // Manter a ligação activa mesmo com o painel fechado.
+      if(!socket&&tokenAtual!==token) criarLigacao(token);
     }else{
       if(socket) pararLigacao();
     }
