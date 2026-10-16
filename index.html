@@ -5093,6 +5093,17 @@ window.addEventListener("online", function() {
     socket=window.io({auth:{token:token},transports:['websocket','polling']});
     socket.on('connect',async()=>{
       definirEstado('Ligado · a verificar permissões...');
+
+      const identidade=await emitir('chat:identidade');
+      if(!socket||!socket.connected) return;
+
+      if(identidade&&identidade.ok&&identidade.username){
+        window.__shzChatUser=String(identidade.username);
+      }else{
+        falhar('Não foi possível confirmar o utilizador autenticado.');
+        return;
+      }
+
       const admin=await emitir('chat:admin:listar');
       if(!socket||!socket.connected) return;
       if(admin&&admin.ok){

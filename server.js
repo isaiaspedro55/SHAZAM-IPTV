@@ -77,6 +77,13 @@ io.on('connection', (socket) => {
     socket.user.username === ADMIN_USERNAME;
 
 
+  // Disponibiliza ao cliente a identidade autenticada pelo servidor.
+  socket.on('chat:identidade', (ack) => {
+    if (typeof ack === 'function') {
+      ack({ ok: true, username: socket.user.username });
+    }
+  });
+
   // Os sockets autenticados recebem anúncios globais.
   socket.join('global:announcements');
 
