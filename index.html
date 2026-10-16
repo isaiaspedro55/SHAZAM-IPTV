@@ -5056,7 +5056,7 @@ window.addEventListener("online", function() {
     adicionarMensagem({
       ...m,
       id:'global-'+String(m.id),
-      message:'📢 MENSAGEM GLOBAL\\n'+String(m.message||'')
+      message:'📢 MENSAGEM GLOBAL\n'+String(m.message||'')
     });
   }
   function falhar(texto){
@@ -5209,7 +5209,7 @@ window.addEventListener("online", function() {
     mostrarMensagens(lista.map(m=>({
       ...m,
       id:'global-'+String(m.id),
-      message:'📢 MENSAGEM GLOBAL\\n'+String(m.message||'')
+      message:'📢 MENSAGEM GLOBAL\n'+String(m.message||'')
     })));
     definirEstado('Modo global: a mensagem será enviada a todos os utilizadores.');
     input.focus();
