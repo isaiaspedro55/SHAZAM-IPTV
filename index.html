@@ -4823,8 +4823,9 @@ window.addEventListener("online", function() {
 #shzChatTools{display:none;gap:6px;flex-wrap:wrap;padding:8px 10px;border-top:1px solid #303b58}
 #shzChatPanel.shz-admin #shzChatTools,
 #shzChatPanel.shz-open #shzChatTools{display:flex}
-#shzChatPanel:not(.shz-admin) #shzChatRefresh,
-#shzChatPanel:not(.shz-admin) #shzChatGlobal{display:none}
+#shzChatPanel:not(.shz-admin) #shzChatRefresh{display:none}
+#shzChatPanel:not(.shz-admin) #shzChatGlobal{display:inline-block}
+#shzChatPanel.shz-global:not(.shz-admin) #shzChatForm{display:none!important}
 #shzChatPanel:not(.shz-admin) #shzChatSupport{display:inline-block}
 #shzChatRefresh,#shzChatGlobal,#shzChatSupport{border:1px solid #3b4d73;border-radius:8px;background:#1b2640;color:#dce6ff;padding:7px 9px;cursor:pointer;font-size:12px}
 #shzChatGlobal{background:#263b70;border-color:#5478d6}
@@ -5157,10 +5158,6 @@ window.addEventListener("online", function() {
         if(!r||!r.ok){falhar(r&&r.error||'Não foi possível abrir a conversa.');return;}
         conversaAtual=String(r.conversationId);
         mostrarMensagens(r.messages||[]);
-        const avisos=await emitir('chat:global:listar');
-        if(avisos&&avisos.ok&&Array.isArray(avisos.announcements)){
-          avisos.announcements.forEach(adicionarAnuncio);
-        }
         definirEstado('Conversa segura pronta. Envia a tua mensagem.');
       }
     });
@@ -5180,9 +5177,10 @@ window.addEventListener("online", function() {
     socket.on('chat:global:nova',m=>{
       if(!m) return;
       if(!ehAdmin){
-        adicionarAnuncio(m);
         const id=String(m.id||'');
-        if(!painelAberto&&id&&!idsAnunciosNotificados.has(id)){
+        if(modoGlobal){
+          adicionarAnuncio(m);
+        }else if(id&&!idsAnunciosNotificados.has(id)){
           idsAnunciosNotificados.add(id);
           unreadGlobal++;
           actualizarContador();
@@ -5243,13 +5241,15 @@ window.addEventListener("online", function() {
     definirEstado('A responder ao cliente · conversa #'+conversaAtual);
   }
   async function entrarModoGlobal(){
-    if(!socket||!socket.connected||!ehAdmin) return;
+    if(!socket||!socket.connected) return;
     modoGlobal=true;
     conversaAtual=null;
     panel.classList.add('shz-global');
+    unreadGlobal=0;
+    actualizarContador();
     inbox.querySelectorAll('button').forEach(b=>b.classList.remove('shz-selected'));
     subtitle.textContent='📢 Mensagens Globais';
-    input.placeholder='Escreve o anúncio para todos...';
+    input.placeholder=ehAdmin?'Escreve o anúncio para todos...':'Consulta os anúncios globais';
     sendBtn.textContent='Enviar a todos';
     definirEstado('A carregar o histórico global...');
     const r=await emitir('chat:global:listar');
@@ -5263,17 +5263,34 @@ window.addEventListener("online", function() {
       id:'global-'+String(m.id),
       message:'📢 MENSAGEM GLOBAL\n'+String(m.message||'')
     })));
-    definirEstado('Modo global: a mensagem será enviada a todos os utilizadores.');
+    definirEstado(ehAdmin
+      ?'Modo global: a mensagem será enviada a todos os utilizadores.'
+      :'A consultar os anúncios globais.');
     input.focus();
   }
 
-  function entrarModoApoio(){
-    if(!ehAdmin) return;
+  async function entrarModoApoio(){
     modoGlobal=false;
-    conversaAtual=null;
     panel.classList.remove('shz-global');
     input.placeholder='Escreve a tua mensagem...';
     sendBtn.textContent='Enviar';
+
+    if(!ehAdmin){
+      subtitle.textContent='Apoio ao Cliente';
+      definirEstado('A carregar a tua conversa de apoio...');
+      const r=await emitir('chat:abrir');
+      if(!r||!r.ok){
+        falhar(r&&r.error||'Não foi possível abrir a conversa.');
+        return;
+      }
+      conversaAtual=String(r.conversationId);
+      mostrarMensagens(r.messages||[]);
+      definirEstado('Conversa segura pronta. Envia a tua mensagem.');
+      input.focus();
+      return;
+    }
+
+    conversaAtual=null;
     subtitle.textContent='Painel do proprietário · Apoio';
     limparMensagens();
     empty.textContent='Selecciona uma conversa para começar.';
