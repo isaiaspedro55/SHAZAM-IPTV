@@ -4844,6 +4844,108 @@ window.addEventListener("online", function() {
     margin-right: auto;
 }
 
+
+/* SHZ CHAT LANDSCAPE LAYOUT */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  #shzChatPanel {
+    right: 10px;
+    bottom: 10px;
+    width: min(560px, calc(100vw - 20px));
+    height: calc(100dvh - 20px);
+    max-height: none;
+    border-radius: 12px;
+  }
+
+  #shzChatHead {
+    padding: 6px 10px;
+    min-height: 34px;
+  }
+
+  #shzChatHead strong {
+    font-size: 13px;
+  }
+
+  #shzChatHead small {
+    margin-top: 2px;
+    font-size: 10px;
+  }
+
+  #shzChatClose {
+    width: 29px;
+    height: 29px;
+    font-size: 20px;
+  }
+
+  #shzChatStatus {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  #shzChatMessages {
+    padding: 7px 10px;
+    gap: 5px;
+  }
+
+  .shz-msg {
+    padding: 6px 9px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  #shzChatTools {
+    flex: 0 0 auto;
+    gap: 5px;
+    padding: 5px 8px;
+  }
+
+  #shzChatRefresh,
+  #shzChatGlobal,
+  #shzChatSupport {
+    padding: 5px 8px;
+    border-radius: 7px;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  #shzChatForm {
+    flex: 0 0 auto;
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  #shzChatInput {
+    min-height: 34px;
+    max-height: 65px;
+    padding: 7px 9px;
+    font-size: 13px;
+  }
+
+  #shzChatSend {
+    min-width: 58px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-height: 400px) {
+  #shzChatHead {
+    padding: 4px 8px;
+  }
+
+  #shzChatStatus {
+    padding: 3px 8px;
+  }
+
+  #shzChatTools {
+    padding: 3px 6px;
+  }
+
+  #shzChatForm {
+    padding: 4px 6px;
+  }
+}
+/* END SHZ CHAT LANDSCAPE LAYOUT */
+
 </style>
 
 <button id="shzChatBtn" type="button">💬 Chat</button>
