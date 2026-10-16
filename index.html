@@ -5040,7 +5040,7 @@ window.addEventListener("online", function() {
     empty.hidden=true;
     const item=document.createElement('div');
     const nome=String(m.sender||m.sender_username||'');
-    const minha=ehAdmin ? nome===String(window.__shzChatUser||'') : false;
+    const minha=nome===String(window.__shzChatUser||'');
     item.className='shz-msg'+(minha?' shz-mine':'');
     const texto=document.createElement('div');
     texto.textContent=String(m.message||'');
