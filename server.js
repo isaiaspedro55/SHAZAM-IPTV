@@ -46,6 +46,107 @@ app.use(express.json({limit:'10kb'}));
 app.use('/api/catalogo', require('./tmdb'));
 app.use('/api/iptv', require('./canais-api'));
 
+// SHAZAM IPTV — pesquisa e reprodução pelo servidor YouTube.
+const SHAZAM_VIDEO_API = 'https://pro-apis.zone.id';
+
+app.get('/api/shazam/youtube', async (req, res) => {
+  try {
+    const q = String(req.query.q || '').trim();
+
+    if (!q || q.length > 180) {
+      return res.status(400).json({ error: 'Indica um título válido.' });
+    }
+
+    const url = new URL('/api/search/yts', SHAZAM_VIDEO_API);
+    url.searchParams.set('q', q);
+    url.searchParams.set('key', process.env.SHAZAM_VIDEO_API_KEY || 'freekey');
+
+    const r = await fetch(url, { signal: AbortSignal.timeout(20000) });
+    const dados = await r.json();
+
+    if (!r.ok || dados.success !== true) {
+      return res.status(502).json({
+        error: dados.message || 'A pesquisa está indisponível ou atingiu um limite.'
+      });
+    }
+
+    const resultados = Array.isArray(dados.data?.results)
+      ? dados.data.results
+      : [];
+
+    return res.json({
+      ok: true,
+      query: q,
+      resultados: resultados.slice(0, 10).filter(v =>
+        typeof v.videoId === 'string' &&
+        /^[A-Za-z0-9_-]{11}$/.test(v.videoId)
+      ).map(v => ({
+        titulo: String(v.title || 'Vídeo sem título').slice(0, 250),
+        id: v.videoId,
+        duracao: String(v.duration || ''),
+        autor: String(v.author || ''),
+        thumbnail: String(v.thumbnail || '')
+      }))
+    });
+  } catch (erro) {
+    console.error('Pesquisa YouTube:', erro.message);
+    return res.status(502).json({
+      error: 'Não foi possível pesquisar agora. Tenta novamente mais tarde.'
+    });
+  }
+});
+
+app.get('/api/shazam/youtube/video', async (req, res) => {
+  try {
+    const id = String(req.query.id || '');
+
+    if (!/^[A-Za-z0-9_-]{11}$/.test(id)) {
+      return res.status(400).json({ error: 'ID de vídeo inválido.' });
+    }
+
+    const url = new URL('/api/download/ytmp4', SHAZAM_VIDEO_API);
+    url.searchParams.set('url', 'https://www.youtube.com/watch?v=' + id);
+    url.searchParams.set('key', process.env.SHAZAM_VIDEO_API_KEY || 'freekey');
+
+    const r = await fetch(url, { signal: AbortSignal.timeout(30000) });
+    const dados = await r.json();
+
+    if (!r.ok || dados.success !== true) {
+      return res.status(502).json({
+        error: dados.message || 'Não foi possível obter este vídeo. Verifica o limite da API.'
+      });
+    }
+
+    const link = dados.data?.downloadUrl;
+    let destino;
+
+    try {
+      destino = new URL(link);
+    } catch {
+      return res.status(502).json({ error: 'A API devolveu um link inválido.' });
+    }
+
+    const dominiosAutorizados = new Set([
+      'vps-7f0498ef.iiilllilllliiiill.shop',
+      'vps-b513c143.rnrnrmnmrnrrn.shop'
+    ]);
+
+    if (
+      destino.protocol !== 'https:' ||
+      !dominiosAutorizados.has(destino.hostname)
+    ) {
+      return res.status(502).json({ error: 'O link de vídeo não passou na validação.' });
+    }
+
+    return res.json({ ok: true, url: destino.href });
+  } catch (erro) {
+    console.error('Reprodução YouTube:', erro.message);
+    return res.status(502).json({
+      error: 'O servidor de vídeo está indisponível. Tenta novamente mais tarde.'
+    });
+  }
+});
+
 app.use(express.static(__dirname));
 
 io.use(async (socket, next) => {
