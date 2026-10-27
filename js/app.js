@@ -315,9 +315,33 @@ const SHAZAM = {
         <a class="item" href="https://wa.me/244950898368" target="_blank" rel="noopener noreferrer">Contactar suporte <span>↗</span></a>`;
     } else if (acao === "informacoes") {
       titulo.textContent = "Informações e suporte";
-      descricao.textContent = "Contacta o suporte ou acompanha o canal oficial.";
-      conteudo.innerHTML = `<a class="item" href="https://wa.me/244950898368" target="_blank" rel="noopener noreferrer">WhatsApp · 950 898 368 <span>↗</span></a>
-        <a class="item" href="https://whatsapp.com/channel/0029VbD1YXB5PO0woGQqs63c" target="_blank" rel="noopener noreferrer">Canal oficial <span>↗</span></a>`;
+      descricao.textContent = "Conhece o SHAZAM IPTV e encontra os nossos canais oficiais de suporte.";
+
+      conteudo.innerHTML = `
+        <section class="shz-sobre-app">
+
+          <p>
+            Uma plataforma de entretenimento digital criada para facilitar
+            a descoberta e o acesso aos conteúdos disponíveis no serviço.
+          </p>
+          <p>
+            Explora filmes, séries, animes e canais de televisão,
+            organiza os teus favoritos e consulta o histórico de visualização,
+            conforme as funcionalidades disponíveis na plataforma.
+          </p>
+          <div class="shz-sobre-responsavel">
+            <span>Proprietário e desenvolvedor</span>
+            <strong>ISAÍAS PEDRO</strong>
+          </div>
+        </section>
+
+
+        <a class="item" href="https://wa.me/244950898368" target="_blank" rel="noopener noreferrer">
+          WhatsApp · 950 898 368 <span>↗</span>
+        </a>
+        <a class="item" href="https://whatsapp.com/channel/0029VbD1YXB5PO0woGQqs63c" target="_blank" rel="noopener noreferrer">
+          Canal oficial SHAZAM IPTV <span>↗</span>
+        </a>`;
     }
 
     painel.scrollIntoView({behavior:"smooth", block:"nearest"});
