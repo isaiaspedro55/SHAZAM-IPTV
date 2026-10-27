@@ -1,0 +1,1604 @@
+/* Shazam IPTV — um só layout que se adapta à vertical e à horizontal */
+:root{--bg:#090b0f;--card:#11141a;--line:#20242c;--red:#e5262d;--mut:#9aa1ad;--gold:#f5b50a;color-scheme:dark}
+/* vertical: telemóvel ou tablet em pé */
+@media(orientation:portrait){:root{--fs:calc(clamp(.5px,.14vw,.95px)*22);--logo:2.7rem;--hero-h:19.6rem;--hero-p:2.3rem;--hero-w:58%;--h2:2.3rem;--cc-w:15rem;--cc-th:7.1rem;--ct-w:8rem;--ct-h:5.1rem;--pc-w:8.9rem;--pad:1rem;--sec:1.55rem;--gap:.8rem}}
+/* horizontal: TV, tablet deitado, computador */
+@media(orientation:landscape){:root{--fs:clamp(11px,min(1.15vw,2.1vh),26px);--logo:2.3rem;--hero-h:min(47vh,31rem);--hero-p:3.4rem;--hero-w:44%;--h2:clamp(1.9rem,3.4vw,3.2rem);--cc-w:17.5rem;--cc-th:8.4rem;--ct-w:9.6rem;--ct-h:5.8rem;--pc-w:10.6rem;--pad:2.2rem;--sec:1.7rem;--gap:1rem}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:var(--fs);background:var(--bg)}
+body{background:var(--bg);color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding-top:env(safe-area-inset-top,0)}
+@media(orientation:portrait){body{padding-bottom:calc(7.2rem + env(safe-area-inset-bottom,0px))}}
+@media(orientation:landscape){body{padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) 2.5rem calc(5.2rem + env(safe-area-inset-left,0px))}}
+button,input{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer;text-align:left}
+button:focus{outline:none}
+svg.i{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.app{padding:0 var(--pad)}
+.view{display:none}.view.on{display:block}
+
+/* foco: toque, rato, teclado e comando de TV */
+.pc:focus-visible .poster,.cc-play:focus-visible,.ct:focus-visible,.canal:focus-visible,.btn-play:focus-visible,.btn-info:focus-visible,.hb button:focus-visible,.item:focus-visible,.inf:focus-visible,.busca:focus-within,#pFechar:focus-visible{box-shadow:0 0 0 .16rem #fff,0 0 1.4rem rgba(229,38,45,.75);transform:scale(1.04)}
+#nav button:focus-visible{box-shadow:inset 0 0 0 .14rem #fff}
+.poster,.cc-play,.ct,.canal,.btn-play,.btn-info{transition:transform .15s,box-shadow .15s}
+
+/* navegação: barra flutuante em baixo (vertical) ou lateral (horizontal) */
+#nav{position:fixed;z-index:30;display:flex}
+#nav button{display:flex;align-items:center;color:#b4b9c3}
+#nav button.on{color:#fff;background:radial-gradient(90% 120% at 50% 25%,#c2202a,#7a0f17);box-shadow:0 0 1.2rem rgba(229,38,45,.32)}
+@media(orientation:portrait){
+  #nav{left:50%;transform:translateX(-50%);bottom:calc(.6rem + env(safe-area-inset-bottom,0px));width:min(92vw,520px);height:5.4rem;border-radius:2.7rem;background:rgba(18,20,26,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #262a33;justify-content:space-around;padding:.45rem;box-shadow:0 .6rem 2rem rgba(0,0,0,.6)}
+  #nav button{flex:1;height:100%;flex-direction:column;justify-content:center;gap:.3rem;font-size:.78rem;border-radius:2.3rem;text-align:center}
+  #nav button svg{font-size:1.55rem}}
+@media(orientation:landscape){
+  #nav{left:0;top:0;bottom:0;width:4.7rem;flex-direction:column;justify-content:center;gap:.4rem;padding:1rem .8rem 1rem calc(.8rem + env(safe-area-inset-left,0px));background:linear-gradient(90deg,#0a0c10 85%,transparent);transition:width .2s;overflow:hidden}
+  #nav:hover,#nav:focus-within{width:13.5rem;background:#0b0d12;border-right:1px solid var(--line)}
+  #nav button{height:3.1rem;padding:0 .85rem;gap:1rem;font-size:1rem;border-radius:.9rem;white-space:nowrap}
+  #nav button svg{font-size:1.5rem}}
+
+/* topo */
+header{display:flex;align-items:center;justify-content:space-between;padding:1rem 0 .8rem}
+.logo{position:relative;font-weight:900;font-style:italic;font-size:var(--logo);letter-spacing:-.04em;line-height:1;padding-bottom:.5rem;display:flex;align-items:center}
+.logo svg{width:.8em;height:1em;margin:0 -.02em;fill:var(--red);stroke:none;filter:drop-shadow(0 0 .3rem rgba(229,38,45,.6))}
+.logo small{position:absolute;right:.1rem;bottom:-.2rem;font-size:.75rem;font-style:normal;font-weight:700;letter-spacing:.14em;color:#e9ebef}
+.hb{display:flex;gap:1rem;align-items:center}
+.hb button{width:2.5rem;height:2.5rem;display:grid;place-items:center;font-size:1.45rem;border-radius:50%}
+.hb .perfil{border:2px solid var(--red);color:var(--red);box-shadow:0 0 .8rem rgba(229,38,45,.5),inset 0 0 .5rem rgba(229,38,45,.25)}
+
+/* destaque */
+.hero{position:relative;border-radius:1.3rem;border:1px solid var(--line);overflow:hidden;height:var(--hero-h);min-height:15rem;background:#120709}
+.slide{position:absolute;inset:0;padding:0 var(--hero-p);display:flex;flex-direction:column;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s;
+  background:radial-gradient(60% 95% at 80% 32%,hsl(var(--h) 75% 34% / .85),transparent 72%),linear-gradient(100deg,#0b0c10 32%,hsl(var(--h) 55% 9%) 100%)}
+.slide.on{opacity:1;pointer-events:auto}
+.slide>*{max-width:var(--hero-w)}
+.sel{color:var(--red);font-weight:700;font-size:.82rem;letter-spacing:.1em;margin-bottom:.4rem}
+.slide h2{font-size:var(--h2);font-weight:800;line-height:1.08;letter-spacing:-.02em}
+.slide .meta{color:#cfd3da;font-size:.92rem;margin-top:.5rem}
+.slide p{font-size:1rem;line-height:1.42;color:#cfd3da;margin:.55rem 0 1rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.acts{display:flex;gap:.65rem}
+.btn-play{display:flex;align-items:center;gap:.5rem;height:2.7rem;padding:0 1.4rem;border-radius:.55rem;background:linear-gradient(180deg,#ee2b32,#c4141c);font-weight:700;font-size:1.02rem}
+.btn-info{width:2.7rem;height:2.7rem;display:grid;place-items:center;border-radius:.55rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);font-size:1.2rem}
+.dots{position:absolute;bottom:.9rem;display:flex;gap:.6rem}
+.dots button{width:.5rem;height:.5rem;border-radius:50%;background:#555a63;padding:0}
+.dots button.on{background:var(--red)}
+@media(orientation:portrait){.dots{left:0;right:0;justify-content:center}}
+@media(orientation:landscape){.dots{left:var(--hero-p)}.dots button.on{width:1.4rem;border-radius:1rem}}
+@media(orientation:landscape) and (max-height:430px){.hero{height:62vh}.slide p{-webkit-line-clamp:2}}
+
+/* secções */
+.sec{margin-top:var(--sec)}
+.sec-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.sec-h h3{color:var(--red);font-size:.92rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.sec-h button{color:var(--mut);font-size:.85rem;padding:.3rem .6rem;border-radius:.4rem}
+.sec-h button:focus-visible{box-shadow:0 0 0 .14rem #fff}
+.row{display:flex;gap:var(--gap);overflow-x:auto;margin:0 calc(var(--pad)*-1);padding:.5rem var(--pad) .9rem;scrollbar-width:none;scroll-snap-type:x proximity}
+.row::-webkit-scrollbar{display:none}
+.row>*{flex:none;scroll-snap-align:start}
+@media(hover:hover) and (orientation:landscape){.row{scrollbar-width:thin;scrollbar-color:#2a2f38 transparent}}
+
+.cc{position:relative;width:var(--cc-w)}
+.cc-play{display:block;width:100%;border:1px solid var(--line);border-radius:.9rem;background:var(--card);overflow:hidden}
+.cc .th{position:relative;height:var(--cc-th);display:grid;place-items:center;background:linear-gradient(150deg,hsl(var(--h) 45% 26%),hsl(var(--h) 40% 8%)) center/cover}
+.cc .pl{width:2.5rem;height:2.5rem;border:2px solid #fff;border-radius:50%;display:grid;place-items:center;font-size:1.05rem;background:rgba(0,0,0,.25)}
+.cc .pr{position:absolute;left:.8rem;right:.8rem;bottom:.4rem;height:.23rem;border-radius:1rem;background:rgba(255,255,255,.28)}
+.cc .pr i{display:block;height:100%;border-radius:1rem;background:var(--red)}
+.cc .tx{padding:.55rem 2.6rem .7rem .8rem}
+.cc h4{font-size:.95rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc p{font-size:.8rem;color:var(--mut);margin-top:.15rem}
+.cc .inf{position:absolute;right:.5rem;bottom:.55rem;font-size:1.1rem;color:#c8ccd4;padding:.25rem;border-radius:50%}
+
+.ct{width:var(--ct-w);height:var(--ct-h);border-radius:.7rem;border:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;font-size:.85rem;color:#e3e6eb;text-align:center}
+.ct svg{font-size:1.75rem;color:#b9bec8}
+.ct.on{background:linear-gradient(180deg,#c7202a,#8f111a);border-color:#d8323b;color:#fff}.ct.on svg{color:#fff}
+
+.pc{width:var(--pc-w);display:block}
+.poster{position:relative;width:100%;aspect-ratio:2/3;border-radius:.75rem;border:1px solid var(--line);background-color:#151820;background-position:center;background-size:contain;background-repeat:no-repeat;display:flex;align-items:flex-end;padding:.65rem;overflow:hidden;box-sizing:border-box;}
+.poster b{font-size:1.05rem;line-height:1.1;font-weight:900;text-transform:uppercase;text-shadow:0 .1rem .5rem rgba(0,0,0,.6);letter-spacing:-.01em}
+.novo{position:absolute;top:.5rem;left:.5rem;background:var(--red);font-style:normal;font-weight:800;font-size:.7rem;padding:.2rem .5rem;border-radius:.28rem}
+.pc h4{font-size:.95rem;font-weight:700;margin-top:.6rem;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc p{font-size:.8rem;color:var(--mut);margin-top:.2rem}
+.pc .st{font-size:.85rem;font-weight:700;margin-top:.25rem}.pc .st::first-letter{color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--pc-w),1fr));gap:1.5rem var(--gap);padding:.6rem .4rem}
+.grid .pc{width:auto}
+.vazio{color:var(--mut);font-size:.95rem;padding:1.2rem 0;line-height:1.5}
+
+/* páginas internas */
+.titulo{font-size:1.8rem;font-weight:800;margin:.5rem 0 1rem}
+.busca{display:flex;align-items:center;gap:.7rem;background:var(--card);border:1px solid var(--line);border-radius:.8rem;padding:0 1rem;height:3rem;max-width:40rem}
+.busca input{flex:1;background:none;border:0;outline:none;font-size:1.05rem}
+.canais{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.8rem;padding:.6rem .4rem}
+.canal{display:flex;align-items:center;gap:.9rem;padding:.85rem;border:1px solid var(--line);background:var(--card);border-radius:.9rem;width:100%}
+.canal .lg{width:3.2rem;height:3.2rem;border-radius:.7rem;display:grid;place-items:center;font-weight:900;background:linear-gradient(150deg,hsl(var(--h) 60% 35%),hsl(var(--h) 50% 12%))}
+.canal h4{font-size:.98rem}.canal p{font-size:.82rem;color:var(--mut)}
+.live{margin-left:auto;font-size:.68rem;font-weight:800;background:var(--red);padding:.2rem .5rem;border-radius:.3rem}
+.conta{display:flex;align-items:center;gap:1rem;padding:1rem;border:1px solid var(--line);background:var(--card);border-radius:1rem;margin-bottom:1rem;max-width:34rem}
+.conta .av{width:3.4rem;height:3.4rem;border-radius:50%;border:2px solid var(--red);display:grid;place-items:center;color:var(--red);font-size:1.7rem}
+.conta small{color:var(--mut)}
+.item{display:flex;justify-content:space-between;width:100%;max-width:34rem;padding:1rem .8rem;border-bottom:1px solid var(--line);font-size:1.02rem;border-radius:.5rem}
+
+/* ficha e player */
+.ov{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.75);display:none;justify-content:center}
+.ov.on{display:flex}
+.sheet{background:#12151b;border:1px solid var(--line);animation:abre .22s ease-out}
+.sheet h2{font-size:1.9rem;font-weight:800}.sheet .meta{color:var(--mut);font-size:.95rem;margin:.4rem 0 .8rem}
+.sheet p{line-height:1.5;color:#d3d7de;font-size:1.02rem;margin-bottom:1.1rem}
+@keyframes abre{from{transform:translateY(30px);opacity:0}}
+@media(orientation:portrait){.ov{align-items:flex-end}.sheet{width:min(100%,640px);border-radius:1.4rem 1.4rem 0 0;padding:1.3rem 1.3rem calc(1.5rem + env(safe-area-inset-bottom,0px))}.sheet .poster{display:none}}
+@media(orientation:landscape){.ov{align-items:center;padding:1rem}.sheet{width:min(62rem,92vw);display:grid;grid-template-columns:12rem 1fr;gap:1.6rem;border-radius:1.3rem;padding:1.6rem}.sheet .poster{align-self:start}}
+#player{background:#000;padding:0;align-items:center}
+#vid{width:100vw;height:100vh;background:#000;object-fit:contain}
+#pMsg{position:absolute;left:0;right:0;top:50%;text-align:center;color:var(--mut);padding:0 2rem;line-height:1.5;font-size:1.05rem;pointer-events:none}
+#pFechar{position:absolute;top:calc(1rem + env(safe-area-inset-top,0px));right:1.2rem;width:2.8rem;height:2.8rem;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center;font-size:1.25rem;z-index:2}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+
+/* Navegação por categorias IPTV */
+.iptv-top,.iptv-lista-top{margin:0 0 1rem;display:flex;flex-direction:column;gap:.45rem}
+.iptv-top h2,.iptv-lista-top h2{margin:0;font-size:1.25rem}
+.iptv-top p,.iptv-lista-top p{margin:0;color:var(--muted,#9ca3af);font-size:.9rem}
+.iptv-categorias{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:.75rem}
+.iptv-categoria{display:flex;align-items:center;gap:.85rem;text-align:left;padding:1rem;border:1px solid var(--border,#292d36);border-radius:14px;background:var(--panel,#151820);color:inherit;cursor:pointer;min-height:82px}
+.iptv-categoria:focus-visible,.iptv-voltar:focus-visible,.iptv-paginacao button:focus-visible{outline:2px solid var(--accent,#6d8cff);outline-offset:3px}
+.iptv-cat-ico{display:grid;place-items:center;width:44px;height:44px;flex-shrink:0;border-radius:12px;background:rgba(100,120,255,.14)}
+.iptv-cat-ico svg{width:23px;height:23px}
+.iptv-cat-info{display:flex;flex-direction:column;gap:.35rem;min-width:0}
+.iptv-cat-info b{font-size:.92rem}
+.iptv-cat-info small{color:var(--muted,#9ca3af)}
+.iptv-seta{margin-left:auto;font-size:1.6rem;color:var(--muted,#9ca3af)}
+.iptv-voltar{align-self:flex-start;border:1px solid var(--border,#292d36);border-radius:10px;padding:.65rem .9rem;background:var(--panel,#151820);color:inherit;cursor:pointer}
+.iptv-lista{display:flex;flex-direction:column;gap:.55rem}
+.iptv-lista .canal{width:100%;text-align:left}
+.iptv-lista .lg{display:grid;place-items:center;overflow:hidden;flex-shrink:0}
+.iptv-lista .lg img{width:100%;height:100%;object-fit:contain}
+.canal-info{min-width:0;flex:1}
+.canal-info h4{margin:0 0 .25rem}
+.canal-info p{margin:0;color:var(--muted,#9ca3af);font-size:.8rem}
+.iptv-paginacao{display:flex;align-items:center;justify-content:center;gap:1rem;margin:1rem 0}
+.iptv-paginacao button{padding:.7rem .9rem;border:1px solid var(--border,#292d36);border-radius:10px;background:var(--panel,#151820);color:inherit;cursor:pointer}
+.iptv-paginacao button:disabled{opacity:.4;cursor:not-allowed}
+.iptv-paginacao span{font-size:.9rem;color:var(--muted,#9ca3af)}
+@media(max-width:480px){.iptv-categorias{grid-template-columns:1fr}.iptv-categoria{min-height:74px}.iptv-lista .canal{gap:.6rem}}
+
+
+/* SHAZAM IPTV — programação EPG no player */
+#epgInfo{
+  position:absolute;
+  left:1rem;
+  right:1rem;
+  bottom:calc(1rem + env(safe-area-inset-bottom,0px));
+  z-index:2;
+  max-width:850px;
+  margin:auto;
+  padding:.85rem 1rem;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:.8rem;
+  background:rgba(8,10,14,.82);
+  color:#fff;
+  backdrop-filter:blur(8px);
+  pointer-events:none;
+}
+#epgAtual{font-size:.95rem;font-weight:700;line-height:1.5}
+#epgProximo{font-size:.83rem;line-height:1.5;color:#d0d5df;margin-top:.35rem}
+#epgInfo:empty{display:none}
+#player #pMsg{z-index:1}
+#player #vid{display:block}
+@media(max-width:600px){
+  #epgInfo{left:.5rem;right:.5rem;bottom:calc(.5rem + env(safe-area-inset-bottom,0px));padding:.65rem .75rem}
+  #epgAtual{font-size:.82rem}
+  #epgProximo{font-size:.75rem}
+}
+
+/* SHAZAM_LOGIN_STYLE_V1 */
+[hidden] {
+  display: none !important;
+}
+
+.shz-login {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow-y: auto;
+  background:
+    radial-gradient(ellipse at top, rgba(194,32,42,.2), transparent 55%),
+    #090b0f;
+}
+
+.shz-login-card {
+  width: min(100%, 420px);
+  padding: clamp(24px, 6vw, 38px);
+  border: 1px solid #292d36;
+  border-radius: 22px;
+  background: #11141b;
+  box-shadow: 0 24px 80px rgba(0,0,0,.45);
+}
+
+.shz-login-card .logo {
+  margin-bottom: 32px;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+
+.shz-login-card .logo small {
+  display: block;
+  margin-top: 4px;
+  color: #e5262d;
+  font-size: .7rem;
+  letter-spacing: .28em;
+}
+
+.shz-login-card h1 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: clamp(1.7rem, 6vw, 2.2rem);
+}
+
+.shz-login-card > p {
+  margin: 0 0 24px;
+  color: #aeb4c0;
+  line-height: 1.6;
+}
+
+.shz-login-card label {
+  display: block;
+  margin: 18px 0 8px;
+  color: #e0e3e9;
+  font-size: .9rem;
+}
+
+.shz-login-card input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #343a46;
+  border-radius: 10px;
+  outline: none;
+  background: #090b0f;
+  color: #fff;
+}
+
+.shz-login-card input:focus {
+  border-color: #e5262d;
+  box-shadow: 0 0 0 3px rgba(229,38,45,.15);
+}
+
+.shz-login-card button[type="submit"] {
+  width: 100%;
+  min-height: 49px;
+  margin-top: 24px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #e5262d, #a80e18);
+  color: #fff;
+  font-weight: 800;
+  text-align: center;
+  transition: opacity .2s ease;
+}
+
+.shz-login-card button[type="submit"]:disabled {
+  cursor: wait;
+  opacity: .6;
+}
+
+.shz-login-card #shzLoginMsg {
+  min-height: 1.4em;
+  margin: 14px 0 0;
+  color: #ff858a;
+  font-size: .9rem;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .shz-login {
+    padding: 16px;
+  }
+
+  .shz-login-card {
+    padding: 25px 20px;
+    border-radius: 18px;
+  }
+}
+
+
+/* SHAZAM_SERVERS_OUTSIDE_PLAYER_V1 */
+.shazam-server-overlay {
+  z-index: 80;
+  align-items: center;
+  padding: 18px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+.shazam-server-panel {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, 560px);
+  max-height: min(88dvh, 850px);
+  overflow-y: auto;
+  padding: 26px 22px;
+  border: 1px solid #343a46;
+  border-radius: 20px;
+  background: #11141b;
+  color: #f7f8fa;
+  box-shadow: 0 24px 80px rgba(0,0,0,.55);
+}
+.shazam-server-panel h2 {
+  margin: 4px 0 12px;
+  font-size: 1.55rem;
+}
+.shazam-server-kicker {
+  margin: 0 0 8px;
+  color: #e5262d;
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .18em;
+}
+.shazam-server-title {
+  color: #b4b9c3;
+  overflow-wrap: anywhere;
+}
+.shazam-server-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #222630;
+  text-align: center;
+}
+.shazam-server-button {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 17px;
+  border: 1px solid #343a46;
+  border-radius: 12px;
+  background: #191d26;
+  font-weight: 800;
+}
+.shazam-server-button span {
+  color: #b4b9c3;
+  font-size: .85rem;
+  font-weight: 400;
+}
+.shazam-server-button:active,
+.youtube-assistir:active {
+  transform: scale(.98);
+}
+.shazam-server-panel [role="status"] {
+  color: #ff858a;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.youtube-resultados {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0;
+}
+.youtube-cartao {
+  display: grid;
+  grid-template-columns: 34px minmax(0,1fr);
+  gap: 7px 10px;
+  padding: 14px;
+  border: 1px solid #303642;
+  border-radius: 12px;
+  background: #191d26;
+}
+.youtube-numero {
+  grid-row: span 3;
+  color: #e5262d;
+  font-weight: 900;
+}
+.youtube-cartao strong {
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+.youtube-cartao p {
+  margin: 0;
+  color: #b4b9c3;
+  font-size: .85rem;
+  overflow-wrap: anywhere;
+}
+.youtube-assistir {
+  justify-self: start;
+  margin-top: 5px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #e5262d;
+  color: white;
+  font-weight: 800;
+}
+.youtube-assistir:disabled,
+.shazam-server-button:disabled {
+  opacity: .55;
+}
+.shazam-server-back {
+  padding: 10px 0;
+  color: #e6e8ed;
+}
+@media (max-width: 480px) {
+  .shazam-server-overlay {
+    padding: 12px;
+  }
+  .shazam-server-panel {
+    padding: 23px 16px;
+    border-radius: 16px;
+  }
+}
+
+
+/* SHAZAM SUPPORT CHAT — integração do redesign */
+#shzChatBtn{position:fixed;right:18px;bottom:20px;z-index:9990;border:0;border-radius:30px;padding:14px 20px;background:linear-gradient(135deg,#1769ff,#873bff);color:#fff;font-weight:800;font-size:14px;box-shadow:0 8px 28px #0006;cursor:pointer}
+.shz-chat-badge{position:absolute;top:-7px;right:-7px;min-width:21px;height:21px;padding:0 5px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#ff304f;color:#fff;border:2px solid #101525;font:bold 12px Arial,sans-serif;box-sizing:border-box}
+.shz-chat-badge[hidden]{display:none!important}
+#shzChatPanel{position:fixed;right:16px;bottom:82px;z-index:9991;width:min(390px,calc(100vw - 24px));height:min(570px,calc(100dvh - 110px));background:#101525;color:#f5f7ff;border:1px solid #344164;border-radius:18px;box-shadow:0 18px 55px #0009;display:none;overflow:hidden;font-family:Arial,sans-serif}
+#shzChatPanel.shz-open{display:flex;flex-direction:column}
+#shzChatHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px;background:linear-gradient(120deg,#1259db,#7135d9)}
+#shzChatHead strong{font-size:15px}
+#shzChatHead small{display:block;margin-top:4px;opacity:.85}
+#shzChatClose{background:#ffffff20;border:0;color:white;font-size:23px;border-radius:8px;width:36px;height:36px;cursor:pointer}
+#shzChatStatus{padding:8px 12px;background:#171e31;color:#aebfe9;font-size:12px}
+#shzChatLayout{display:flex;flex:1;min-height:0}
+#shzChatInbox{display:none;width:36%;min-width:110px;overflow:auto;border-right:1px solid #303b58}
+#shzChatPanel.shz-admin #shzChatInbox{display:block}
+#shzChatInbox button{display:block;width:100%;padding:11px 8px;text-align:left;color:#fff;background:transparent;border:0;border-bottom:1px solid #303b58;cursor:pointer;overflow-wrap:anywhere;font-size:12px}
+#shzChatInbox button.shz-selected{background:#26365c}
+#shzChatMain{display:flex;flex:1;min-width:0;flex-direction:column}
+#shzChatMessages{flex:1;min-height:0;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:9px}
+.shz-msg{max-width:88%;align-self:flex-start;background:#202b43;border:1px solid #334362;border-radius:12px 12px 12px 3px;padding:9px 11px;overflow-wrap:anywhere;white-space:pre-wrap;font-size:13px;line-height:1.45}
+.shz-msg.shz-mine{align-self:flex-end;background:#243c78;border-color:#385cb2;border-radius:12px 12px 3px 12px}
+.shz-msg small{display:block;margin-top:5px;color:#b7c5e8;font-size:10px}
+#shzChatEmpty{margin:auto;text-align:center;color:#a9b5d2;font-size:13px;padding:15px}
+#shzChatForm{display:flex;gap:7px;padding:10px;border-top:1px solid #303b58}
+#shzChatInput{flex:1;min-width:0;resize:none;max-height:90px;border:1px solid #3c4b6c;border-radius:10px;background:#0b1020;color:#fff;padding:10px;font:13px Arial;outline:none}
+#shzChatSend{border:0;border-radius:10px;padding:0 14px;background:#2869ef;color:white;font-weight:bold;cursor:pointer}
+#shzChatSend:disabled{opacity:.45}
+#shzChatPhoto{
+  flex:0 0 42px;min-width:42px;min-height:42px;
+  border:1px solid #3c4b6c;border-radius:10px;
+  background:#17233e;color:#fff;font-size:21px;
+  cursor:pointer;
+}
+#shzChatPhoto:disabled{opacity:.45}
+.shz-chat-file-input{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);clip-path:inset(50%);
+  white-space:nowrap;border:0;opacity:0;
+}
+.shz-msg img.shz-chat-photo{
+  display:block;width:auto;height:auto;
+  max-width:min(100%,320px);max-height:320px;
+  object-fit:contain;border-radius:9px;
+  margin-top:3px;cursor:zoom-in;
+}
+#shzChatTools{display:none;gap:6px;flex-wrap:wrap;padding:8px 10px;border-top:1px solid #303b58}
+#shzChatPanel.shz-admin #shzChatTools,
+#shzChatPanel.shz-open #shzChatTools{display:flex}
+#shzChatPanel:not(.shz-admin) #shzChatRefresh{display:none}
+#shzChatPanel:not(.shz-admin) #shzChatGlobal{display:inline-block}
+#shzChatPanel.shz-global:not(.shz-admin) #shzChatForm{display:none!important}
+#shzChatPanel:not(.shz-admin) #shzChatSupport{display:inline-block}
+#shzChatRefresh,#shzChatGlobal,#shzChatSupport{border:1px solid #3b4d73;border-radius:8px;background:#1b2640;color:#dce6ff;padding:7px 9px;cursor:pointer;font-size:12px}
+#shzChatGlobal{background:#263b70;border-color:#5478d6}
+#shzChatPanel.shz-global #shzChatInbox{display:none}
+#shzChatPanel.shz-global #shzChatMain{flex:1}
+@media(max-width:420px){#shzChatBtn{right:12px;bottom:14px;padding:12px 15px}#shzChatPanel{right:8px;bottom:70px;width:calc(100vw - 16px);height:min(600px,calc(100dvh - 85px))}}
+
+
+/* SHZ CHAT LANDSCAPE LAYOUT */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  #shzChatPanel {
+    right: 10px;
+    bottom: 10px;
+    width: min(560px, calc(100vw - 20px));
+    height: calc(100dvh - 20px);
+    max-height: none;
+    border-radius: 12px;
+  }
+
+  #shzChatHead {
+    padding: 6px 10px;
+    min-height: 34px;
+  }
+
+  #shzChatHead strong {
+    font-size: 13px;
+  }
+
+  #shzChatHead small {
+    margin-top: 2px;
+    font-size: 10px;
+  }
+
+  #shzChatClose {
+    width: 29px;
+    height: 29px;
+    font-size: 20px;
+  }
+
+  #shzChatStatus {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  #shzChatMessages {
+    padding: 7px 10px;
+    gap: 5px;
+  }
+
+  .shz-msg {
+    padding: 6px 9px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  #shzChatTools {
+    flex: 0 0 auto;
+    gap: 5px;
+    padding: 5px 8px;
+  }
+
+  #shzChatRefresh,
+  #shzChatGlobal,
+  #shzChatSupport {
+    padding: 5px 8px;
+    border-radius: 7px;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  #shzChatForm {
+    flex: 0 0 auto;
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  #shzChatInput {
+    min-height: 34px;
+    max-height: 65px;
+    padding: 7px 9px;
+    font-size: 13px;
+  }
+
+  #shzChatSend {
+    min-width: 58px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-height: 400px) {
+  #shzChatHead {
+    padding: 4px 8px;
+  }
+
+  #shzChatStatus {
+    padding: 3px 8px;
+  }
+
+  #shzChatTools {
+    padding: 3px 6px;
+  }
+
+  #shzChatForm {
+    padding: 4px 6px;
+  }
+}
+/* END SHZ CHAT LANDSCAPE LAYOUT */
+/* FIM SHAZAM SUPPORT CHAT */
+
+/* No redesign, o acesso ao chat é feito pelo botão Mensagens do cabeçalho. */
+#shzChatBtn {
+  position: fixed !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* SHAZAM CHAT MODERNO V2 */
+#shzChatPanel {
+  box-sizing: border-box;
+  right: 16px;
+  bottom: 16px;
+  width: min(360px, 86vw);
+  height: min(450px, 72dvh);
+  min-height: 300px;
+  background: #0b0b0e;
+  color: #f5f5f7;
+  border: 1px solid #482024;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px #000b, 0 0 24px #e5262d18;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+#shzChatHead {
+  flex: 0 0 auto;
+  padding: 13px 14px;
+  background: linear-gradient(120deg, #8e1118, #e5262d 65%, #9f151c);
+  border-bottom: 1px solid #ff555533;
+}
+
+#shzChatHead strong {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+#shzChatHead small {
+  color: #ffe4e5;
+  font-size: 11px;
+}
+
+#shzChatClose {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ffffff35;
+  border-radius: 50%;
+  background: #24090b55;
+  color: #fff;
+  transition: background .2s, transform .2s;
+}
+
+#shzChatClose:hover {
+  background: #ffffff25;
+  transform: scale(1.04);
+}
+
+#shzChatStatus {
+  flex: 0 0 auto;
+  padding: 7px 12px;
+  background: #121216;
+  border-bottom: 1px solid #292126;
+  color: #ff9a9e;
+  font-size: 11px;
+}
+
+#shzChatLayout {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #0b0b0e;
+}
+
+#shzChatInbox {
+  background: #101014;
+  border-right: 1px solid #302024;
+}
+
+#shzChatInbox button {
+  padding: 10px 8px;
+  border-bottom-color: #292024;
+  color: #e9e6e8;
+  font-size: 11px;
+}
+
+#shzChatInbox button.shz-selected {
+  background: #351317;
+  box-shadow: inset 3px 0 #e5262d;
+}
+
+#shzChatMain {
+  background:
+    radial-gradient(ellipse at top, #25101455, transparent 65%),
+    #0b0b0e;
+}
+
+#shzChatMessages {
+  padding: 12px 10px;
+  gap: 8px;
+  overscroll-behavior: contain;
+}
+
+.shz-msg {
+  max-width: 88%;
+  padding: 9px 11px;
+  border: 1px solid #30272b;
+  border-radius: 14px 14px 14px 4px;
+  background: #19191f;
+  color: #f5f2f3;
+  font-size: 12px;
+  line-height: 1.45;
+  box-shadow: 0 3px 10px #0002;
+}
+
+.shz-msg.shz-mine {
+  background: linear-gradient(135deg, #75151c, #a91e26);
+  border-color: #c52b34;
+  color: #fff;
+  border-radius: 14px 14px 4px 14px;
+}
+
+.shz-msg small {
+  color: #c8b6b9;
+  font-size: 10px;
+}
+
+.shz-msg.shz-mine small {
+  color: #ffd7d9;
+}
+
+#shzChatEmpty {
+  color: #a9a0a3;
+  font-size: 12px;
+}
+
+#shzChatTools {
+  flex: 0 0 auto;
+  padding: 7px 8px;
+  gap: 5px;
+  background: #101014;
+  border-top: 1px solid #302024;
+}
+
+#shzChatRefresh,
+#shzChatGlobal,
+#shzChatSupport {
+  padding: 7px 9px;
+  border: 1px solid #493035;
+  border-radius: 9px;
+  background: #1b1518;
+  color: #f2dfe1;
+  font-size: 11px;
+  transition: background .2s, border-color .2s;
+}
+
+#shzChatGlobal {
+  background: #471419;
+  border-color: #8f252d;
+  color: #fff;
+}
+
+#shzChatRefresh:hover,
+#shzChatGlobal:hover,
+#shzChatSupport:hover {
+  background: #50171d;
+  border-color: #e5262d;
+}
+
+#shzChatForm {
+  flex: 0 0 auto;
+  align-items: flex-end;
+  gap: 7px;
+  padding: 9px;
+  background: #101014;
+  border-top: 1px solid #302024;
+}
+
+#shzChatInput {
+  box-sizing: border-box;
+  min-height: 38px;
+  max-height: 76px;
+  padding: 9px 11px;
+  border: 1px solid #403035;
+  border-radius: 13px;
+  background: #19171b;
+  color: #fff;
+  font: 12px system-ui, sans-serif;
+}
+
+#shzChatInput:focus {
+  border-color: #e5262d;
+  box-shadow: 0 0 0 2px #e5262d20;
+}
+
+#shzChatInput::placeholder {
+  color: #92868a;
+}
+
+#shzChatPhoto {
+  flex-basis: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  border: 1px solid #493035;
+  border-radius: 12px;
+  background: #211619;
+  color: #ff777d;
+}
+
+#shzChatSend {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid #fa424a;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ee3038, #a9141c);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 4px 12px #e5262d25;
+}
+
+#shzChatSend:active,
+#shzChatPhoto:active {
+  transform: scale(.97);
+}
+
+.shz-msg img.shz-chat-photo {
+  max-width: 100%;
+  max-height: 220px;
+  border: 1px solid #ffffff12;
+  border-radius: 10px;
+}
+
+@media (max-width: 420px) {
+  #shzChatPanel {
+    right: 7vw;
+    bottom: 12px;
+    width: 86vw;
+    height: min(430px, 68dvh);
+    min-height: 280px;
+    border-radius: 18px;
+  }
+
+  #shzChatHead {
+    padding: 11px 12px;
+  }
+
+  #shzChatMessages {
+    padding: 9px;
+    gap: 7px;
+  }
+
+  #shzChatForm {
+    padding: 7px;
+    gap: 5px;
+  }
+
+  #shzChatInput {
+    min-height: 36px;
+    padding: 8px;
+  }
+
+  #shzChatPhoto {
+    flex-basis: 35px;
+    min-width: 35px;
+    min-height: 36px;
+  }
+
+  #shzChatSend {
+    min-height: 36px;
+    padding: 0 9px;
+  }
+}
+
+@media (max-height: 500px) {
+  #shzChatPanel {
+    height: 82dvh;
+    min-height: 240px;
+  }
+}
+/* FIM SHAZAM CHAT MODERNO V2 */
+
+/* SHAZAM IPTV — GRELHA HORIZONTAL 3 COLUNAS */
+@media (orientation: landscape) and (min-width: 600px) {
+
+  /* Categorias IPTV: três cartões por linha */
+  #categoriasIPTV.iptv-categorias {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  #categoriasIPTV .iptv-categoria {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  /* Canais IPTV: três cartões por linha */
+  .iptv-lista {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .iptv-lista > .canal {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  /* Evitar que nomes compridos alarguem os cartões */
+  #categoriasIPTV .iptv-categoria *,
+  .iptv-lista > .canal * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+/* FIM SHAZAM IPTV — GRELHA HORIZONTAL 3 COLUNAS */
+
+/* SHAZAM IPTV — CARTOES HORIZONTAIS COMPACTOS */
+@media (orientation: landscape) and (min-width: 600px) {
+
+  #v-canais {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #lCanais {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .iptv-top,
+  .iptv-lista-top {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .iptv-top > div,
+  .iptv-lista-top > div {
+    min-width: 0;
+  }
+
+  #categoriasIPTV.iptv-categorias {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
+  }
+
+  #categoriasIPTV .iptv-categoria {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    min-width: 0;
+    min-height: 64px;
+    height: auto;
+    padding: 10px 12px;
+    border-radius: 13px;
+    text-align: left;
+    overflow: hidden;
+  }
+
+  #categoriasIPTV .iptv-cat-ico {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border-radius: 10px;
+    background: #e5262d20;
+    color: #ff555d;
+  }
+
+  #categoriasIPTV .iptv-cat-info {
+    flex: 1;
+    min-width: 0;
+    gap: 4px;
+  }
+
+  #categoriasIPTV .iptv-cat-info b {
+    font-size: 12px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  #categoriasIPTV .iptv-cat-info small {
+    font-size: 10px;
+  }
+
+  #categoriasIPTV .iptv-seta {
+    flex: 0 0 auto;
+    margin-left: 0;
+    font-size: 18px;
+  }
+
+  .iptv-lista {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .iptv-lista > .canal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    min-height: 64px;
+    height: auto;
+    padding: 10px;
+    border-radius: 13px;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: left;
+  }
+
+  .iptv-lista > .canal .lg {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border-radius: 9px;
+    background: #e5262d16;
+    color: #ff656b;
+  }
+
+  .iptv-lista > .canal .canal-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .iptv-lista > .canal .canal-info h4 {
+    margin: 0 0 4px;
+    font-size: 12px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .iptv-lista > .canal .canal-info p {
+    font-size: 10px;
+    overflow-wrap: anywhere;
+  }
+
+  .iptv-lista > .canal .live {
+    flex: 0 0 auto;
+    font-size: 9px;
+    white-space: nowrap;
+  }
+
+  #categoriasIPTV .iptv-categoria *,
+  .iptv-lista > .canal * {
+    min-width: 0;
+  }
+}
+/* FIM SHAZAM IPTV — CARTOES HORIZONTAIS COMPACTOS */
+
+/* SHAZAM IPTV — grelha horizontal compacta */
+@media (orientation: landscape) {
+
+  /* Categorias: três botões horizontais por fila */
+  #categoriasIPTV.iptv-categorias {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: stretch;
+    gap: 10px !important;
+    width: 100%;
+    padding: 8px 4px !important;
+  }
+
+  #categoriasIPTV .iptv-categoria {
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 9px;
+    width: 100%;
+    min-width: 0;
+    min-height: 78px !important;
+    height: auto;
+    padding: 10px !important;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  #categoriasIPTV .iptv-cat-ico {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+  }
+
+  #categoriasIPTV .iptv-cat-info {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  #categoriasIPTV .iptv-cat-info b {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  #categoriasIPTV .iptv-cat-info small {
+    font-size: 11px;
+  }
+
+  #categoriasIPTV .iptv-seta {
+    flex: 0 0 auto;
+    margin-left: 0;
+    font-size: 18px;
+  }
+
+  /* Canais: três cartões por fila */
+  #lCanais .iptv-lista {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: stretch;
+    gap: 10px !important;
+    width: 100%;
+    padding: 8px 4px !important;
+  }
+
+  #lCanais .iptv-lista > .canal {
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 9px !important;
+    width: 100% !important;
+    min-width: 0;
+    min-height: 76px;
+    height: auto;
+    padding: 10px !important;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  #lCanais .iptv-lista > .canal .lg {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+  }
+
+  #lCanais .iptv-lista > .canal .canal-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  #lCanais .iptv-lista > .canal .canal-info h4 {
+    font-size: 12px;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  #lCanais .iptv-lista > .canal .canal-info p {
+    font-size: 10px;
+    overflow-wrap: anywhere;
+  }
+
+  #lCanais .iptv-lista > .canal .live {
+    flex: 0 0 auto;
+    font-size: 9px;
+  }
+
+  /* Cabeçalhos mais compactos para libertar espaço */
+  #lCanais .iptv-top,
+  #lCanais .iptv-lista-top {
+    margin-bottom: 8px;
+    gap: 5px;
+  }
+
+  #lCanais .iptv-top h2,
+  #lCanais .iptv-lista-top h2 {
+    font-size: 1.1rem;
+  }
+
+  #lCanais .iptv-top p,
+  #lCanais .iptv-lista-top p {
+    font-size: 0.8rem;
+  }
+}
+
+/* FIM DA GRELHA HORIZONTAL SHAZAM IPTV */
+
+/* SHAZAM IPTV — CORREÇÃO FINAL: 3 COLUNAS E CARTÕES HORIZONTAIS */
+@media (orientation: landscape) {
+
+  #v-canais,
+  #lCanais {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  #categoriasIPTV.iptv-categorias,
+  #lCanais .iptv-lista {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 8px 0 !important;
+    align-items: stretch !important;
+  }
+
+  #categoriasIPTV > .iptv-categoria,
+  #lCanais .iptv-lista > button.canal {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 68px !important;
+    height: auto !important;
+    padding: 9px !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
+  }
+
+  #categoriasIPTV > .iptv-categoria .iptv-cat-ico,
+  #lCanais .iptv-lista > button.canal .lg {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    flex: 0 0 36px !important;
+  }
+
+  #categoriasIPTV > .iptv-categoria .iptv-cat-info,
+  #lCanais .iptv-lista > button.canal .canal-info {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #categoriasIPTV .iptv-cat-info b,
+  #lCanais .iptv-lista > button.canal .canal-info h4 {
+    font-size: 12px !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #categoriasIPTV .iptv-cat-info small,
+  #lCanais .iptv-lista > button.canal .canal-info p {
+    font-size: 10px !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #categoriasIPTV .iptv-seta {
+    flex: 0 0 auto !important;
+    margin-left: 0 !important;
+  }
+
+  #lCanais .iptv-lista > button.canal .live {
+    flex: 0 0 auto !important;
+    font-size: 9px !important;
+  }
+
+  #lCanais .iptv-top,
+  #lCanais .iptv-lista-top {
+    margin-bottom: 8px !important;
+  }
+}
+/* FIM DA CORREÇÃO FINAL */
+
+/* SHAZAM IPTV — CORREÇÃO DA ALTURA E LARGURA DOS CARTÕES */
+@media (orientation: landscape) {
+  #v-canais,
+  #lCanais {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  #categoriasIPTV.iptv-categorias,
+  #lCanais .iptv-lista {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-auto-rows: max-content !important;
+    align-items: start !important;
+    align-content: start !important;
+    justify-items: stretch !important;
+    gap: 10px !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 8px 0 !important;
+  }
+
+  #categoriasIPTV > .iptv-categoria,
+  #lCanais .iptv-lista > button.canal {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    align-self: start !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 66px !important;
+    max-height: 90px !important;
+    min-width: 0 !important;
+    padding: 9px !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  #categoriasIPTV .iptv-cat-ico,
+  #lCanais .iptv-lista > button.canal .lg {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    flex: 0 0 36px !important;
+  }
+
+  #categoriasIPTV .iptv-cat-info,
+  #lCanais .iptv-lista > button.canal .canal-info {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #categoriasIPTV .iptv-cat-info b,
+  #lCanais .iptv-lista > button.canal .canal-info h4 {
+    font-size: 12px !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #categoriasIPTV .iptv-cat-info small,
+  #lCanais .iptv-lista > button.canal .canal-info p {
+    font-size: 10px !important;
+    overflow-wrap: anywhere !important;
+  }
+}
+/* FIM DA CORREÇÃO */
+
+/* SHAZAM IPTV — CORREÇÃO FINAL DA GRELHA */
+@media (orientation: landscape) and (min-width: 600px) {
+
+  /* O contentor principal deve ocupar toda a largura */
+  #v-canais {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  #lCanais.canais {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Cabeçalho sempre por cima dos cartões */
+  #lCanais .iptv-top,
+  #lCanais .iptv-lista-top {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    width: 100%;
+    margin: 0 0 14px !important;
+    gap: 5px !important;
+  }
+
+  #lCanais .iptv-top h2,
+  #lCanais .iptv-lista-top h2 {
+    width: 100%;
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+
+  #lCanais .iptv-top p,
+  #lCanais .iptv-lista-top p {
+    width: 100%;
+    font-size: .85rem;
+  }
+
+  /* Três cartões horizontais por fila, ocupando o espaço disponível */
+  #lCanais #categoriasIPTV.iptv-categorias,
+  #lCanais .iptv-lista {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-auto-rows: auto !important;
+    align-content: start !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0;
+    margin: 0 !important;
+    padding: 0 0 12px !important;
+  }
+
+  /* Cartões de categorias: formato horizontal e compacto */
+  #lCanais #categoriasIPTV > .iptv-categoria {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 76px !important;
+    height: auto !important;
+    padding: 12px !important;
+    gap: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  #lCanais #categoriasIPTV .iptv-cat-ico {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  #lCanais #categoriasIPTV .iptv-cat-info {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow-wrap: anywhere;
+  }
+
+  #lCanais #categoriasIPTV .iptv-seta {
+    flex: 0 0 auto !important;
+    margin-left: 0 !important;
+  }
+
+  /* Cartões dos canais também ficam horizontais */
+  #lCanais .iptv-lista > .canal {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 76px !important;
+    height: auto !important;
+    padding: 10px !important;
+    gap: 9px !important;
+    box-sizing: border-box !important;
+  }
+
+  #lCanais .iptv-lista > .canal .lg {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  #lCanais .iptv-lista > .canal .canal-info {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  /* Paginação sempre em baixo, numa linha própria */
+  #lCanais .iptv-paginacao {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    margin: 16px 0 24px !important;
+    padding: 10px 0 !important;
+    gap: 16px !important;
+    clear: both;
+  }
+
+  #lCanais .iptv-paginacao button {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 100px;
+  }
+}
+
+/* FIM DA CORREÇÃO FINAL DA GRELHA */
+
+/* SHAZAM IPTV — CORREÇÃO DEFINITIVA DA NAVEGAÇÃO HORIZONTAL */
+@media (orientation: landscape) {
+  #v-canais.view:not(.on) {
+    display: none !important;
+  }
+
+  #v-canais.view.on {
+    display: block !important;
+  }
+}
+/* FIM DA CORREÇÃO DA NAVEGAÇÃO */
+
+/* SHAZAM IPTV — BARRA LATERAL SEM TEXTO CORTADO */
+@media (orientation: landscape) {
+  #nav {
+    overflow: hidden !important;
+  }
+
+  /* Barra fechada: mostrar apenas os ícones */
+  #nav:not(:hover):not(:focus-within) button span {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Barra aberta: mostrar os nomes completos */
+  #nav:hover button span,
+  #nav:focus-within button span {
+    display: inline !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important;
+  }
+}
+/* FIM — BARRA LATERAL */
+
+
+/* SHAZAM_CONTA_PRO_V1 */
+.shz-conta-perfil{max-width:42rem;background:linear-gradient(125deg,rgba(229,35,55,.16),var(--card))}
+.shz-conta-identidade{display:flex;flex-direction:column;gap:.35rem;min-width:0}
+.shz-conta-identidade b{font-size:1.2rem;overflow-wrap:anywhere}
+.shz-conta-etiqueta{font-size:.72rem;font-weight:800;letter-spacing:.13em;color:var(--red)}
+.shz-conta-contactos{display:grid;gap:.45rem;max-width:42rem;margin:1rem 0 1.5rem}
+.shz-conta-link{border:1px solid var(--line);background:var(--card);border-radius:.7rem;text-decoration:none}
+.shz-conta-subtitulo{max-width:42rem;margin:1.5rem 0 .65rem;font-size:1rem;font-weight:800}
+.shz-conta-sair{margin-top:1.5rem;color:#ff7d87;border:1px solid rgba(255,80,100,.28);border-radius:.7rem}
+.shz-conta-painel{max-width:42rem;margin:1.3rem 0;padding:1rem;border:1px solid var(--line);background:var(--card);border-radius:1rem}
+.shz-conta-painel[hidden]{display:none!important}
+.shz-conta-painel-topo{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.shz-conta-painel-topo h2{font-size:1.15rem}
+.shz-conta-painel>p{color:var(--mut);font-size:.9rem;margin:.6rem 0 1rem}
+.shz-conta-registo{display:flex;align-items:center;gap:.55rem;padding:.65rem 0;border-bottom:1px solid var(--line);min-width:0}
+.shz-conta-miniatura{width:2.7rem;height:3.8rem;flex-shrink:0;object-fit:cover;border-radius:.4rem;background:#252832}
+.shz-conta-sem-imagem{display:grid;place-items:center}
+.shz-conta-registo-texto{display:flex;flex:1;min-width:0;flex-direction:column;gap:.3rem}
+.shz-conta-registo-texto b{font-size:.88rem;overflow-wrap:anywhere}
+.shz-conta-registo-texto small{font-size:.7rem;color:var(--mut)}
+.shz-conta-vazio{padding:1rem 0;color:var(--mut)}
+#shzFavoritoDetalhe{margin-right:.4rem}
+@media(max-width:480px){.shz-conta-registo{gap:.35rem}.shz-conta-registo .btn-info{font-size:.75rem;padding:.45rem}.shz-conta-miniatura{width:2.2rem;height:3.2rem}}
+
+
+/* SHAZAM_TEMPORADAS_ANIMACAO_V1 */
+.shz-temporadas {
+  width: 100%;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+.shz-temporadas[hidden] { display: none !important; }
+.shz-temporadas h3 { margin: 0 0 12px; font-size: 1rem; }
+.shz-lista-temporadas {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  max-height: min(42vh, 340px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  padding: 2px 5px 10px 0;
+  scrollbar-width: thin;
+}
+.shz-item-temporada, .shz-voltar-temporadas {
+  width: 100%;
+  padding: 12px;
+  text-align: left;
+  color: inherit;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.shz-item-temporada:hover, .shz-voltar-temporadas:hover {
+  background: rgba(255,255,255,.14);
+}
+.shz-voltar-temporadas { margin-bottom: 10px; }

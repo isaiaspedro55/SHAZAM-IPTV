@@ -42,6 +42,10 @@ if(!fs.existsSync(USERS_FILE))fs.writeFileSync(USERS_FILE,JSON.stringify({users:
 
 app.use(cors());
 app.use(express.json({limit:'10kb'}));
+// SHAZAM IPTV — APIs do catálogo e dos canais.
+app.use('/api/catalogo', require('./tmdb'));
+app.use('/api/iptv', require('./canais-api'));
+
 app.use(express.static(__dirname));
 
 io.use(async (socket, next) => {

@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b0f">
+<title>Shazam IPTV</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav id="nav" aria-label="Principal"></nav>
+
+<div id="shzLogin" class="shz-login" hidden>
+  <form id="shzLoginForm" class="shz-login-card">
+    <div class="logo">SHA⚡AM <small>IPTV</small></div>
+    <h1>Bem-vindo</h1>
+    <p>Inicia sessão para aceder ao SHAZAM IPTV.</p>
+
+    <label for="shzUsername">Nome de utilizador</label>
+    <input id="shzUsername" name="username"
+      autocomplete="username" required>
+
+    <label for="shzPassword">Palavra-passe</label>
+    <input id="shzPassword" name="password"
+      type="password" autocomplete="current-password" required>
+
+    <button type="submit" id="shzLoginSubmit">Entrar</button>
+    <p id="shzLoginMsg" role="alert" aria-live="polite"></p>
+  </form>
+</div>
+
+<div class="app">
+  <header>
+    <div class="logo" aria-label="Shazam IPTV">SHA<svg viewBox="0 0 24 24"><path d="M14 1 3 14h7l-3 9 12-14h-7z"/></svg>AM<small>IPTV</small></div>
+    <div class="hb"><button id="bBuscar" aria-label="Buscar"></button><button class="perfil" id="bConta" aria-label="Mensagens" title="Mensagens"></button></div>
+  </header>
+  <main>
+    <section class="view on" id="v-inicio">
+      <div class="hero" id="hero"></div>
+      <div class="sec"><div class="sec-h"><h3>Continue assistindo</h3></div><div class="row" id="rCont"></div></div>
+      <div class="sec"><div class="sec-h"><h3>Categorias</h3></div><div class="row" id="rCat"></div></div>
+      <div class="sec"><div class="sec-h"><h3 id="tLanc">Lançamentos</h3><button id="verTudo">Ver tudo →</button></div><div class="row" id="rLanc"></div></div>
+    </section>
+    <section class="view" id="v-catalogo"><h1 class="titulo">Catálogo</h1><div class="grid" id="gCat"></div></section>
+    <section class="view" id="v-canais"><h1 class="titulo">Canais IPTV</h1><div class="canais" id="lCanais"></div></section>
+    <section class="view" id="v-buscar"><h1 class="titulo">Buscar</h1>
+      <label class="busca"><span id="icBusca"></span><input id="q" type="search" placeholder="Filmes, séries, animes ou canais" autocomplete="off"></label>
+      <div class="grid" id="gBusca" style="margin-top:1.2rem"></div></section>
+    <section class="view" id="v-conta">
+      <h1 class="titulo">A minha conta</h1>
+
+      <div class="conta shz-conta-perfil">
+        <div class="av" id="icAv">S</div>
+        <div class="shz-conta-identidade">
+          <b id="nomeUser">Visitante</b>
+          <small id="planoUser">A consultar assinatura...</small>
+          <span class="shz-conta-etiqueta">SHАZAM IPTV</span>
+        </div>
+      </div>
+
+
+      <h2 class="shz-conta-subtitulo">A minha biblioteca</h2>
+      <button class="item" data-conta="lista">
+        <span>♡ Minha lista de favoritos</span><span>›</span>
+      </button>
+      <button class="item" data-conta="historico">
+        <span>◷ Histórico de visualização</span><span>›</span>
+      </button>
+
+      <h2 class="shz-conta-subtitulo">A minha conta</h2>
+      <button class="item" data-conta="assinatura">
+        <span>▣ Informações da assinatura</span><span>›</span>
+      </button>
+      <button class="item" data-conta="informacoes">
+        <span>ℹ Informações e suporte</span><span>›</span>
+      </button>
+
+      <div id="shzContaPainel" class="shz-conta-painel" hidden>
+        <div class="shz-conta-painel-topo">
+          <h2 id="shzContaTitulo">A minha biblioteca</h2>
+          <button type="button" id="shzContaFechar"
+                  class="btn-info" aria-label="Fechar">✕</button>
+        </div>
+        <p id="shzContaDescricao"></p>
+        <div id="shzContaConteudo"></div>
+      </div>
+
+      <button class="item shz-conta-sair" data-conta="sair">
+        <span>Terminar sessão</span><span>↗</span>
+      </button>
+    </section>
+  </main>
+</div>
+<div class="ov" id="sheetOv"><div class="sheet" role="dialog" aria-modal="true"><div class="poster" id="sPoster"><b id="sPosterT"></b></div>
+  <div><h2 id="sTitulo"></h2><div class="meta" id="sMeta"></div><p id="sDesc"></p>
+  <div class="acts"><button class="btn-play" id="sPlay"></button><button class="btn-info" id="sFechar" aria-label="Fechar">✕</button></div></div></div></div>
+
+<div class="ov shazam-server-overlay" id="selecaoServidores">
+  <section class="shazam-server-panel" role="dialog" aria-modal="true" aria-labelledby="servidoresTitulo">
+    <button class="shazam-server-close" type="button" data-fechar-servidores aria-label="Fechar">✕</button>
+    <p class="shazam-server-kicker">SHAZAM IPTV</p>
+    <h2>Escolhe um servidor</h2>
+    <p id="servidoresTitulo" class="shazam-server-title">Conteúdo</p>
+    <button type="button" class="shazam-server-button" id="servidor1">Servidor 1 <span>Reprodução direta</span></button>
+    <button type="button" class="shazam-server-button" id="servidor2">Servidor 2 <span>Pesquisar vídeos</span></button>
+    <p id="servidoresMsg" role="status" aria-live="polite"></p>
+  </section>
+</div>
+<div class="ov shazam-server-overlay" id="resultadosServidores">
+  <section class="shazam-server-panel shazam-results-panel" role="dialog" aria-modal="true" aria-labelledby="resultadosTitulo">
+    <button class="shazam-server-close" type="button" data-fechar-resultados aria-label="Fechar">✕</button>
+    <p class="shazam-server-kicker">SERVIDOR 2</p>
+    <h2 id="resultadosTitulo">Resultados</h2>
+    <p id="resultadosMsg" role="status" aria-live="polite"></p>
+    <div id="youtubeResultados" class="youtube-resultados"></div>
+    <button type="button" class="shazam-server-back" id="voltarServidores">← Voltar aos servidores</button>
+  </section>
+</div>
+
+<div class="ov" id="player">
+  <button id="pFechar" aria-label="Fechar">✕</button>
+  <video id="vid" controls playsinline controlsList="nodownload noremoteplayback" disablePictureInPicture></video>
+  <div id="pMsg" role="status" aria-live="polite"></div>
+  <section id="epgInfo" aria-live="polite">
+    <div id="epgAtual">A carregar programação…</div>
+    <div id="epgProximo"></div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+
+<!-- SHAZAM SUPPORT CHAT — redesign -->
+<button id="shzChatBtn" type="button">💬 Chat</button>
+
+<section id="shzChatPanel" aria-label="Apoio ao cliente SHAZAM IPTV">
+  <header id="shzChatHead">
+    <div><strong>💬 SHAZAM IPTV</strong><small id="shzChatSubtitle">Apoio ao Cliente</small></div>
+    <button id="shzChatClose" type="button" aria-label="Fechar chat">×</button>
+  </header>
+  <div id="shzChatStatus">Pronto para ligar ao apoio.</div>
+  <div id="shzChatLayout">
+    <aside id="shzChatInbox" aria-label="Lista de conversas"></aside>
+    <div id="shzChatMain">
+      <div id="shzChatMessages"><div id="shzChatEmpty">Abre o chat para começar.</div></div>
+      <form id="shzChatForm">
+        <input id="shzChatPhotoInput" class="shz-chat-file-input" type="file"
+          accept="image/jpeg,image/png,image/webp"
+          aria-label="Escolher fotografia">
+        <button id="shzChatPhoto" type="button"
+          aria-label="Enviar fotografia" title="Escolher fotografia">📷</button>
+        <textarea id="shzChatInput" rows="1" maxlength="2000"
+          placeholder="Escreve a tua mensagem..." aria-label="Mensagem"></textarea>
+        <button id="shzChatSend" type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+  <div id="shzChatTools">
+    <button id="shzChatRefresh" type="button">↻ Actualizar conversas</button>
+    <button id="shzChatGlobal" type="button">📢 Mensagem Global</button>
+    <button id="shzChatSupport" type="button">💬 Apoio ao Cliente</button>
+  </div>
+</section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+(function(){
+  'use strict';
+  const btn=document.getElementById('shzChatBtn');
+  const panel=document.getElementById('shzChatPanel');
+  const closeBtn=document.getElementById('shzChatClose');
+  const statusEl=document.getElementById('shzChatStatus');
+  const subtitle=document.getElementById('shzChatSubtitle');
+  const inbox=document.getElementById('shzChatInbox');
+  const messages=document.getElementById('shzChatMessages');
+  const empty=document.getElementById('shzChatEmpty');
+  const form=document.getElementById('shzChatForm');
+  const input=document.getElementById('shzChatInput');
+  const sendBtn=document.getElementById('shzChatSend');
+  const photoBtn=document.getElementById('shzChatPhoto');
+  const photoInput=document.getElementById('shzChatPhotoInput');
+  let imagemSelecionada=null;
+  const refreshBtn=document.getElementById('shzChatRefresh');
+  const globalBtn=document.getElementById('shzChatGlobal');
+  const supportBtn=document.getElementById('shzChatSupport');
+
+  let badge=btn.querySelector('.shz-chat-badge');
+  if(!badge){
+    badge=document.createElement('span');
+    badge.className='shz-chat-badge';
+    badge.hidden=true;
+    badge.setAttribute('aria-live','polite');
+    btn.appendChild(badge);
+  }
+
+  let socket=null, tokenAtual=null, ehAdmin=false, conversaAtual=null;
+  let painelAberto=false, listaTimer=null, modoGlobal=false;
+  let unreadGlobal=0;
+  const unreadClients=new Set();
+  const idsMensagens=new Set();
+  const idsAnunciosNotificados=new Set();
+
+  function obterTokenSeguro(){
+    try {
+      if(typeof obterToken==='function'){
+        const token=obterToken();
+        if(token) return token;
+      }
+    } catch(e) {}
+
+    try {
+      return localStorage.getItem('shazam_token') || null;
+    } catch(e) {
+      return null;
+    }
+  }
+  function definirEstado(texto){statusEl.textContent=texto;}
+  function actualizarContador(){
+    const total=ehAdmin?unreadClients.size:unreadGlobal;
+    badge.textContent=total>99?'99+':String(total);
+    badge.hidden=painelAberto||total<1;
+  }
+  function limparContador(){
+    unreadGlobal=0;
+    unreadClients.clear();
+    actualizarContador();
+  }
+  function limparMensagens(){
+    messages.replaceChildren();
+    idsMensagens.clear();
+    empty.hidden=false;
+    empty.textContent='Selecciona uma conversa para começar.';
+    messages.appendChild(empty);
+  }
+  function formatarHora(valor){
+    try{return new Date(valor).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}
+    catch(e){return '';}
+  }
+  function mostrarMensagens(lista){
+    limparMensagens();
+    if(!Array.isArray(lista)||!lista.length){
+      empty.textContent='Ainda não existem mensagens. Escreve a primeira!';
+      return;
+    }
+    empty.hidden=true;
+    lista.forEach(adicionarMensagem);
+    messages.scrollTop=messages.scrollHeight;
+  }
+  function adicionarMensagem(m){
+    if(!m) return;
+    const id=m.id==null?null:String(m.id);
+    if(id && idsMensagens.has(id)) return;
+    if(id) idsMensagens.add(id);
+    empty.hidden=true;
+    const item=document.createElement('div');
+    const nome=String(m.sender||m.sender_username||'');
+    const minha=nome===String(window.__shzChatUser||'');
+    item.className='shz-msg'+(minha?' shz-mine':'');
+    const fotoBase64=m.image_data_base64||m.imageDataBase64||'';
+    const fotoMime=m.image_mime||m.imageMime||'';
+    if(m.message && !(fotoBase64 && m.message==='📷 Fotografia')){
+      const texto=document.createElement('div');
+      texto.textContent=String(m.message);
+      item.appendChild(texto);
+    }
+    if(
+      fotoBase64 &&
+      ['image/jpeg','image/png','image/webp'].includes(fotoMime)
+    ){
+      const foto=document.createElement('img');
+      foto.className='shz-chat-photo';
+      foto.alt='Fotografia enviada no chat';
+      foto.loading='lazy';
+      foto.src='data:'+fotoMime+';base64,'+fotoBase64;
+      foto.addEventListener('click',()=>{
+        const janela=window.open();
+        if(janela){
+          janela.document.title='Fotografia — SHAZAM IPTV';
+          const imagem=janela.document.createElement('img');
+          imagem.src=foto.src;
+          imagem.alt=foto.alt;
+          imagem.style.cssText='display:block;max-width:100%;height:auto;margin:auto';
+          janela.document.body.style.cssText='margin:0;padding:12px;background:#101010;text-align:center';
+          janela.document.body.appendChild(imagem);
+        }
+      });
+      item.appendChild(foto);
+    }
+    const hora=document.createElement('small');
+    hora.textContent=(nome?nome+' · ':'')+formatarHora(m.created_at||Date.now());
+    item.appendChild(hora);
+    messages.appendChild(item);
+    messages.scrollTop=messages.scrollHeight;
+  }
+  function formatarAnuncio(m){
+    const texto=String(m.message||'');
+    const soFotografia=Boolean(m.image_data_base64||m.imageDataBase64)
+      && texto==='📷 Fotografia';
+    return {
+      ...m,
+      id:'global-'+String(m.id),
+      message:soFotografia?'📢 MENSAGEM GLOBAL':'📢 MENSAGEM GLOBAL\n'+texto
+    };
+  }
+
+  function adicionarAnuncio(m){
+    if(!m) return;
+    adicionarMensagem(formatarAnuncio(m));
+  }
+  function falhar(texto){
+    definirEstado(texto||'Não foi possível concluir a operação.');
+  }
+  function emitir(evento,dados){
+    return new Promise(resolve=>{
+      if(!socket||!socket.connected){resolve({ok:false,error:'Sem ligação ao servidor.'});return;}
+      const temporizador=setTimeout(()=>resolve({ok:false,error:'O servidor demorou demasiado tempo a responder.'}),10000);
+      const ack=resultado=>{clearTimeout(temporizador);resolve(resultado||{ok:false,error:'Resposta inválida do servidor.'});};
+      if(typeof dados==='undefined') socket.emit(evento,ack);
+      else socket.emit(evento,dados,ack);
+    });
+  }
+  function pararLigacao(){
+    if(listaTimer){clearInterval(listaTimer);listaTimer=null;}
+    if(socket){socket.disconnect();socket=null;}
+    tokenAtual=null;
+    ehAdmin=false;
+    conversaAtual=null;
+    modoGlobal=false;
+    panel.classList.remove('shz-admin','shz-global');
+    inbox.replaceChildren();
+    limparMensagens();
+  }
+  function criarLigacao(token){
+    if(typeof window.io!=='function'){
+      falhar('O módulo de chat não carregou. Confirma a instalação do Socket.IO.');
+      return;
+    }
+    pararLigacao();
+    tokenAtual=token;
+    definirEstado('A ligar ao servidor...');
+    socket=window.io({auth:{token:token},transports:['websocket','polling']});
+    socket.on('connect',async()=>{
+      definirEstado('Ligado · a verificar permissões...');
+
+      const identidade=await emitir('chat:identidade');
+      if(!socket||!socket.connected) return;
+
+      if(identidade&&identidade.ok&&identidade.username){
+        window.__shzChatUser=String(identidade.username);
+      }else{
+        falhar('Não foi possível confirmar o utilizador autenticado.');
+        return;
+      }
+
+      const admin=await emitir('chat:admin:listar');
+      if(!socket||!socket.connected) return;
+      if(admin&&admin.ok){
+        ehAdmin=true;
+        unreadClients.clear();
+        if(!painelAberto){
+          (admin.conversations||[]).forEach(c=>{
+            if(Number(c.mensagens_nao_lidas||0)>0){
+              unreadClients.add(String(c.cliente_id||c.user_id||c.cliente||c.id));
+            }
+          });
+        }
+        actualizarContador();
+        modoGlobal=false;
+        panel.classList.remove('shz-global');
+        panel.classList.add('shz-admin');
+        subtitle.textContent='Painel do proprietário · Apoio';
+        definirEstado('Painel do proprietário ligado.');
+        desenharLista(admin.conversations||[]);
+        if(listaTimer) clearInterval(listaTimer);
+        listaTimer=setInterval(()=>{if(painelAberto&&ehAdmin) carregarLista();},10000);
+      }else{
+        ehAdmin=false;
+        panel.classList.remove('shz-admin');
+        subtitle.textContent='Apoio ao Cliente';
+        const r=await emitir('chat:abrir');
+        if(!r||!r.ok){falhar(r&&r.error||'Não foi possível abrir a conversa.');return;}
+        conversaAtual=String(r.conversationId);
+        mostrarMensagens(r.messages||[]);
+        definirEstado('Conversa segura pronta. Envia a tua mensagem.');
+      }
+    });
+    socket.on('connect_error',()=>{
+      definirEstado('Não foi possível autenticar ou ligar ao chat. Verifica a sessão e o servidor.');
+    });
+    socket.on('disconnect',()=>{
+      if(obterTokenSeguro()) definirEstado('Ligação interrompida. A tentar reconectar...');
+    });
+    socket.on('chat:nova-mensagem',m=>{
+      if(!m) return;
+      if(conversaAtual!=null && String(m.conversationId||m.conversation_id||'')===String(conversaAtual)){
+        adicionarMensagem(m);
+      }
+      if(ehAdmin && painelAberto) carregarLista();
+    });
+    socket.on('chat:global:nova',m=>{
+      if(!m) return;
+      if(!ehAdmin){
+        const id=String(m.id||'');
+        if(modoGlobal){
+          adicionarAnuncio(m);
+        }else if(id&&!idsAnunciosNotificados.has(id)){
+          idsAnunciosNotificados.add(id);
+          unreadGlobal++;
+          actualizarContador();
+        }
+      }else if(modoGlobal){
+        adicionarAnuncio(m);
+      }
+    });
+
+    socket.on('chat:apoio:nova',m=>{
+      if(!ehAdmin||!m) return;
+      if(!painelAberto&&m.userId!=null){
+        unreadClients.add(String(m.userId));
+        actualizarContador();
+      }
+      if(painelAberto) carregarLista();
+    });
+  }
+  function desenharLista(conversas){
+    inbox.replaceChildren();
+    if(!Array.isArray(conversas)||!conversas.length){
+      const p=document.createElement('div');
+      p.textContent='Sem conversas.';
+      p.style.cssText='padding:10px;font-size:12px;color:#aebfe9';
+      inbox.appendChild(p);
+      return;
+    }
+    conversas.forEach(c=>{
+      const b=document.createElement('button');
+      b.type='button';
+      b.className=String(c.id)===String(conversaAtual)?'shz-selected':'';
+      const nome=String(c.username||c.client_username||c.cliente||('Cliente #'+c.id));
+      const st=String(c.status||'aberta');
+      b.textContent=nome+' · '+st;
+      b.addEventListener('click',()=>entrarConversa(c.id,b));
+      inbox.appendChild(b);
+    });
+  }
+  async function carregarLista(){
+    if(!socket||!socket.connected||!ehAdmin) return;
+    const r=await emitir('chat:admin:listar');
+    if(r&&r.ok) desenharLista(r.conversations||[]);
+  }
+  async function entrarConversa(id,botao){
+    if(!socket||!socket.connected) return;
+    modoGlobal=false;
+    panel.classList.remove('shz-global');
+    input.placeholder='Escreve a tua mensagem...';
+    sendBtn.textContent='Enviar';
+    subtitle.textContent='Painel do proprietário · Apoio';
+    definirEstado('A abrir conversa...');
+    const r=await emitir('chat:entrar',{conversationId:id});
+    if(!r||!r.ok){falhar(r&&r.error||'Não foi possível abrir esta conversa.');return;}
+    conversaAtual=String(r.conversationId||id);
+    inbox.querySelectorAll('button').forEach(b=>b.classList.remove('shz-selected'));
+    if(botao) botao.classList.add('shz-selected');
+    mostrarMensagens(r.messages||[]);
+    definirEstado('A responder ao cliente · conversa #'+conversaAtual);
+  }
+  async function entrarModoGlobal(){
+    if(!socket||!socket.connected) return;
+    modoGlobal=true;
+    conversaAtual=null;
+    panel.classList.add('shz-global');
+    unreadGlobal=0;
+    actualizarContador();
+    inbox.querySelectorAll('button').forEach(b=>b.classList.remove('shz-selected'));
+    subtitle.textContent='📢 Mensagens Globais';
+    input.placeholder=ehAdmin?'Escreve o anúncio para todos...':'Consulta os anúncios globais';
+    sendBtn.textContent='Enviar a todos';
+    definirEstado('A carregar o histórico global...');
+    const r=await emitir('chat:global:listar');
+    if(!r||!r.ok){
+      falhar(r&&r.error||'Não foi possível carregar os anúncios.');
+      return;
+    }
+    const lista=Array.isArray(r.announcements)?r.announcements:[];
+    mostrarMensagens(lista.map(formatarAnuncio));
+    definirEstado(ehAdmin
+      ?'Modo global: a mensagem será enviada a todos os utilizadores.'
+      :'A consultar os anúncios globais.');
+    input.focus();
+  }
+
+  async function entrarModoApoio(){
+    modoGlobal=false;
+    panel.classList.remove('shz-global');
+    input.placeholder='Escreve a tua mensagem...';
+    sendBtn.textContent='Enviar';
+
+    if(!ehAdmin){
+      subtitle.textContent='Apoio ao Cliente';
+      definirEstado('A carregar a tua conversa de apoio...');
+      const r=await emitir('chat:abrir');
+      if(!r||!r.ok){
+        falhar(r&&r.error||'Não foi possível abrir a conversa.');
+        return;
+      }
+      conversaAtual=String(r.conversationId);
+      mostrarMensagens(r.messages||[]);
+      definirEstado('Conversa segura pronta. Envia a tua mensagem.');
+      input.focus();
+      return;
+    }
+
+    conversaAtual=null;
+    subtitle.textContent='Painel do proprietário · Apoio';
+    limparMensagens();
+    empty.textContent='Selecciona uma conversa para começar.';
+    definirEstado('Escolhe uma conversa de apoio ao cliente.');
+    carregarLista();
+  }
+
+  btn.addEventListener('click',()=>{
+    painelAberto=true;
+    limparContador();
+    panel.classList.add('shz-open');
+    const token=obterTokenSeguro();
+    if(!token){definirEstado('Inicia sessão para usar o apoio.');return;}
+    if(!socket||tokenAtual!==token||(!socket.connected&&!socket.active)){
+      criarLigacao(token);
+    }else if(socket.connected&&ehAdmin){
+      carregarLista();
+    }
+    input.focus();
+  });
+  closeBtn.addEventListener('click',()=>{
+    painelAberto=false;
+    panel.classList.remove('shz-open');
+    actualizarContador();
+  });
+  refreshBtn.addEventListener('click',carregarLista);
+  globalBtn.addEventListener('click',entrarModoGlobal);
+  supportBtn.addEventListener('click',entrarModoApoio);
+  async function comprimirFotografia(arquivo){
+    if(!arquivo || !arquivo.type.startsWith('image/')){
+      throw new Error('Escolhe um ficheiro de imagem válido.');
+    }
+    if(arquivo.size > 15*1024*1024){
+      throw new Error('A fotografia original não pode ultrapassar 15 MB.');
+    }
+
+    const imagem = await new Promise((resolve,reject)=>{
+      const leitor=new FileReader();
+      leitor.onload=()=>{
+        const img=new Image();
+        img.onload=()=>resolve(img);
+        img.onerror=()=>reject(new Error('Não foi possível abrir a fotografia.'));
+        img.src=leitor.result;
+      };
+      leitor.onerror=()=>reject(new Error('Não foi possível ler o ficheiro.'));
+      leitor.readAsDataURL(arquivo);
+    });
+
+    const escala=Math.min(1,1280/imagem.width,1280/imagem.height);
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.round(imagem.width*escala));
+    canvas.height=Math.max(1,Math.round(imagem.height*escala));
+
+    const contexto=canvas.getContext('2d');
+    contexto.fillStyle='#fff';
+    contexto.fillRect(0,0,canvas.width,canvas.height);
+    contexto.drawImage(imagem,0,0,canvas.width,canvas.height);
+
+    let qualidade=.78;
+    let blob=await new Promise(resolve=>
+      canvas.toBlob(resolve,'image/jpeg',qualidade)
+    );
+
+    while(blob && blob.size>600*1024 && qualidade>.42){
+      qualidade-=.08;
+      blob=await new Promise(resolve=>
+        canvas.toBlob(resolve,'image/jpeg',qualidade)
+      );
+    }
+
+    if(!blob || blob.size>600*1024){
+      throw new Error('Não foi possível reduzir a fotografia para 600 KB.');
+    }
+
+    const dataUrl=await new Promise((resolve,reject)=>{
+      const leitor=new FileReader();
+      leitor.onload=()=>resolve(String(leitor.result));
+      leitor.onerror=()=>reject(new Error('Erro ao preparar a fotografia.'));
+      leitor.readAsDataURL(blob);
+    });
+
+    return {base64:dataUrl.split(',')[1],mime:'image/jpeg'};
+  }
+
+  photoBtn.addEventListener('click',()=>{
+    photoInput.click();
+  });
+
+  photoInput.addEventListener('change',async()=>{
+    const arquivo=photoInput.files&&photoInput.files[0];
+    if(!arquivo) return;
+
+    photoBtn.disabled=true;
+    definirEstado('A preparar a fotografia…');
+
+    try{
+      imagemSelecionada=await comprimirFotografia(arquivo);
+      definirEstado('📷 Fotografia pronta para enviar.');
+    }catch(err){
+      imagemSelecionada=null;
+      falhar(err.message||'Não foi possível preparar a fotografia.');
+    }finally{
+      photoBtn.disabled=false;
+    }
+  });
+
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+
+    const texto=input.value.trim();
+    if(!texto&&!imagemSelecionada) return;
+
+    if(!socket||!socket.connected){
+      falhar('Sem ligação ao servidor.');
+      return;
+    }
+
+    if(modoGlobal){
+      if(!ehAdmin){
+        falhar('Apenas o proprietário pode enviar anúncios globais.');
+        return;
+      }
+    }else if(!conversaAtual){
+      falhar('Abre primeiro uma conversa.');
+      return;
+    }
+
+    sendBtn.disabled=true;
+    photoBtn.disabled=true;
+
+    try{
+      let r;
+
+      if(modoGlobal){
+        const dados={message:texto||'📷 Fotografia'};
+
+        if(imagemSelecionada){
+          dados.imageBase64=imagemSelecionada.base64;
+          dados.imageMime=imagemSelecionada.mime;
+        }
+
+        r=await emitir('chat:global:enviar',dados);
+        if(!r||!r.ok){
+          falhar(r&&r.error||'Não foi possível enviar o anúncio.');
+          return;
+        }
+
+        input.value='';
+        imagemSelecionada=null;
+        photoInput.value='';
+        input.focus();
+        definirEstado('📢 Anúncio enviado a todos os utilizadores.');
+        return;
+      }
+
+      const dados={
+        conversationId:conversaAtual,
+        message:texto||'📷 Fotografia'
+      };
+
+      if(imagemSelecionada){
+        dados.imageBase64=imagemSelecionada.base64;
+        dados.imageMime=imagemSelecionada.mime;
+      }
+
+      r=await emitir('chat:enviar',dados);
+
+      if(!r||!r.ok){
+        falhar(r&&r.error||'Não foi possível enviar a mensagem.');
+        return;
+      }
+
+      input.value='';
+      input.focus();
+      imagemSelecionada=null;
+      photoInput.value='';
+      definirEstado('Mensagem enviada.');
+
+      if(ehAdmin) carregarLista();
+    }catch(err){
+      falhar(err&&err.message||'Ocorreu um erro ao enviar a mensagem.');
+    }finally{
+      sendBtn.disabled=false;
+      photoBtn.disabled=false;
+    }
+  });
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}
+  });
+
+  setInterval(()=>{
+    const token=obterTokenSeguro();
+    btn.hidden = false;
+    if(token){
+      if(tokenAtual&&tokenAtual!==token) pararLigacao();
+      // Manter a ligação activa mesmo com o painel fechado.
+      if(!socket&&tokenAtual!==token) criarLigacao(token);
+    }else{
+      if(socket) pararLigacao();
+    }
+  },1000);
+})();
+</script>
+<script>
+window.abrirMensagens = function () {
+  const botao = document.getElementById("shzChatBtn");
+  if (botao) botao.click();
+};
+</script>
+<!-- FIM SHAZAM SUPPORT CHAT -->
+
+<script src="js/app.js" defer></script>
+</body>
+</html>
