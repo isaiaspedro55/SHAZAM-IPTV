@@ -840,6 +840,7 @@ async function shazamCarregarEpisodios(serie, temporada) {
 function shazamMostrarDetalheEpisodio(serie, temporada, ep) {
   const item = {
     ...serie,
+    serieTmdbId: serie.tmdbId,
     id: "tmdb:episodio:" + ep.id,
     tmdbId: ep.id,
     titulo: ep.titulo || "Episódio sem título",
@@ -1015,34 +1016,74 @@ async function abrirPlayer(i) {
   ++epgPedido;
   const epg = $("#epgInfo");
   if (epg) epg.hidden = true;
-  mostrarSelecaoServidores(i);
+  shazamItemPendente = i;
+  await iniciarServidor1();
 }
 
+/* SHAZAM_PLAYMOZ_DIRECT_V2 */
 async function iniciarServidor1() {
   const item = shazamItemPendente;
   if (!item) return;
 
-  const msg = $("#servidoresMsg");
-  const botao = $("#servidor1");
-  botao.disabled = true;
-  msg.textContent = "A procurar uma fonte de reprodução…";
+  const msg = $("#pMsg");
+  const frame = $("#playmozFrame");
+  const player = $("#player");
+  const video = $("#vid");
+  const epg = $("#epgInfo");
 
   try {
-    const src = item.src || await SHAZAM.api.fonte(item);
+    let url = "";
 
-    if (!src) {
-      msg.textContent =
-        "O Servidor 1 ainda não tem uma fonte de vídeo configurada para este conteúdo.";
-      return;
+    if (item.tipoOriginal === "episodio") {
+      const serieId = Number(item.serieTmdbId);
+      const temporada = Number(item.temporada);
+      const episodio = Number(item.episodio);
+
+      if (
+        !Number.isSafeInteger(serieId) || serieId <= 0 ||
+        !Number.isSafeInteger(temporada) || temporada <= 0 ||
+        !Number.isSafeInteger(episodio) || episodio <= 0
+      ) {
+        throw new Error("Não foi possível identificar este episódio.");
+      }
+
+      url = `https://embed.playmoz.xyz/tv/${serieId}/${temporada}/${episodio}`;
+    } else if (item.tipo === "filme") {
+      const filmeId = Number(item.tmdbId);
+
+      if (!Number.isSafeInteger(filmeId) || filmeId <= 0) {
+        throw new Error("Não foi possível identificar este filme.");
+      }
+
+      url = `https://embed.playmoz.xyz/movie/${filmeId}`;
+    } else if (item.tipo === "serie") {
+      throw new Error("Escolhe primeiro uma temporada e um episódio.");
+    } else {
+      throw new Error("Este tipo de conteúdo não é suportado pelo PlayMoz.");
     }
 
-    fechar("#selecaoServidores");
-    await abrirPlayer({ ...item, src: "" });
-    if ($("#player").classList.contains("on")) reproduzirFonte(src);
+    if (!frame || !player || !video) {
+      throw new Error("O leitor PlayMoz não está disponível.");
+    }
+
+    destruirHLS();
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+    limparEPG();
+    ++epgPedido;
+
+    if (epg) epg.hidden = true;
+
+    player.classList.add("on", "playmoz-active");
+    frame.hidden = false;
+    frame.src = url;
+
+    if (msg) msg.textContent = "";
+    $("#pFechar").focus();
   } catch (erro) {
-    msg.textContent = erro.message || "Não foi possível abrir o Servidor 1.";
-  } finally {
-    botao.disabled = false;
+    if (msg) msg.textContent = erro.message || "Não foi possível abrir o PlayMoz.";
+    console.error("PlayMoz:", erro);
   }
 }
 
@@ -1185,6 +1226,13 @@ function fechar(s,manter){
   if(s==="#player"){
     ++epgPedido;
     destruirHLS();
+    const frame=$("#playmozFrame");
+    if(frame){
+      frame.src="about:blank";
+      frame.hidden=true;
+    }
+    $("#player").classList.remove("playmoz-active");
+
     const v=$("#vid");
     v.pause();
     v.removeAttribute("src");
@@ -1361,11 +1409,6 @@ document.addEventListener("click",e=>{
 
   verificarSessao();
 })();
-$("#servidor1").onclick=iniciarServidor1;
-$("#servidor2").onclick=pesquisarServidor2;
-document.querySelector("[data-fechar-servidores]").onclick=()=>fechar("#selecaoServidores");
-document.querySelector("[data-fechar-resultados]").onclick=()=>fechar("#resultadosServidores");
-$("#voltarServidores").onclick=()=>{fechar("#resultadosServidores");$("#selecaoServidores").classList.add("on");};
 document.querySelectorAll("[data-conta]").forEach(b=>b.onclick=()=>SHAZAM.onConta(b.dataset.conta));
 document.getElementById("shzContaFechar")?.addEventListener("click", () => {
   document.getElementById("shzContaPainel").hidden = true;

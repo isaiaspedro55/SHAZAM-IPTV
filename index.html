@@ -95,31 +95,10 @@
   <div><h2 id="sTitulo"></h2><div class="meta" id="sMeta"></div><p id="sDesc"></p>
   <div class="acts"><button class="btn-play" id="sPlay"></button><button class="btn-info" id="sFechar" aria-label="Fechar">✕</button></div></div></div></div>
 
-<div class="ov shazam-server-overlay" id="selecaoServidores">
-  <section class="shazam-server-panel" role="dialog" aria-modal="true" aria-labelledby="servidoresTitulo">
-    <button class="shazam-server-close" type="button" data-fechar-servidores aria-label="Fechar">✕</button>
-    <p class="shazam-server-kicker">SHAZAM IPTV</p>
-    <h2>Escolhe um servidor</h2>
-    <p id="servidoresTitulo" class="shazam-server-title">Conteúdo</p>
-    <button type="button" class="shazam-server-button" id="servidor1">Servidor 1 <span>Reprodução direta</span></button>
-    <button type="button" class="shazam-server-button" id="servidor2">Servidor 2 <span>Pesquisar vídeos</span></button>
-    <p id="servidoresMsg" role="status" aria-live="polite"></p>
-  </section>
-</div>
-<div class="ov shazam-server-overlay" id="resultadosServidores">
-  <section class="shazam-server-panel shazam-results-panel" role="dialog" aria-modal="true" aria-labelledby="resultadosTitulo">
-    <button class="shazam-server-close" type="button" data-fechar-resultados aria-label="Fechar">✕</button>
-    <p class="shazam-server-kicker">SERVIDOR 2</p>
-    <h2 id="resultadosTitulo">Resultados</h2>
-    <p id="resultadosMsg" role="status" aria-live="polite"></p>
-    <div id="youtubeResultados" class="youtube-resultados"></div>
-    <button type="button" class="shazam-server-back" id="voltarServidores">← Voltar aos servidores</button>
-  </section>
-</div>
-
 <div class="ov" id="player">
   <button id="pFechar" aria-label="Fechar">✕</button>
   <video id="vid" controls playsinline controlsList="nodownload noremoteplayback" disablePictureInPicture></video>
+  <iframe id="playmozFrame" title="Reprodução PlayMoz" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen hidden referrerpolicy="strict-origin-when-cross-origin"></iframe>
   <div id="pMsg" role="status" aria-live="polite"></div>
   <section id="epgInfo" aria-live="polite">
     <div id="epgAtual">A carregar programação…</div>

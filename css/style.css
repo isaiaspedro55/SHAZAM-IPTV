@@ -126,6 +126,11 @@ header{display:flex;align-items:center;justify-content:space-between;padding:1re
 @media(orientation:landscape){.ov{align-items:center;padding:1rem}.sheet{width:min(62rem,92vw);display:grid;grid-template-columns:12rem 1fr;gap:1.6rem;border-radius:1.3rem;padding:1.6rem}.sheet .poster{align-self:start}}
 #player{background:#000;padding:0;align-items:center}
 #vid{width:100vw;height:100vh;background:#000;object-fit:contain}
+#playmozFrame{width:100vw;height:100vh;border:0;background:#000}
+#playmozFrame[hidden]{display:none!important}
+#player.playmoz-active #vid{display:none}
+#player.playmoz-active #playmozFrame{display:block}
+#player.playmoz-active #epgInfo{display:none}
 #pMsg{position:absolute;left:0;right:0;top:50%;text-align:center;color:var(--mut);padding:0 2rem;line-height:1.5;font-size:1.05rem;pointer-events:none}
 #pFechar{position:absolute;top:calc(1rem + env(safe-area-inset-top,0px));right:1.2rem;width:2.8rem;height:2.8rem;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center;font-size:1.25rem;z-index:2}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
