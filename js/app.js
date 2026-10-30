@@ -991,6 +991,7 @@ async function abrirPlayer(i) {
   limparEPG();
 
   if (i && i.canalId) {
+    $("#player").classList.add("iptv-player");
     $("#player").classList.add("on");
     $("#pFechar").focus();
 
@@ -1224,6 +1225,7 @@ function reproduzirFonte(src){
 function fechar(s,manter){
   $(s).classList.remove("on");
   if(s==="#player"){
+    $("#player").classList.remove("iptv-player");
     ++epgPedido;
     destruirHLS();
     const frame=$("#playmozFrame");
@@ -1272,6 +1274,7 @@ document.addEventListener("click",e=>{
   }
 
   let verificando = false;
+  let verificacaoAutomaticaEmCurso = false;
 
   function mostrarLogin(texto = "") {
     login.hidden = false;
@@ -1327,10 +1330,26 @@ document.addEventListener("click",e=>{
 
       return true;
     } catch (erro) {
-      mostrarLogin("Não foi possível contactar o servidor. Tenta novamente.");
+      // Uma falha temporária de internet não termina uma sessão já aberta.
+      if (app.hidden) {
+        mostrarLogin("Não foi possível contactar o servidor. Tenta novamente.");
+      }
       return false;
     }
   }
+
+  // Confirma periodicamente se a conta continua válida no servidor.
+  setInterval(async () => {
+    if (!localStorage.getItem("shazam_token")) return;
+    if (verificando || verificacaoAutomaticaEmCurso) return;
+
+    verificacaoAutomaticaEmCurso = true;
+    try {
+      await verificarSessao();
+    } finally {
+      verificacaoAutomaticaEmCurso = false;
+    }
+  }, 30000);
 
   form.addEventListener("submit", async event => {
     event.preventDefault();
